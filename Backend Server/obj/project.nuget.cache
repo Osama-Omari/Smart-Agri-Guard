@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "V/MOpOlm2pg=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ORZOm\\desktop\\Smart-Agri-Guard\\Backend Server\\Backend Server.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ORZOm\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.2\\microsoft.aspnetcore.openapi.9.0.2.nupkg.sha512",
+    "C:\\Users\\ORZOm\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
