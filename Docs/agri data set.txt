@@ -1,0 +1,3 @@
+https://www.kaggle.com/code/dhamur/machine-learning-in-agriculture?scriptVersionId=94680368&cellId=2
+https://www.kaggle.com/code/sulaniishara/plant-health-prediction-with-ml/notebook
+https://github.com/47vk/NPK-Smart-Irrigation_datasets/tree/main
