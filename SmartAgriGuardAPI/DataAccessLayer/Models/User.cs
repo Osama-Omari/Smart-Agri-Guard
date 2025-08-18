@@ -20,5 +20,15 @@ namespace DataAccessLayer.Models
 
         public UserRole UserRole { get; set; }
 
+        public Guid? GreenhouseId { get; set; }
+
+        public Greenhouse Greenhouse { get; set; }
+
+        public List<Plant> AssignedPlants { get; set; }
+
+        public List<Greenhouse> ManagedGreenhouses { get; set; }
+
+
+
     }
 }
