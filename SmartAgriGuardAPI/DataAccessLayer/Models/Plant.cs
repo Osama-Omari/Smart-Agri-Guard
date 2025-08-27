@@ -26,6 +26,8 @@ namespace DataAccessLayer.Models
 
         public List<SensorData> SensorData { get; set; }
 
+        public List<SensorDataArchive> SensorDataArchives { get; set; }
+
         public List<Prediction> Predictions { get; set; }
 
         public List<Recommendation> Recommendations { get; set; }

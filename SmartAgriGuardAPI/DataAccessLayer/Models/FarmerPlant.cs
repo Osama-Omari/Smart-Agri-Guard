@@ -8,7 +8,6 @@ namespace DataAccessLayer.Models
 {
     public class FarmerPlant
     {
-        public Guid Id { get; set; }
         public Guid FarmerId { get; set; }
         public User Farmer { get; set; }
         public Guid PlantId { get; set; }

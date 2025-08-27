@@ -28,6 +28,8 @@ namespace DataAccessLayer.Models
 
         public List<FarmerPlant> FarmerPlants { get; set; }
 
+        public List<DeviceToken> DeviceTokens { get; set; }
+
 
 
     }

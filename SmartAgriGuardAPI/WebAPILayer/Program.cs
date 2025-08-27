@@ -1,4 +1,5 @@
-
+using DataAccessLayer.Data;
+using Microsoft.EntityFrameworkCore;
 namespace WebAPILayer
 {
     public class Program
@@ -12,6 +13,10 @@ namespace WebAPILayer
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddDbContext<SmartAgriGuardDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             var app = builder.Build();
 
