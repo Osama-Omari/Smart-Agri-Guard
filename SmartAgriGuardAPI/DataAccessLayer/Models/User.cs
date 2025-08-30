@@ -24,7 +24,7 @@ namespace DataAccessLayer.Models
 
         public Greenhouse Greenhouse { get; set; }
 
-        public List<Greenhouse> ManagedGreenhouses { get; set; }
+        public List<Greenhouse>? ManagedGreenhouses { get; set; }
 
         public List<FarmerPlant> FarmerPlants { get; set; }
 

@@ -8,7 +8,7 @@ namespace DataAccessLayer.Models
 {
     public class Prediction
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public Guid PlantId { get; set; }
 

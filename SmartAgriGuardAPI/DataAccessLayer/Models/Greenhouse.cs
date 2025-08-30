@@ -16,7 +16,7 @@ namespace DataAccessLayer.Models
 
         public string ImageUrl { get; set; }
 
-        public Guid ManagerId { get; set; }
+        public Guid? ManagerId { get; set; }
 
         public User Manager { get; set; }
 

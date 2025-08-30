@@ -45,6 +45,10 @@ namespace DataAccessLayer.Data
 
                 entity.HasKey(e => e.Id);
 
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100);
@@ -60,6 +64,11 @@ namespace DataAccessLayer.Data
             {
                 entity.ToTable("Users");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
                 entity.Property(e => e.FullName)
                     .IsRequired()
                     .HasMaxLength(200);
@@ -90,6 +99,11 @@ namespace DataAccessLayer.Data
             {
                 entity.ToTable("Greenhouses");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(200);
@@ -117,6 +131,11 @@ namespace DataAccessLayer.Data
             {
                entity.ToTable("Plants");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(200);
@@ -177,6 +196,12 @@ namespace DataAccessLayer.Data
                entity.ToTable("SensorData");
 
                 entity.HasKey(e => e.Id);
+
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
+
                 entity.Property(e => e.Timestamp).IsRequired();
 
                 entity.HasOne(e => e.Plant)
@@ -191,6 +216,12 @@ namespace DataAccessLayer.Data
             {
                 entity.ToTable("SensorDataArchives");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
+
                 entity.Property(e => e.Timestamp).IsRequired();
                 entity.HasOne(e => e.Plant)
                     .WithMany(e => e.SensorDataArchives)
@@ -202,6 +233,12 @@ namespace DataAccessLayer.Data
             {
                 entity.ToTable("DeviceTokens");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
+
                 entity.Property(e => e.Token)
                     .IsRequired()
                     .HasMaxLength(500);
@@ -215,6 +252,12 @@ namespace DataAccessLayer.Data
             {
                 entity.ToTable("Predictions");
                 entity.HasKey(e=>e.Id);
+
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
+
                 entity.Property(e => e.PredictionDate).IsRequired();
                 entity.HasOne(e => e.Plant)
                     .WithMany(e => e.Predictions)
@@ -228,6 +271,12 @@ namespace DataAccessLayer.Data
             {
                 entity.ToTable("Recommendations");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
+
                 entity.Property(e => e.RecommendationDate).IsRequired();
                 entity.Property(e => e.advice)
                     .IsRequired()
@@ -243,6 +292,12 @@ namespace DataAccessLayer.Data
             {
                 entity.ToTable("PlantTypes");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(200);
