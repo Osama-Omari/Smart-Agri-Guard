@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApplicationLayer.Interfaces
+namespace DataAccessLayer.Interfaces
 {
-    public interface ISensorDataRepository
+    public interface IPredictionRepository
     {
     }
 }

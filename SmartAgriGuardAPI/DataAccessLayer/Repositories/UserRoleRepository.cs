@@ -10,21 +10,24 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
-    public class GreenhouseRepository : IGreenhouseRepository
+    public class UserRoleRepository : IUserRoleRepository
     {
         private readonly SmartAgriGuardDbContext _context;
-        public GreenhouseRepository(SmartAgriGuardDbContext context)
+        public UserRoleRepository(SmartAgriGuardDbContext context)
         {
             _context = context;
         }
-        public async Task<Greenhouse?> GetGreenhouseById(Guid id)
+        public async Task<UserRole?> GetUserRoleByName(string roleName)
         {
             try
             {
-                return await _context.Greenhouses.FirstOrDefaultAsync(x => x.Id == id);
+                return await _context.UserRoles
+                    .Where(role => role.Name.Equals(roleName))
+                    .FirstOrDefaultAsync();
             }
-            catch(Exception ex) {
-                throw new Exception($"An error happend while retrieving the greenhouse: {ex.Message}");
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the user role.", ex);
             }
         }
     }

@@ -1,4 +1,5 @@
 using ApplicationLayer.Interfaces;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
@@ -9,6 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using ApplicationLayer.Validators;
+using ApplicationLayer.MappingProfiles;
 namespace WebAPILayer
 {
     public class Program
@@ -48,6 +53,12 @@ namespace WebAPILayer
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
                 };
             });
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<ManagerRegisterDTOValidation>();
+            builder.Services.AddAutoMapper(builder =>
+            {
+                builder.AddMaps(typeof(UserMapppingProfile).Assembly);
+            });
 
             builder.Services.Configure<PasswordSettings>(
             builder.Configuration.GetSection("PasswordSettings"));
@@ -62,6 +73,7 @@ namespace WebAPILayer
             builder.Services.AddScoped<IPlantRepository,PlantRepository>();
             builder.Services.AddScoped<IPlantTypeRepository,PlantTypeRepository>();
             builder.Services.AddScoped<DeviceTokenRepository,DeviceTokenRepository>();
+            builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddEndpointsApiExplorer();
