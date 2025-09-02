@@ -14,7 +14,7 @@ namespace DataAccessLayer.Models
 
         public string Location { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public Guid GreenhouseId { get; set; }
 
