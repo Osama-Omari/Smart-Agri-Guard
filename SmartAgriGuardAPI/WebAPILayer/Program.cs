@@ -74,12 +74,19 @@ namespace WebAPILayer
             builder.Services.AddScoped<IPlantTypeRepository,PlantTypeRepository>();
             builder.Services.AddScoped<DeviceTokenRepository,DeviceTokenRepository>();
             builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            builder.Services.AddScoped<IFarmerPlantRepository,FarmerPlantRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            using(var scope = app.Services.CreateScope())
+            {
+                var userService = scope.ServiceProvider.GetService<IUserService>();
+                DbInitializer.SeedAdmins(userService, builder.Configuration["Admin:FullName"], builder.Configuration["Admin:UserName"], builder.Configuration["Admin:Password"]).GetAwaiter().GetResult();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

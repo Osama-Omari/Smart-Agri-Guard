@@ -9,16 +9,20 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
-    public class PlantRepository : IPlantRepository
+    public class FarmerPlantRepository : IFarmerPlantRepository
     {
         private readonly SmartAgriGuardDbContext _context;
-        public PlantRepository(SmartAgriGuardDbContext context)
+
+        public FarmerPlantRepository(SmartAgriGuardDbContext context)
         {
             _context = context;
         }
-        public async Task<Plant> GetPlantById(Guid plantId)
+
+        public async Task AddAsync(FarmerPlant obj)
         {
-            return await _context.Plants.FindAsync(plantId);
+           await _context.AddAsync(obj);
+           await _context.SaveChangesAsync();
+
         }
     }
 }

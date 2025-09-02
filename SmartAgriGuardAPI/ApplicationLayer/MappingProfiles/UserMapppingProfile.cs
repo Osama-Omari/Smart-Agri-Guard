@@ -18,14 +18,23 @@ namespace ApplicationLayer.MappingProfiles
 
             CreateMap<ManagerRegisterDTO, User>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
-                .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.UserName))
-                .ForMember(dest => dest.ManagedGreenhouses, opt => opt.MapFrom(src => src.GreenhousesIds));
+                .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.UserName));
 
             CreateMap<User, UserDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.username))
                 .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.UserRole.Name))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
+
+            CreateMap<FarmerRegisterDTO, User>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.username, opt => opt.MapFrom(src => src.UserName));
+
+            CreateMap<AdminRegisterDTO,User>()
+                .ForMember(dest=>dest.FullName,opt=>opt.MapFrom(src => src.FullName))
+                .ForMember(dest=>dest.username,opt=>opt.MapFrom(src=>src.userName));
+
+
         }
 
     }

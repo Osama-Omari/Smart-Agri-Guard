@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IPlantRepository
+    public interface IFarmerPlantRepository
     {
-        Task<Plant> GetPlantById(Guid plantId);
+        Task AddAsync(FarmerPlant obj);
     }
 }

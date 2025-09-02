@@ -18,19 +18,30 @@ namespace InfrastructureLayer.Services
         private readonly IPasswordHasherService _passwordHasherService;
         private readonly IUserRoleRepository _roleRepository;
         private readonly IGreenhouseRepository _greenhouseRepository;
+        private readonly IPlantRepository _plantRepository;
+        private readonly IFarmerPlantRepository _farmerPlantRepository;
 
 
-        public UserService(IUserRepository userRepository,IMapper mapper, IPasswordHasherService passwordHasherService , IUserRoleRepository userRoleRepository, IGreenhouseRepository greenhouseRepository)
+        public UserService(IUserRepository userRepository,IMapper mapper, IPasswordHasherService passwordHasherService , IUserRoleRepository userRoleRepository, IGreenhouseRepository greenhouseRepository,
+            IPlantRepository plantRepository, IFarmerPlantRepository farmerPlantRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _passwordHasherService = passwordHasherService;
             _roleRepository = userRoleRepository;
             _greenhouseRepository = greenhouseRepository;
+            _plantRepository = plantRepository;
+            _farmerPlantRepository = farmerPlantRepository;
         }
-        public Task<UserDTO> Authenticate(UserLoginDTO loginDTO)
+        public async Task<UserDTO?> Authenticate(UserLoginDTO loginDTO)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetUserByUserName(loginDTO.UserName);
+            if (user == null)
+                return null;
+            if (_passwordHasherService.VerifyPasswordHash(loginDTO.Password, loginDTO.UserName, user.PasswordHash) == false)
+                return null;
+
+            return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<bool> isUserNameExists(string userName)
@@ -44,9 +55,47 @@ namespace InfrastructureLayer.Services
 
         }
 
-        public Task<UserDTO> RegisterFarmer(FarmerRegisterDTO dto)
+        public async Task RegisterAdmin(AdminRegisterDTO adminRegisterDTO)
         {
-            throw new NotImplementedException();
+            var user = _mapper.Map<User>(adminRegisterDTO);
+            _passwordHasherService.CreatePasswordHash(adminRegisterDTO.password,user.username,out byte[] hash); 
+            user.PasswordHash = hash;
+            var adminRole = await _roleRepository.GetUserRoleByName("Admin");
+            if (adminRole == null)
+                throw new Exception("Admin role not found");
+            user.UserRoleId = adminRole.Id;
+            await _userRepository.AddUserAsync(user);
+            
+        }
+
+        public async Task<UserDTO> RegisterFarmer(FarmerRegisterDTO dto, Guid greenhouseId)
+        {
+            var user = _mapper.Map<User>(dto);
+            _passwordHasherService.CreatePasswordHash(dto.Password, user.username, out byte[] passwordHash);
+            user.PasswordHash = passwordHash;
+            var farmerRole = await _roleRepository.GetUserRoleByName("Farmer");
+            if (farmerRole == null)
+                throw new Exception("Farmer role not found");
+            user.UserRoleId = farmerRole.Id;
+            user.GreenhouseId = greenhouseId;
+            await _userRepository.AddUserAsync(user);
+            if (dto.AssignedPlants != null && dto.AssignedPlants.Count > 0)
+            {
+
+                foreach(var p in dto.AssignedPlants)
+                {
+                    var plant = await _plantRepository.GetPlantById(p);
+                    if(plant == null)
+                        continue;
+                    FarmerPlant farmerPlant = new FarmerPlant();
+                    farmerPlant.FarmerId = user.Id;
+                    farmerPlant.PlantId = plant.Id;
+                    farmerPlant.AssignedAt = DateTime.UtcNow;
+                    await _farmerPlantRepository.AddAsync(farmerPlant);
+                }
+            }
+
+            return _mapper.Map<UserDTO>(user);
         }
 
         public async Task<UserDTO> RegisterManager(ManagerRegisterDTO managerRegisterDTO)
