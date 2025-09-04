@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ApplicationLayer.DTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ApplicationLayer.Interfaces
 {
     public interface IFileStorageService
     {
-        Task<string> SaveFileAsync(IFormFile file, string subFolder = "");
+        Task<string> SaveFileAsync(FileDataDTO file, string subFolder = "");
     }
 }
