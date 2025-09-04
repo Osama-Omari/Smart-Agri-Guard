@@ -76,6 +76,9 @@ namespace WebAPILayer
             builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             builder.Services.AddScoped<IFarmerPlantRepository,FarmerPlantRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+            builder.Services.AddScoped<IGreenhouseService, GreenhouseService>();
+
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
