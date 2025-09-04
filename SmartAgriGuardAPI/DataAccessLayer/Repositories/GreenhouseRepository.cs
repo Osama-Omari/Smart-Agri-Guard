@@ -25,7 +25,7 @@ namespace DataAccessLayer.Repositories
                 await _context.Greenhouses.AddAsync(greenhouse);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while adding GreenHouse"); }
+            catch (Exception ex) { throw new Exception($"Error while adding GreenHouse: {ex.Message}"); }
         }
 
         public async Task DeleteAsync(Guid id)
@@ -39,7 +39,7 @@ namespace DataAccessLayer.Repositories
                     await _context.SaveChangesAsync();
                 }
             }
-            catch (Exception ex) { throw new Exception("Error while deleting greenhouse"); }
+            catch (Exception ex) { throw new Exception($"Error while deleting greenhouse: {ex.Message}"); }
         }
 
         public async Task<List<Greenhouse>> GetAllAsync()
@@ -51,7 +51,7 @@ namespace DataAccessLayer.Repositories
                      .Include(G => G.Farmers)
                      .ToListAsync();
             }
-            catch (Exception ex) { throw new NotImplementedException(); }
+            catch (Exception ex) { throw new Exception($"Error while retriving greenhouses: {ex.Message}"); }
         }
 
         public async Task<Greenhouse?> GetGreenhouseById(Guid id)
@@ -76,7 +76,7 @@ namespace DataAccessLayer.Repositories
                 _context.Greenhouses.Update(greenhouse);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while Updating the GreenHouse"); }
+            catch (Exception ex) { throw new Exception($"Error while Updating the GreenHouse : {ex.Message}"); }
         }
     }
 }
