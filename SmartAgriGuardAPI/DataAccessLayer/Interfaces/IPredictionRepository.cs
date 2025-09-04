@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccessLayer.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,10 @@ namespace DataAccessLayer.Interfaces
 {
     public interface IPredictionRepository
     {
+        Task AddAsync(Prediction prediction);               
+        Task<Prediction?> GetByIdAsync(Guid id);           
+        Task<List<Prediction>> GetAllAsync();              
+        Task UpdateAsync(Prediction prediction);           
+        Task DeleteAsync(Guid id);                          
     }
 }
