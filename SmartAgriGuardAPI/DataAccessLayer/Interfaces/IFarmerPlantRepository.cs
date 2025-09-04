@@ -10,5 +10,9 @@ namespace DataAccessLayer.Interfaces
     public interface IFarmerPlantRepository
     {
         Task AddAsync(FarmerPlant obj);
+
+        Task<List<FarmerPlant>> GetPlantsByFarmerIdAsync(Guid farmerId);
+
+        Task RemoveAsync(Guid farmerId, Guid plantId);
     }
 }
