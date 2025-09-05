@@ -36,6 +36,58 @@ namespace DataAccessLayer.Repositories
             }
 
         }
+        public async Task<User?> GetUserByIdAsync(Guid id)
+        {
+            try
+            {
+                return await _context.Users.FindAsync(id);
+            }
+            catch (Exception ex) { throw new Exception("Error while getting user by it id "); }
+
+        }
+
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            try
+            {
+                return await _context.Users.ToListAsync();
+            }
+            catch (Exception ex) { throw new Exception("Error while getting all users"); }
+
+        }
+
+        public async Task<User> UpdateUserAsync(User user)
+        {
+            try
+            {
+                var existing = await _context.Users.FindAsync(user.Id);
+                if (existing == null)
+                    throw new KeyNotFoundException("User not found");
+
+                existing.FullName = user.FullName;
+                existing.username = user.username;
+                existing.UserRoleId = user.UserRoleId;
+                existing.GreenhouseId = user.GreenhouseId;
+
+                await _context.SaveChangesAsync();
+                return existing;
+            }
+            catch (Exception ex) { throw new Exception("Error while updating user"); }
+        }
+
+        public async Task DeleteUserAsync(Guid id)
+        {
+            try
+            {
+                var existing = await _context.Users.FindAsync(id);
+                if (existing == null)
+                    throw new KeyNotFoundException("User not found");
+
+                _context.Users.Remove(existing);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex) { throw new Exception("Error while deleting a user"); }
+        }
 
 
     }
