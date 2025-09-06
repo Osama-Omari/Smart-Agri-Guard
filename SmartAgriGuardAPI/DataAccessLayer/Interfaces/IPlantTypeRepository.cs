@@ -13,6 +13,8 @@ namespace DataAccessLayer.Interfaces
         Task<PlantType?> GetByIdAsync(Guid id);                
         Task<List<PlantType>> GetAllAsync();                   
         Task UpdateAsync(PlantType plantType);                
-        Task DeleteAsync(Guid id);                             
+        Task DeleteAsync(Guid id);           
+        
+        Task<bool> IsNameExists(string name);
     }
 }

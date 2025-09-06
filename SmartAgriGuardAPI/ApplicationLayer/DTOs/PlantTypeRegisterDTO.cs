@@ -4,16 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.Models
+namespace ApplicationLayer.DTOs
 {
-    public class PlantType
+    public class PlantTypeRegisterDTO
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
 
         public string? Description { get; set; }
 
-        public List<Plant> Plants { get; set; }
+
     }
 }

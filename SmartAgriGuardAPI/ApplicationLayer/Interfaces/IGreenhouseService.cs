@@ -12,5 +12,7 @@ namespace ApplicationLayer.Interfaces
         Task<GreenhouseDTO> AddGreenhouse(GreenhouseRegisterDTO dto);
         
         Task AssignManagerAsync(Guid managerId,Guid GreenhouseId);
+
+        Task UnAssignManagerAsync(Guid id);
     }
 }

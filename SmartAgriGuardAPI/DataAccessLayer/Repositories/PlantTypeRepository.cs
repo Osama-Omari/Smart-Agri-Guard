@@ -75,6 +75,18 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task<bool> IsNameExists(string name)
+        {
+            try
+            {
+               return await _context.PlantTypes.AnyAsync(pt => pt.Name == name);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while checking for existing plantType name: {ex.Message}");
+            }
+        }
 
         public async Task UpdateAsync(PlantType plantType)
         {

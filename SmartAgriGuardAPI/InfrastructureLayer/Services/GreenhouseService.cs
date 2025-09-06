@@ -56,5 +56,18 @@ namespace InfrastructureLayer.Services
 
             await _greenhouseRepository.UpdateAsync(greenhouse);
         }
+
+        public async Task UnAssignManagerAsync(Guid GreenhouseId)
+        {
+            var greenhouse = await _greenhouseRepository.GetGreenhouseById(GreenhouseId);
+            if (greenhouse == null)
+                throw new KeyNotFoundException("Greenhouse not found");
+
+            if (greenhouse.ManagerId == null)
+                throw new Exception("The greenhouse does not have a manager");
+
+            greenhouse.ManagerId = null;
+            await _greenhouseRepository.UpdateAsync(greenhouse);
+        }
     }
 }

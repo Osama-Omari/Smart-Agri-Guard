@@ -140,7 +140,6 @@ namespace DataAccessLayer.Data
                     .IsRequired()
                     .HasMaxLength(200);
                 entity.Property(e => e.Location)
-                    .IsRequired()
                     .HasMaxLength(300);
                 entity.Property(e => e.ImageUrl)
                     .HasMaxLength(500);

@@ -78,6 +78,8 @@ namespace WebAPILayer
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();
             builder.Services.AddScoped<IGreenhouseService, GreenhouseService>();
+            builder.Services.AddScoped<IPlantService, PlantService>();
+            builder.Services.AddScoped<IPlantTypeService, PlantTypeService>();
 
 
             builder.Services.AddEndpointsApiExplorer();
