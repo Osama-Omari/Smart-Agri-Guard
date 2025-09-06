@@ -10,5 +10,7 @@ namespace ApplicationLayer.Interfaces
     public interface IGreenhouseService
     {
         Task<GreenhouseDTO> AddGreenhouse(GreenhouseRegisterDTO dto);
+        
+        Task AssignManagerAsync(Guid managerId,Guid GreenhouseId);
     }
 }

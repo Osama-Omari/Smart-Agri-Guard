@@ -15,10 +15,12 @@ namespace InfrastructureLayer.Services
     {
         private readonly IGreenhouseRepository _greenhouseRepository;
         private readonly IMapper _mapper;
-        public GreenhouseService(IGreenhouseRepository greenhouseRepository, IMapper mapper)
+        private readonly IUserRepository _userRepository;
+        public GreenhouseService(IGreenhouseRepository greenhouseRepository, IMapper mapper, IUserRepository userRepository)
         {
             _greenhouseRepository = greenhouseRepository;
             _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         public async Task<GreenhouseDTO> AddGreenhouse(GreenhouseRegisterDTO dto)
@@ -32,6 +34,27 @@ namespace InfrastructureLayer.Services
             }
             await _greenhouseRepository.AddAsync(greenhouse);
             return _mapper.Map<GreenhouseDTO>(greenhouse);
+        }
+
+        public async Task AssignManagerAsync(Guid managerId, Guid GreenhouseId)
+        {
+            var manager = await _userRepository.GetUserByIdAsync(managerId);
+            if (manager == null)
+                throw new KeyNotFoundException("Manager not found.");
+            if (manager.UserRole.Name != "Manager")
+                throw new Exception("The user is not a Manager");
+
+
+            var greenhouse = await _greenhouseRepository.GetGreenhouseById(GreenhouseId);
+            if (greenhouse == null)
+                throw new KeyNotFoundException("Greenhouse not found.");
+
+            if (greenhouse.ManagerId != null)
+                throw new Exception("The greenhouse has a manager");
+
+            greenhouse.ManagerId = managerId;
+
+            await _greenhouseRepository.UpdateAsync(greenhouse);
         }
     }
 }

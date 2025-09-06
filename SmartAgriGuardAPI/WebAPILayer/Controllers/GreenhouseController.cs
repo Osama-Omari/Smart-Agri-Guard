@@ -1,5 +1,6 @@
 ﻿using ApplicationLayer.DTOs;
 using ApplicationLayer.Interfaces;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -56,10 +57,24 @@ namespace WebAPILayer.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
 
+        }
 
-
-
-
+        [HttpPatch("Assign-Manager/{ManagerId}/{GreenhouseId}")]
+        public async Task<IActionResult> AssignManagerToGreenhouse(Guid ManagerId,Guid GreenhouseId)
+        {
+            try
+            {
+                await _greenhouseService.AssignManagerAsync(ManagerId, GreenhouseId);
+                return Ok("Manager assigned to greenhouse successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
     }

@@ -124,7 +124,7 @@ namespace InfrastructureLayer.Services
                         
                     }
                     greenhouse.ManagerId = user.Id;
-
+                    await _greenhouseRepository.UpdateAsync(greenhouse);
                 }
             }
             return _mapper.Map<UserDTO>(user);

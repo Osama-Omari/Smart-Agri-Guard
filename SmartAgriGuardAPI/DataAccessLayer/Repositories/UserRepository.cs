@@ -28,7 +28,7 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                return await _context.Users.FirstOrDefaultAsync(x => x.username == username);
+                return await _context.Users.Include(x=>x.UserRole).FirstOrDefaultAsync(x => x.username == username);
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                return await _context.Users.FindAsync(id);
+                return await _context.Users.Include(x=>x.UserRole).FirstOrDefaultAsync(x=> x.Id == id);
             }
             catch (Exception ex) { throw new Exception("Error while getting user by it id "); }
 
