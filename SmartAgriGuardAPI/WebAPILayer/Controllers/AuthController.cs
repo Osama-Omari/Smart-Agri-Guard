@@ -45,32 +45,6 @@ namespace WebAPILayer.Controllers
             
         }
 
-        [HttpPost("Register-Farmer")]
-        [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> RegisterFarmer([FromBody] FarmerRegisterDTO dto, [FromRoute] Guid GreehouseId)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            try
-            {
-                if (await _userService.isUserNameExists(dto.UserName))
-                {
-                    return BadRequest("UserName Already Exist");
-                }
-
-                var user = await _userService.RegisterFarmer(dto,GreehouseId);
-                return Ok(user);
-
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
-            }
-
-        }
-
 
 
         [HttpPost("Login")]

@@ -1,6 +1,7 @@
 ﻿using ApplicationLayer.DTOs;
 using ApplicationLayer.Interfaces;
 using DataAccessLayer.Models;
+using InfrastructureLayer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,20 +11,23 @@ namespace WebAPILayer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class GreenhouseController : ControllerBase
     {
         private readonly IFileStorageService _fileStorageService;
         private readonly IGreenhouseService _greenhouseService;
         private readonly IPlantService _plantService;
-       
-        public GreenhouseController(IFileStorageService fileStorageService, IGreenhouseService greenhouseService,IPlantService plantService)
+        private readonly IUserService _userService;
+        private readonly IFarmerPlantService _farmerPlantService;
+        public GreenhouseController(IFileStorageService fileStorageService, IGreenhouseService greenhouseService, IPlantService plantService, IUserService userService, IFarmerPlantService farmerPlantService)
         {
             _fileStorageService = fileStorageService;
             _greenhouseService = greenhouseService;
             _plantService = plantService;
+            _userService = userService;
+            _farmerPlantService = farmerPlantService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Add")]
         public async Task<IActionResult> CreateGreenhouse([FromForm] CreateGreenhouseRequestDTO dto)
         {
@@ -62,7 +66,9 @@ namespace WebAPILayer.Controllers
         }
 
         [HttpPatch("Assign-Manager/{ManagerId}/{GreenhouseId}")]
-        public async Task<IActionResult> AssignManagerToGreenhouse(Guid ManagerId,Guid GreenhouseId)
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> AssignManagerToGreenhouse(Guid ManagerId, Guid GreenhouseId)
         {
             try
             {
@@ -80,6 +86,8 @@ namespace WebAPILayer.Controllers
         }
 
         [HttpPatch("UnAssign-Manager")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> UnAssignManager(Guid GreenhouseId)
         {
             try
@@ -94,9 +102,11 @@ namespace WebAPILayer.Controllers
         }
 
         [HttpPost("Add-Plant/{GreenhouseId}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> AddPlant([FromRoute] Guid GreenhouseId, [FromForm] CreatePlantRequestDTO dto)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
@@ -130,8 +140,58 @@ namespace WebAPILayer.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+        [HttpPost("Add-Farmer/{GreehouseId}")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> RegisterFarmer([FromBody] FarmerRegisterDTO dto, [FromRoute] Guid GreehouseId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                if (await _userService.isUserNameExists(dto.UserName))
+                {
+                    return BadRequest("UserName Already Exist");
+                }
+
+                var user = await _userService.RegisterFarmer(dto, GreehouseId);
+                return Ok(user);
+
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
 
         }
 
+        [HttpPut("Update-Farmer-Assignment/{farmerId}")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> UpdateFarmerAssignment([FromRoute] Guid farmerId,[FromBody] FarmerPlantDTO dto)
+        {
+            if(!ModelState.IsValid) 
+                return BadRequest(ModelState);
+            try
+            {
+                await _farmerPlantService.UpdateFarmerPlantAssignment(farmerId,dto);
+                return Ok("The assignment process happend successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+
+            }
+
+
+        }
     }
-    }
+
+}
+    

@@ -89,7 +89,22 @@ namespace DataAccessLayer.Repositories
             catch (Exception ex) { throw new Exception("Error while deleting a user"); }
         }
 
+        public async Task<User?> GetFarmerWithPlants(Guid farmerId)
+        {
+            try
+            {
+                return await _context.Users
+                .Include(u => u.FarmerPlants)
+                .Include(u => u.UserRole)
+                .Where(u => u.UserRole.Name == "Farmer" && u.Id == farmerId)
+                .FirstOrDefaultAsync();
 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while retrieving farmer with assigned plants: {ex.Message}");
+            }
+        }
     }
     
 }
