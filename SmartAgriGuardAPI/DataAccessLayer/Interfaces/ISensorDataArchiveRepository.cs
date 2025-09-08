@@ -19,5 +19,9 @@ namespace DataAccessLayer.Interfaces
         Task UpdateAsync(SensorDataArchive archive);
 
         Task DeleteAsync(Guid id);
+
+        void RemoveRange(IEnumerable<SensorDataArchive> archives);
+
+        Task SaveChangesAsync();
     }
 }

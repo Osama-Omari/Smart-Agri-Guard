@@ -21,5 +21,9 @@ namespace DataAccessLayer.Interfaces
         Task<SensorData> UpdateAsync(SensorData sensorData);
 
         Task<bool> DeleteAsync(Guid id);
+
+        void RemoveRange(IEnumerable<SensorData> sensorData);
+
+        Task SaveChangesAsync();
     }
 }

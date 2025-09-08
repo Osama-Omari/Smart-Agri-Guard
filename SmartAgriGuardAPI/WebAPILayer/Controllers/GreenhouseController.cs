@@ -27,6 +27,43 @@ namespace WebAPILayer.Controllers
             _farmerPlantService = farmerPlantService;
         }
 
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> GetGreenhouseById(Guid Id)
+        {
+            try
+            {
+                var greenhouse = await _greenhouseService.GetGreenhouseById(Id);
+                if (greenhouse == null)
+                    return NotFound();
+                return Ok(greenhouse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("All")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllGreenhouses()
+        {
+            try
+            {
+                var greenhouses = await _greenhouseService.GetAllGreenhouses();
+                if(greenhouses == null)
+                    return NotFound();
+                return Ok(greenhouses);
+             
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+
+            }
+        }
+
+
         [Authorize(Roles = "Admin")]
         [HttpPost("Add")]
         public async Task<IActionResult> CreateGreenhouse([FromForm] CreateGreenhouseRequestDTO dto)
@@ -85,10 +122,10 @@ namespace WebAPILayer.Controllers
             }
         }
 
-        [HttpPatch("UnAssign-Manager")]
+        [HttpPatch("UnAssign-Manager/{GreenhouseId}")]
         [Authorize(Roles = "Admin")]
 
-        public async Task<IActionResult> UnAssignManager(Guid GreenhouseId)
+        public async Task<IActionResult> UnAssignManager([FromRoute] Guid GreenhouseId)
         {
             try
             {
@@ -142,33 +179,9 @@ namespace WebAPILayer.Controllers
             }
         }
 
-        [HttpPost("Add-Farmer/{GreehouseId}")]
-        [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> RegisterFarmer([FromBody] FarmerRegisterDTO dto, [FromRoute] Guid GreehouseId)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        
 
-            try
-            {
-                if (await _userService.isUserNameExists(dto.UserName))
-                {
-                    return BadRequest("UserName Already Exist");
-                }
-
-                var user = await _userService.RegisterFarmer(dto, GreehouseId);
-                return Ok(user);
-
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
-            }
-
-        }
-
-        [HttpPut("Update-Farmer-Assignment/{farmerId}")]
+        [HttpPut("Update-FarmerPlant-Assignment/{farmerId}")]
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> UpdateFarmerAssignment([FromRoute] Guid farmerId,[FromBody] FarmerPlantDTO dto)
         {
@@ -188,8 +201,6 @@ namespace WebAPILayer.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
 
             }
-
-
         }
     }
 

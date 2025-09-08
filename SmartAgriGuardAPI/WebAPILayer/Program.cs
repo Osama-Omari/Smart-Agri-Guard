@@ -81,6 +81,8 @@ namespace WebAPILayer
             builder.Services.AddScoped<IPlantService, PlantService>();
             builder.Services.AddScoped<IPlantTypeService, PlantTypeService>();
             builder.Services.AddScoped<IFarmerPlantService, FarmerPlantService>();
+            builder.Services.AddScoped<ISensorDataArchiveService, SensorDataArchiveService>();
+            builder.Services.AddScoped<ISensorDataService, SensorDataService>();
 
 
             builder.Services.AddEndpointsApiExplorer();

@@ -15,7 +15,9 @@ namespace ApplicationLayer.MappingProfiles
 
             CreateMap<Greenhouse, GreenhouseDTO>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Location));
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Location))
+                .ForMember(dest => dest.Farmers, opt => opt.MapFrom(src => src.Farmers))
+                .ForMember(dest => dest.Plants, opt => opt.MapFrom(src => src.Plants));
         }
 
     }

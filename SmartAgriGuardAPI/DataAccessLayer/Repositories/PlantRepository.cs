@@ -29,10 +29,6 @@ namespace DataAccessLayer.Repositories
                 throw new Exception("Error While adding a plant");
             }
         }
-        //public async Task<Plant ?> GetPlantById(Guid plantId)
-        //{
-        //    return await _context.Plants.FindAsync(plantId);
-        //}
         public async Task<Plant?> GetPlantById(Guid plantId)
         {
             try
@@ -45,7 +41,7 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex) { throw new Exception("Error while getting the plant"); }
         }
-        public async Task<List<Plant>> GetAllPlantsAsync()
+        public async Task<List<Plant>> GetAllGreenhousePlantsAsync(Guid greenhouseId)
         {
             try
             {
@@ -53,6 +49,7 @@ namespace DataAccessLayer.Repositories
                     .Include(p => p.Greenhouse)
                     .Include(p => p.PlantType)
                     .Include(p => p.FarmerPlants)
+                    .Where(p=> p.Id == greenhouseId)
                     .ToListAsync();
             }
             catch (Exception ex) { throw new Exception("Error while getting the plant"); }
@@ -79,6 +76,16 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex) { throw new Exception("Error while deleting a plant "); }
 
+        }
+
+        public async Task<Plant> GetPlantWithFarmerPlant(Guid plantId)
+        {
+            try
+            {
+                return await _context.Plants.Include(fp=>fp.FarmerPlants).FirstOrDefaultAsync(x=>x.Id == plantId);
+
+            }
+            catch(Exception ex) { throw new Exception(ex.Message); }    
         }
     }
 }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApplicationLayer.Validators
+namespace ApplicationLayer.Interfaces
 {
-    public class UserDTOValidator
+    public interface ISensorDataService
     {
-
+        Task DeleteAllByPlantIdAsync(Guid plantId);
     }
 }

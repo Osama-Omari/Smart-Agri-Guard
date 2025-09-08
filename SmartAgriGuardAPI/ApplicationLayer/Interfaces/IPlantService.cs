@@ -10,5 +10,13 @@ namespace ApplicationLayer.Interfaces
     public interface IPlantService
     {
         Task AddPlantToGreenhouse(Guid GreenhouseId,PlantRegisterDTO dTO);
+
+        Task<List<PlantDTO>> GetAllGreenhousePlants(Guid GreenhouseId);
+
+        Task<PlantDTO> GetPlantById(Guid PlantId);
+
+        Task DeletePlantAsync(Guid PlantId);
+
+        Task<bool> isPlnatAssignmentExists(Guid PlnatId);
     }
 }

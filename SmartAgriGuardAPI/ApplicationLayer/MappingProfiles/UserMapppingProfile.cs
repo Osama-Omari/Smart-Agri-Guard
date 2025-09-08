@@ -34,6 +34,11 @@ namespace ApplicationLayer.MappingProfiles
                 .ForMember(dest=>dest.FullName,opt=>opt.MapFrom(src => src.FullName))
                 .ForMember(dest=>dest.username,opt=>opt.MapFrom(src=>src.userName));
 
+            CreateMap<User,FarmerDTO>()
+                .ForMember(dest=> dest.Id,opt=> opt.MapFrom(src=> src.Id))
+                .ForMember(dest=> dest.FullName, opt=> opt.MapFrom(src => src.FullName))
+                .ForMember(dest=> dest.UserName, opt=> opt.MapFrom(src=> src.username));
+
 
         }
 

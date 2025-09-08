@@ -57,6 +57,23 @@ namespace InfrastructureLayer.Services
             await _greenhouseRepository.UpdateAsync(greenhouse);
         }
 
+        public async Task<List<GreenhouseDTO>> GetAllGreenhouses()
+        {
+            var greennhouses = await _greenhouseRepository.GetAllAsync();
+            if (greennhouses == null || greennhouses.Count == 0)
+                return null;
+            return _mapper.Map<List<GreenhouseDTO>>(greennhouses);
+            
+        }
+
+        public async Task<GreenhouseDTO> GetGreenhouseById(Guid id)
+        {
+            var greenhouse = await _greenhouseRepository.GetGreenhouseById(id);
+            if (greenhouse == null)
+                throw new KeyNotFoundException("greenhouse not found");
+            return _mapper.Map<GreenhouseDTO>(greenhouse);
+        }
+
         public async Task UnAssignManagerAsync(Guid GreenhouseId)
         {
             var greenhouse = await _greenhouseRepository.GetGreenhouseById(GreenhouseId);

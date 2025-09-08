@@ -125,6 +125,16 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex) { throw new Exception("Error while Deleting a Sensor"); }
         }
+
+        public void RemoveRange(IEnumerable<SensorData> sensorData)
+        {
+             _context.SensorData.RemoveRange(sensorData);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
     

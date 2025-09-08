@@ -12,10 +12,12 @@ namespace DataAccessLayer.Interfaces
         Task AddAsync(Plant plant);
 
         Task<Plant?> GetPlantById(Guid plantId);
-        Task<List<Plant>> GetAllPlantsAsync();
+        Task<List<Plant>> GetAllGreenhousePlantsAsync(Guid greenhouseId);
 
         Task UpdateAsync(Plant plant);
 
         Task DeleteAsync(Guid plantId);
+
+        Task<Plant> GetPlantWithFarmerPlant(Guid plantId);
     }
 }

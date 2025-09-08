@@ -98,5 +98,25 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex) { throw new Exception("Error while deleting archieve"); }
         }
+
+        public void RemoveRange(IEnumerable<SensorDataArchive> archives)
+        {
+            try
+            {
+                _context.SensorDataArchives.RemoveRange(archives);
+
+            }
+            catch(Exception ex) { throw new Exception(ex.Message); }    
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
     }
 }
