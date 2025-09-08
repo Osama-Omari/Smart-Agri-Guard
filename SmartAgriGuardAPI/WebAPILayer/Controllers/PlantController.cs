@@ -81,7 +81,7 @@ namespace WebAPILayer.Controllers
         }
 
         [HttpGet("All-Greenhouse-Plants/{GreenhouseId}")]
-        [Authorize("Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> GetAllGreenhousePlants([FromRoute] Guid GreenhouseId)
         {
             try

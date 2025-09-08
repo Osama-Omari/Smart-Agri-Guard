@@ -49,7 +49,7 @@ namespace DataAccessLayer.Repositories
                     .Include(p => p.Greenhouse)
                     .Include(p => p.PlantType)
                     .Include(p => p.FarmerPlants)
-                    .Where(p=> p.Id == greenhouseId)
+                    .Where(p=> p.GreenhouseId == greenhouseId)
                     .ToListAsync();
             }
             catch (Exception ex) { throw new Exception("Error while getting the plant"); }
@@ -83,7 +83,6 @@ namespace DataAccessLayer.Repositories
             try
             {
                 return await _context.Plants.Include(fp=>fp.FarmerPlants).FirstOrDefaultAsync(x=>x.Id == plantId);
-
             }
             catch(Exception ex) { throw new Exception(ex.Message); }    
         }
