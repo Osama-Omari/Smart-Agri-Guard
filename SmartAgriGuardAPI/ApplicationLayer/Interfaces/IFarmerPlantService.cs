@@ -10,5 +10,7 @@ namespace ApplicationLayer.Interfaces
     public interface IFarmerPlantService
     {
         Task UpdateFarmerPlantAssignment(Guid farmerId ,FarmerPlantDTO farmerPlantDTO);
+
+        Task<List<PlantDTO>> GetAssignedPlantsForFarmer(Guid farmerId);
     }
 }

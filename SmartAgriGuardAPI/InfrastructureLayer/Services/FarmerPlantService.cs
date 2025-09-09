@@ -1,5 +1,6 @@
 ﻿using ApplicationLayer.DTOs;
 using ApplicationLayer.Interfaces;
+using AutoMapper;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using System;
@@ -15,13 +16,25 @@ namespace InfrastructureLayer.Services
         private readonly IFarmerPlantRepository _farmerPlantRepository;
         private readonly IPlantRepository _plantRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public FarmerPlantService(IFarmerPlantRepository farmerPlantRepository, IPlantRepository plantRepository,IUserRepository userRepository)
+        public FarmerPlantService(IFarmerPlantRepository farmerPlantRepository, IPlantRepository plantRepository,IUserRepository userRepository,IMapper mapper)
         {
             _farmerPlantRepository = farmerPlantRepository;
             _plantRepository = plantRepository;
             _userRepository = userRepository;
+            _mapper = mapper;
         }
+
+        public async Task<List<PlantDTO>> GetAssignedPlantsForFarmer(Guid farmerId)
+        {
+            var plants = await _plantRepository.GetAssignedPlantsByFarmerIdAsync(farmerId);
+            if (plants == null || !plants.Any())
+                throw new KeyNotFoundException("No plants assigned to this farmer");
+            return _mapper.Map<List<PlantDTO>>(plants);
+
+        }
+
         public async Task UpdateFarmerPlantAssignment(Guid farmerId, FarmerPlantDTO farmerPlantDTO)
         {
             var farmer = await _userRepository.GetFarmerWithPlants(farmerId);

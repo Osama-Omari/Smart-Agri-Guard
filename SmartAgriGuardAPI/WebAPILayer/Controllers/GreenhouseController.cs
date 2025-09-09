@@ -15,16 +15,12 @@ namespace WebAPILayer.Controllers
     {
         private readonly IFileStorageService _fileStorageService;
         private readonly IGreenhouseService _greenhouseService;
-        private readonly IPlantService _plantService;
-        private readonly IUserService _userService;
-        private readonly IFarmerPlantService _farmerPlantService;
-        public GreenhouseController(IFileStorageService fileStorageService, IGreenhouseService greenhouseService, IPlantService plantService, IUserService userService, IFarmerPlantService farmerPlantService)
+
+        public GreenhouseController(IFileStorageService fileStorageService, IGreenhouseService greenhouseService)
         {
             _fileStorageService = fileStorageService;
             _greenhouseService = greenhouseService;
-            _plantService = plantService;
-            _userService = userService;
-            _farmerPlantService = farmerPlantService;
+
         }
 
         [HttpGet("{id}")]
@@ -138,29 +134,7 @@ namespace WebAPILayer.Controllers
             }
         }
 
-        
-
-        [HttpPut("Update-FarmerPlant-Assignment/{farmerId}")]
-        [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> UpdateFarmerAssignment([FromRoute] Guid farmerId,[FromBody] FarmerPlantDTO dto)
-        {
-            if(!ModelState.IsValid) 
-                return BadRequest(ModelState);
-            try
-            {
-                await _farmerPlantService.UpdateFarmerPlantAssignment(farmerId,dto);
-                return Ok("The assignment process happend successfully");
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
-
-            }
-        }
+       
     }
 
 }

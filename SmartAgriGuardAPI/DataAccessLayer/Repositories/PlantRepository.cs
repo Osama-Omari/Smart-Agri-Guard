@@ -86,5 +86,20 @@ namespace DataAccessLayer.Repositories
             }
             catch(Exception ex) { throw new Exception(ex.Message); }    
         }
+
+        public Task<List<Plant>> GetAssignedPlantsByFarmerIdAsync(Guid farmerId)
+        {
+            
+            try
+            {
+                return _context.Plants
+                    .Include(p => p.PlantType)
+                    .Include(p => p.Greenhouse)
+                    .Include(p => p.FarmerPlants)
+                    .Where(p => p.FarmerPlants.Any(fp => fp.FarmerId == farmerId))
+                    .ToListAsync();
+            }
+            catch (Exception ex) { throw new Exception($"Error while getting assigned plants for the farmer: {ex.Message}"); }
+        }
     }
 }

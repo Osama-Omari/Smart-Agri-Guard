@@ -9,8 +9,6 @@ namespace ApplicationLayer.DTOs
 {
     public class FarmerPlantDTO
     {
-
-        [Required]
-        public List<Guid> assignedPlants {  get; set; }
+        public List<Guid>? assignedPlants {  get; set; }
     }
 }
