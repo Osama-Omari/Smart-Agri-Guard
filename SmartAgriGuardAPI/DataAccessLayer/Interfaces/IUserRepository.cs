@@ -18,5 +18,9 @@ namespace DataAccessLayer.Interfaces
         Task DeleteUserAsync(Guid id);
 
         Task<User?> GetFarmerWithPlants(Guid farmerId);
+
+        Task<User?> GetManagerById(Guid managerId);
+
+
     }
 }

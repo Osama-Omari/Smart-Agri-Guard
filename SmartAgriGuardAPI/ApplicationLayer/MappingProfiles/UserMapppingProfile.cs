@@ -40,6 +40,15 @@ namespace ApplicationLayer.MappingProfiles
                 .ForMember(dest=> dest.UserName, opt=> opt.MapFrom(src=> src.username));
 
 
+            CreateMap<User,ManagerDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.username))
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.UserRole.Name))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.GreenhousesIds, opt => opt.MapFrom(src => src.ManagedGreenhouses.Select(g => g.Id).ToList()));
+
+
+
         }
 
     }

@@ -6,16 +6,14 @@ using System.Threading.Tasks;
 
 namespace ApplicationLayer.DTOs
 {
-    public class FarmerDTO
+    public class ManagerDTO
     {
         public Guid Id { get; set; }
-
+        public string Username { get; set; }
         public string FullName { get; set; }
+        public string RoleName { get; set; }
 
-        public string UserName { get; set; }
-
-        public Guid GreenhouseId { get; set; }
-
+        public List<Guid>? GreenhousesIds { get; set; }
 
     }
 }

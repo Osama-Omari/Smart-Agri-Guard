@@ -57,6 +57,18 @@ namespace InfrastructureLayer.Services
             await _greenhouseRepository.UpdateAsync(greenhouse);
         }
 
+        public async Task DeleteGreenhouseAsync(Guid id)
+        {
+            var greenhouse = await _greenhouseRepository.GetGreenhouseById(id);
+            if (greenhouse == null)
+                throw new KeyNotFoundException("greenhouse not found");
+            if(greenhouse.Plants != null && greenhouse.Plants.Any())
+                throw new Exception("Cannot delete greenhouse with assigned plants");
+            if(greenhouse.Farmers != null && greenhouse.Farmers.Any())
+                throw new Exception("Cannot delete greenhouse with assigned farmers");
+            await _greenhouseRepository.DeleteAsync(id);
+        }
+
         public async Task<List<GreenhouseDTO>> GetAllGreenhouses()
         {
             var greennhouses = await _greenhouseRepository.GetAllAsync();

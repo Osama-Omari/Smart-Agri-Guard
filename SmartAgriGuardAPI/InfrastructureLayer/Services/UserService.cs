@@ -44,6 +44,42 @@ namespace InfrastructureLayer.Services
             return _mapper.Map<UserDTO>(user);
         }
 
+        public async Task DeleteFarmerAsync(Guid farmerId)
+        {
+            var farmer = await _userRepository.GetFarmerWithPlants(farmerId);
+            if(farmer == null)
+                throw new Exception("Farmer not found");
+            if(farmer.FarmerPlants.Any())
+                throw new Exception("Cannot delete farmer with assigned plants");
+            await _userRepository.DeleteUserAsync(farmerId);
+        }
+
+        public async Task DeleteManagerAsync(Guid managerId)
+        {
+            var manager = await _userRepository.GetManagerById(managerId);
+            if (manager == null)
+                throw new Exception("Manager not found");
+            if(manager.ManagedGreenhouses != null && manager.ManagedGreenhouses.Any())
+                throw new Exception("Cannot delete manager with assigned greenhouses");
+            await _userRepository.DeleteUserAsync(managerId);
+        }
+
+        public async Task<FarmerDTO> GetFarmer(Guid farmerId)
+        {
+            var farmer = await _userRepository.GetFarmerWithPlants(farmerId);
+            if (farmer == null)
+                throw new Exception("Farmer not found");
+            return _mapper.Map<FarmerDTO>(farmer);
+        }
+
+        public async Task<ManagerDTO> GetManager(Guid managerId)
+        {
+            var manager = await _userRepository.GetManagerById(managerId);
+            if (manager == null)
+                throw new Exception("Manager not found");
+            return _mapper.Map<ManagerDTO>(manager);
+        }
+
         public async Task<bool> isUserNameExists(string userName)
         {
             var user = await _userRepository.GetUserByUserName(userName);

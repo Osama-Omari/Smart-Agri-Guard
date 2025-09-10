@@ -18,5 +18,13 @@ namespace ApplicationLayer.Interfaces
         Task<bool> isUserNameExists(string userName);
 
         Task RegisterAdmin(AdminRegisterDTO adminRegisterDTO);
+
+        Task DeleteFarmerAsync(Guid farmerId);
+
+        Task DeleteManagerAsync(Guid managerId);
+
+        Task<ManagerDTO> GetManager(Guid managerId);
+
+        Task<FarmerDTO> GetFarmer(Guid farmerId);
     }
 }

@@ -134,7 +134,24 @@ namespace WebAPILayer.Controllers
             }
         }
 
-       
+        [HttpDelete("Delete/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteGreenhouse(Guid id)
+        {
+            try
+            {
+                await _greenhouseService.DeleteGreenhouseAsync(id);
+                return Ok("Greenhouse deleted successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 
 }

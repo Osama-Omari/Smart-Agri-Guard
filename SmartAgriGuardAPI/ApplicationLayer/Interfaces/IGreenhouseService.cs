@@ -17,5 +17,7 @@ namespace ApplicationLayer.Interfaces
         Task UnAssignManagerAsync(Guid id);
 
         Task<List<GreenhouseDTO>> GetAllGreenhouses();
+
+        Task DeleteGreenhouseAsync(Guid id);
     }
 }
