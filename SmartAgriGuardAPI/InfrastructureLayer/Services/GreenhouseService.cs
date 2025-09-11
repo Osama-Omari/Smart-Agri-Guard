@@ -16,11 +16,13 @@ namespace InfrastructureLayer.Services
         private readonly IGreenhouseRepository _greenhouseRepository;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        public GreenhouseService(IGreenhouseRepository greenhouseRepository, IMapper mapper, IUserRepository userRepository)
+        private readonly IFileStorageService _fileStorageService;
+        public GreenhouseService(IGreenhouseRepository greenhouseRepository, IMapper mapper, IUserRepository userRepository,IFileStorageService fileStorageService)
         {
             _greenhouseRepository = greenhouseRepository;
             _mapper = mapper;
             _userRepository = userRepository;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<GreenhouseDTO> AddGreenhouse(GreenhouseRegisterDTO dto)
@@ -66,6 +68,8 @@ namespace InfrastructureLayer.Services
                 throw new Exception("Cannot delete greenhouse with assigned plants");
             if(greenhouse.Farmers != null && greenhouse.Farmers.Any())
                 throw new Exception("Cannot delete greenhouse with assigned farmers");
+
+            await _fileStorageService.DeleteFileAsync(greenhouse.ImageUrl);
             await _greenhouseRepository.DeleteAsync(id);
         }
 
@@ -96,6 +100,26 @@ namespace InfrastructureLayer.Services
                 throw new Exception("The greenhouse does not have a manager");
 
             greenhouse.ManagerId = null;
+            await _greenhouseRepository.UpdateAsync(greenhouse);
+        }
+
+        public async Task UpdateGreenhouseAsync(Guid id, GreenhouseUpdateDTO dto)
+        {
+            var greenhouse = await _greenhouseRepository.GetGreenhouseById(id);
+            if (greenhouse == null)
+                throw new KeyNotFoundException("greenhouse not found");
+            if(!string.IsNullOrEmpty(dto.Name))
+                greenhouse.Name = dto.Name;
+            if(!string.IsNullOrEmpty(dto.Location))
+                greenhouse.Location = dto.Location;
+            if (!string.IsNullOrEmpty(dto.ImagePath))
+            {
+                if (!string.IsNullOrEmpty(greenhouse.ImageUrl))
+                {
+                    await _fileStorageService.DeleteFileAsync(greenhouse.ImageUrl);
+                }
+                greenhouse.ImageUrl = dto.ImagePath;
+            }
             await _greenhouseRepository.UpdateAsync(greenhouse);
         }
     }

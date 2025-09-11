@@ -1,4 +1,5 @@
-﻿using ApplicationLayer.Interfaces;
+﻿using ApplicationLayer.DTOs;
+using ApplicationLayer.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -58,6 +59,61 @@ namespace WebAPILayer.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
+        }
+
+        [HttpPut("ChangeUserInfo")]
+        [Authorize]
+        public async Task<IActionResult> ChangeFarmerInfo([FromBody] UpdateUserDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var UserIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Guid.TryParse(UserIdString, out Guid userId);
+                if (userId == Guid.Empty)
+                {
+                    return Unauthorized("Invalid farmer ID.");
+                }
+
+                var user = await _userService.UpdateUserAsync(dto,userId);
+                return Ok(user);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut("Change-Password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var UserIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Guid.TryParse(UserIdString, out Guid userId);
+                if (userId == Guid.Empty)
+                {
+                    return Unauthorized("Invalid user ID.");
+                }
+                await _userService.ChangePasswordAsync(dto, userId);
+                return Ok("Password changed successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

@@ -44,6 +44,20 @@ namespace InfrastructureLayer.Services
             return _mapper.Map<UserDTO>(user);
         }
 
+        public async Task ChangePasswordAsync(ChangePasswordDTO dto, Guid userId)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+                throw new KeyNotFoundException("User not found");
+
+            if(!_passwordHasherService.VerifyPasswordHash(dto.CurrentPassword, user.username, user.PasswordHash))
+                throw new UnauthorizedAccessException("Current password is incorrect");
+
+            _passwordHasherService.CreatePasswordHash(dto.NewPassword, user.username, out byte[] newHash);
+            user.PasswordHash = newHash;
+            await _userRepository.UpdateUserAsync(user);
+        }
+
         public async Task DeleteFarmerAsync(Guid farmerId)
         {
             var farmer = await _userRepository.GetFarmerWithPlants(farmerId);
@@ -164,6 +178,19 @@ namespace InfrastructureLayer.Services
                 }
             }
             return _mapper.Map<UserDTO>(user);
+        }
+
+        public async Task<UserDTO> UpdateUserAsync(UpdateUserDTO dto, Guid userId)
+        {
+            var user = await  _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+                throw new Exception("User not found");
+            user.FullName = dto.FullName;
+            await _userRepository.UpdateUserAsync(user);
+
+            return _mapper.Map<UserDTO>(user);
+
+
         }
     }
 }

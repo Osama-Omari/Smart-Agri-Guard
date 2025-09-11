@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationLayer.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,9 @@ namespace ApplicationLayer.Interfaces
     public interface ISensorDataService
     {
         Task DeleteAllByPlantIdAsync(Guid plantId);
+
+        Task AddSensorData(Guid plantId,SensorDataRegisterDTO dto);
+
+        Task<SensorDataDTO?> GetLatestSensorData(Guid plantId);
     }
 }

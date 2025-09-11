@@ -19,9 +19,10 @@ namespace InfrastructureLayer.Services
         private readonly IGreenhouseRepository _greenhouseRepository;
         private readonly ISensorDataService _sensorDataService;
         private readonly ISensorDataArchiveService _sensorDataArchiveService;
-        
+        private readonly IFileStorageService _fileStorageService;
+
         public PlantService(IPlantRepository plantRepository, IPlantTypeRepository plantTypeRepository,IMapper mapper,IGreenhouseRepository greenhouseRepository,
-            ISensorDataService sensorDataService,ISensorDataArchiveService sensorDataArchiveService)
+            ISensorDataService sensorDataService,ISensorDataArchiveService sensorDataArchiveService,IFileStorageService fileStorageService)
         {
             _plantRepository = plantRepository;
             _plantTypeRepository = plantTypeRepository;
@@ -29,6 +30,7 @@ namespace InfrastructureLayer.Services
             _greenhouseRepository = greenhouseRepository;
             _sensorDataService = sensorDataService;
             _sensorDataArchiveService = sensorDataArchiveService;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task AddPlantToGreenhouse(Guid GreenhouseId, PlantRegisterDTO dTO)
@@ -71,6 +73,7 @@ namespace InfrastructureLayer.Services
                 throw new KeyNotFoundException("the plant not found");
             await _sensorDataService.DeleteAllByPlantIdAsync(plant.Id);
             await _sensorDataArchiveService.DeleteAllByPlantIdAsync(plant.Id);
+            await _fileStorageService.DeleteFileAsync(plant.ImageUrl);
             await _plantRepository.DeleteAsync(plant.Id);
         }
 
@@ -88,6 +91,27 @@ namespace InfrastructureLayer.Services
             if (plant == null)
                 return null;
             return _mapper.Map<PlantDTO>(plant);
+        }
+
+        public async Task<PlantDTO> UpdatePlantAsync(Guid PlantId, PlantUpdateDTO dTO)
+        {
+            var plant = await _plantRepository.GetPlantById(PlantId);
+            if (plant == null)
+                throw new KeyNotFoundException("the plant not found");
+            if(!string.IsNullOrEmpty(dTO.Name))
+                plant.Name = dTO.Name;
+            if (!string.IsNullOrEmpty(dTO.Location))
+                plant.Location = dTO.Location;
+            if (!string.IsNullOrEmpty(dTO.ImagePath))
+            {
+                if(!string.IsNullOrEmpty(plant.ImageUrl))
+                    await _fileStorageService.DeleteFileAsync(plant.ImageUrl);
+                plant.ImageUrl = dTO.ImagePath;
+            }
+
+            await _plantRepository.UpdateAsync(plant);
+            return _mapper.Map<PlantDTO>(plant);
+
         }
     }
 }

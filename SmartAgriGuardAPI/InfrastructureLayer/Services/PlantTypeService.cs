@@ -1,5 +1,6 @@
 ﻿using ApplicationLayer.DTOs;
 using ApplicationLayer.Interfaces;
+using AutoMapper;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using System;
@@ -13,9 +14,11 @@ namespace InfrastructureLayer.Services
     public class PlantTypeService : IPlantTypeService
     {
         private readonly IPlantTypeRepository _plantTypeRepository;
-        public PlantTypeService(IPlantTypeRepository plantTypeRepository)
+        private readonly IMapper _mapper;
+        public PlantTypeService(IPlantTypeRepository plantTypeRepository, IMapper mapper)
         {
             _plantTypeRepository = plantTypeRepository;
+            _mapper = mapper;
         }
 
         public async Task AddPlantType(PlantTypeRegisterDTO dto)
@@ -31,6 +34,39 @@ namespace InfrastructureLayer.Services
             if(!string.IsNullOrEmpty(dto.Description))
                 plantType.Description = dto.Description;
             await _plantTypeRepository.AddAsync(plantType);
+        }
+
+        public async Task<List<PlantTypeDTO>> GetAllPlantTypes()
+        {
+            var plantTypes = await _plantTypeRepository.GetAllAsync();
+            return _mapper.Map<List<PlantTypeDTO>>(plantTypes);
+        }
+
+        public async Task<PlantTypeDTO> GetPlantTypeById(Guid Id)
+        {
+            var plantType = await _plantTypeRepository.GetByIdAsync(Id);
+            if (plantType == null)
+                throw new KeyNotFoundException("Plant type not found.");
+            return _mapper.Map<PlantTypeDTO>(plantType);
+        }
+
+        public async Task UpdatePlantType(Guid Id, PlantTypeUpdateDTO dto)
+        {
+            var plantType = await _plantTypeRepository.GetByIdAsync(Id);
+            if (plantType == null)
+                throw new KeyNotFoundException("Plant type not found.");
+            if (!string.IsNullOrEmpty(dto.Description))
+                plantType.Description = dto.Description;
+
+            if (!string.IsNullOrEmpty(dto.Name) && !plantType.Name.Equals(dto.Name.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                if (await _plantTypeRepository.IsNameExists(dto.Name))
+                {
+                    throw new Exception("The name for the plant type already exist");
+                }
+                plantType.Name = dto.Name;
+            }
+            await _plantTypeRepository.UpdateAsync(plantType);
         }
     }
 }

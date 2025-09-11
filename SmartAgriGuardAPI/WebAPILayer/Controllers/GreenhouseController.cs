@@ -11,6 +11,7 @@ namespace WebAPILayer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class GreenhouseController : ControllerBase
     {
         private readonly IFileStorageService _fileStorageService;
@@ -23,8 +24,8 @@ namespace WebAPILayer.Controllers
 
         }
 
+
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> GetGreenhouseById(Guid Id)
         {
             try
@@ -40,8 +41,8 @@ namespace WebAPILayer.Controllers
             }
         }
 
+
         [HttpGet("All")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllGreenhouses()
         {
             try
@@ -60,7 +61,7 @@ namespace WebAPILayer.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+
         [HttpPost("Add")]
         public async Task<IActionResult> CreateGreenhouse([FromForm] CreateGreenhouseRequestDTO dto)
         {
@@ -98,9 +99,8 @@ namespace WebAPILayer.Controllers
 
         }
 
-        [HttpPatch("Assign-Manager/{ManagerId}/{GreenhouseId}")]
-        [Authorize(Roles = "Admin")]
 
+        [HttpPatch("Assign-Manager/{ManagerId}/{GreenhouseId}")]
         public async Task<IActionResult> AssignManagerToGreenhouse(Guid ManagerId, Guid GreenhouseId)
         {
             try
@@ -118,9 +118,8 @@ namespace WebAPILayer.Controllers
             }
         }
 
-        [HttpPatch("UnAssign-Manager/{GreenhouseId}")]
-        [Authorize(Roles = "Admin")]
 
+        [HttpPatch("UnAssign-Manager/{GreenhouseId}")]
         public async Task<IActionResult> UnAssignManager([FromRoute] Guid GreenhouseId)
         {
             try
@@ -134,8 +133,8 @@ namespace WebAPILayer.Controllers
             }
         }
 
+
         [HttpDelete("Delete/{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteGreenhouse(Guid id)
         {
             try
@@ -152,6 +151,45 @@ namespace WebAPILayer.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> UpdateGreenhouse([FromRoute] Guid id, [FromForm] UpdateGreenhouseRequestDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                string? imagePath = null;
+                if (dto.Image is { Length: > 0 })
+                {
+                    await using var stream = dto.Image.OpenReadStream();
+                    var filedata = new FileDataDTO
+                    {
+                        Content = stream,
+                        FileName = dto.Image.FileName
+                    };
+                    imagePath = await _fileStorageService.SaveFileAsync(filedata, "greenhouses");
+                }
+                var greenhouseUpdateDTO = new GreenhouseUpdateDTO
+                {
+                    Location = dto.Location,
+                    Name = dto.Name,
+                    ImagePath = imagePath
+                };
+                await _greenhouseService.UpdateGreenhouseAsync(id, greenhouseUpdateDTO);
+                return Ok("Greenhouse updated successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }   
     }
 
 }

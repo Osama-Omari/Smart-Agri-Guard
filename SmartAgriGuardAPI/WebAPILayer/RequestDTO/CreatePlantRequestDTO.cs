@@ -13,6 +13,7 @@ namespace WebAPILayer.RequestDTO
         [StringLength(300,ErrorMessage = "Location for the plant can't exceed 300 characters")]
         public string? Location { get; set; }
 
+        [DataType(DataType.Upload)]
         public IFormFile? Image { get; set; }
 
 

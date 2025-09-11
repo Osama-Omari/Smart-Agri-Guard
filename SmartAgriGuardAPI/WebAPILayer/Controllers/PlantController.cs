@@ -99,7 +99,7 @@ namespace WebAPILayer.Controllers
             }
         }
 
-        [HttpDelete("/{plantId}")]
+        [HttpDelete("Delete/{plantId}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePlant([FromRoute] Guid plantId)
         {
@@ -115,6 +115,44 @@ namespace WebAPILayer.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
 
+            }
+        }
+
+        [HttpPut("Update/{plantId}")]
+        [Authorize (Roles = "Admin")]
+        public async Task<IActionResult> UpdatePlant([FromRoute] Guid plantId, [FromForm] UpdatePlantRequestDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                string? imagePath = null;
+                if (dto.Image is { Length: > 0 })
+                {
+                    await using var stream = dto.Image.OpenReadStream();
+                    var filedata = new FileDataDTO
+                    {
+                        Content = stream,
+                        FileName = dto.Image.FileName
+                    };
+                    imagePath = await _fileStorageService.SaveFileAsync(filedata, "plants");
+                }
+                var plantUpdateDto = new PlantUpdateDTO
+                {
+                    ImagePath = imagePath,
+                    Location = dto.Location,
+                    Name = dto.Name,
+                };
+                await _plantService.UpdatePlantAsync(plantId, plantUpdateDto);
+                return Ok("The plant has been updated successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
     }

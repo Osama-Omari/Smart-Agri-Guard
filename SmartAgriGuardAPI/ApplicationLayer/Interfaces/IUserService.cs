@@ -26,5 +26,11 @@ namespace ApplicationLayer.Interfaces
         Task<ManagerDTO> GetManager(Guid managerId);
 
         Task<FarmerDTO> GetFarmer(Guid farmerId);
+
+        Task<UserDTO> UpdateUserAsync(UpdateUserDTO dto, Guid userId);
+
+        Task ChangePasswordAsync(ChangePasswordDTO dto, Guid userId);
+
+
     }
 }

@@ -56,21 +56,12 @@ namespace DataAccessLayer.Repositories
 
         }
 
-        public async Task<User> UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(User user)
         {
             try
             {
-                var existing = await _context.Users.FindAsync(user.Id);
-                if (existing == null)
-                    throw new KeyNotFoundException("User not found");
-
-                existing.FullName = user.FullName;
-                existing.username = user.username;
-                existing.UserRoleId = user.UserRoleId;
-                existing.GreenhouseId = user.GreenhouseId;
-
+                _context.Users.Update(user);
                 await _context.SaveChangesAsync();
-                return existing;
             }
             catch (Exception ex) { throw new Exception($"Error while updating user: {ex.Message}"); }
         }

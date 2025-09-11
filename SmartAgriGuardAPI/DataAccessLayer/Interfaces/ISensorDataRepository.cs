@@ -13,17 +13,12 @@ namespace DataAccessLayer.Interfaces
 
         
         Task<SensorData?> GetByIdAsync(Guid id);
-        Task<IEnumerable<SensorData>> GetAllAsync();
         Task<IEnumerable<SensorData>> GetByPlantIdAsync(Guid plantId);
-
-        Task<SensorData?> GetLatestSensorDataByPlantIdAsync(Guid plantId);
-
-        Task<SensorData> UpdateAsync(SensorData sensorData);
-
-        Task<bool> DeleteAsync(Guid id);
 
         void RemoveRange(IEnumerable<SensorData> sensorData);
 
         Task SaveChangesAsync();
+
+        Task<SensorData?> GetLatestByPlantIdAsync(Guid plantId);
     }
 }

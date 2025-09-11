@@ -19,10 +19,31 @@ namespace InfrastructureLayer.Services
             _env = webHostEnviroment;
         }
 
+        public async Task DeleteFileAsync(string? filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                return;
+            
+            var uploadsRoot = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"); 
+            var fullPath = Path.Combine(uploadsRoot, filePath.Replace("/", Path.DirectorySeparatorChar.ToString()));
+
+            if(File.Exists(fullPath))
+            {
+                await Task.Run(() => File.Delete(fullPath));
+            }
+        }
+
         public async Task<string> SaveFileAsync(FileDataDTO file, string subFolder = "")
         {
             if (file?.Content == null || file.Content.Length == 0)
                 throw new ArgumentException("File stream is empty.", nameof(file));
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(ext))
+                throw new InvalidOperationException("Invalid file type. Only images are allowed.");
+
 
             var uploadsRoot = Path.Combine(
                 _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"),

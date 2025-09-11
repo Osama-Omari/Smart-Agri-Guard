@@ -10,5 +10,12 @@ namespace ApplicationLayer.Interfaces
     public interface IPlantTypeService
     {
         Task AddPlantType(PlantTypeRegisterDTO dto);
+
+        Task<List<PlantTypeDTO>> GetAllPlantTypes();
+
+        Task UpdatePlantType(Guid Id, PlantTypeUpdateDTO dto);
+
+        Task<PlantTypeDTO> GetPlantTypeById(Guid Id);
+
     }
 }

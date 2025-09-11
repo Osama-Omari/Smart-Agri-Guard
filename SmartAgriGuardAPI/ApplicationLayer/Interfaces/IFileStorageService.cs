@@ -11,5 +11,7 @@ namespace ApplicationLayer.Interfaces
     public interface IFileStorageService
     {
         Task<string> SaveFileAsync(FileDataDTO file, string subFolder = "");
+
+        Task DeleteFileAsync(string? filePath);
     }
 }

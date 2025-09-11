@@ -18,5 +18,7 @@ namespace ApplicationLayer.Interfaces
         Task DeletePlantAsync(Guid PlantId);
 
         Task<bool> isPlnatAssignmentExists(Guid PlnatId);
+
+        Task<PlantDTO> UpdatePlantAsync(Guid PlantId, PlantUpdateDTO dTO);
     }
 }
