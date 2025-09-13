@@ -13,9 +13,11 @@ namespace WebAPILayer.Controllers
     {
 
         private readonly ISensorDataService _sensorDataService;
-        public SensorDataController(ISensorDataService sensorDataService)
+        private readonly ISensorDataArchiveService _sensorDataArchiveService;
+        public SensorDataController(ISensorDataService sensorDataService, ISensorDataArchiveService sensorDataArchiveService)
         {
             _sensorDataService = sensorDataService;
+            _sensorDataArchiveService = sensorDataArchiveService;
         }
 
         [HttpPost("Add/{plantId}")]
@@ -56,6 +58,57 @@ namespace WebAPILayer.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
+        }
+
+        [HttpGet("Trend")]
+        [Authorize(Roles = "Manager,Farmer")]
+        public async Task<IActionResult> GetTrends([FromBody] SensorTrendRequestDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var trends = await _sensorDataService.GetSensorTrendsAsync(dto);
+                if (trends == null)
+                    return NotFound("No sensor trend data found for the specified criteria.");
+                return Ok(trends);
+            }
+            catch (KeyNotFoundException Ex)
+            {
+                return NotFound(Ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("Archive-Trend")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> GetArchiveTrends([FromBody] SensorTrendArchiveRequestDTO dto)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var trends = await _sensorDataArchiveService.GetSensorArchiveTrendsAsync(dto);
+                if (trends == null)
+                    return NotFound("No sensor trend data found for the specified criteria.");
+                return Ok(trends);
+            }
+            catch (KeyNotFoundException Ex)
+            {
+                return NotFound(Ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+
         }
 
     }

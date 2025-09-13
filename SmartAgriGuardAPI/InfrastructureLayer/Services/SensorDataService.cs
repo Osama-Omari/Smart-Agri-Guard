@@ -17,12 +17,14 @@ namespace InfrastructureLayer.Services
         private readonly ISensorDataRepository _sensorDataRepository;
         private readonly IPlantRepository _plantRepository;
         private readonly IMapper _mapper;
+        private readonly ISensorDataArchiveRepository _sensorDataArchiveRepository;
 
-        public SensorDataService(ISensorDataRepository sensorDataRepository, IPlantRepository plantRepository,IMapper mapper)
+        public SensorDataService(ISensorDataRepository sensorDataRepository, IPlantRepository plantRepository,IMapper mapper,ISensorDataArchiveRepository sensorDataArchiveRepository)
         {
             _sensorDataRepository = sensorDataRepository;
             _plantRepository = plantRepository;
             _mapper = mapper;
+            _sensorDataArchiveRepository = sensorDataArchiveRepository;
         }
 
         public async Task AddSensorData(Guid plantId, SensorDataRegisterDTO dto)
@@ -69,6 +71,25 @@ namespace InfrastructureLayer.Services
             return _mapper.Map<SensorDataDTO>(sensorData);
 
 
+        }
+
+        public Task<SensorTrendResponseDTO> GetSensorArchiveTrendsAsync(SensorTrendArchiveRequestDTO dto)
+        {
+            var data =  _sensorDataArchiveRepository.GetByPlantIdAndDateRangeAsync(dto.PlantId, dto.StartDate, dto.EndDate);
+
+        }
+
+        public async Task<SensorTrendResponseDTO> GetSensorTrendsAsync(SensorTrendRequestDTO dto)
+        {
+            var data = await _sensorDataRepository.GetByPlantIdAndDateRangeAsync(dto.PlantId,dto.StartDate,dto.EndDate);
+            if(!data.Any())
+                throw new KeyNotFoundException("No sensor data found for the specified plant in the given date range.");
+
+            return new SensorTrendResponseDTO
+            {
+                PlantId = dto.PlantId,
+                Readings = _mapper.Map<List<SensorReadingMultiDto>>(data)
+            };
         }
     }
 }

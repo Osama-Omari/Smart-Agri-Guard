@@ -20,5 +20,7 @@ namespace DataAccessLayer.Interfaces
         Task SaveChangesAsync();
 
         Task<SensorData?> GetLatestByPlantIdAsync(Guid plantId);
+
+        Task<List<SensorData>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTime startDate, DateTime endDate);
     }
 }

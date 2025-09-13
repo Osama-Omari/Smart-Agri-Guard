@@ -87,6 +87,22 @@ namespace DataAccessLayer.Repositories
                 throw new Exception($"Error while getting the last sensors data: {ex.Message}");
             }
         }
+
+        public async Task<List<SensorData>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                return await _context.SensorData
+                    .Where(sd => sd.PlantId == plantId && sd.Timestamp >= startDate && sd.Timestamp <= endDate)
+                    .OrderBy(sd => sd.Timestamp)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while getting sensors data in range: {ex.Message}");
+            }
+
+        }
     }
 }
     

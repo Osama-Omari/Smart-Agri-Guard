@@ -1,5 +1,6 @@
 ﻿using ApplicationLayer.DTOs;
 using AutoMapper;
+using DataAccessLayer.Models;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace ApplicationLayer.MappingProfiles
         public SensorDataMappingProfile() {
 
             CreateMap<SensorDataDTO, DataAccessLayer.Models.SensorData>();
+
+            CreateMap<SensorData, SensorReadingMultiDto>();
 
 
         }

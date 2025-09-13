@@ -118,5 +118,18 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
+
+        public Task<List<SensorDataArchive>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                return _context.SensorDataArchives
+                    .Where(sd => sd.PlantId == plantId && sd.Timestamp >= startDate && sd.Timestamp <= endDate)
+                    .OrderBy(sd => sd.Timestamp)
+                    .ToListAsync();
+            }
+            catch (Exception ex) { throw new Exception($"Error while getting archieve by it date :{ex.Message}"); }
+
+        }
     }
 }
