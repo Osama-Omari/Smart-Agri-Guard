@@ -67,8 +67,6 @@ namespace InfrastructureLayer.Services
             if (sensorData == null)
                 return null;
             return _mapper.Map<SensorDataDTO>(sensorData);
-
-
         }
 
         public async Task<SensorTrendResponseDTO> GetSensorTrendsAsync(SensorTrendRequestDTO dto)

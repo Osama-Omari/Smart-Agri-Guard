@@ -16,7 +16,5 @@ namespace ApplicationLayer.Interfaces
         Task<SensorDataDTO?> GetLatestSensorData(Guid plantId);
 
         Task<SensorTrendResponseDTO> GetSensorTrendsAsync(SensorTrendRequestDTO dto);
-
-        
     }
 }
