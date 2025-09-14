@@ -17,6 +17,6 @@ namespace ApplicationLayer.Interfaces
 
         Task<SensorTrendResponseDTO> GetSensorTrendsAsync(SensorTrendRequestDTO dto);
 
-        Task<SensorTrendResponseDTO> GetSensorArchiveTrendsAsync(SensorTrendArchiveRequestDTO dto);
+        
     }
 }

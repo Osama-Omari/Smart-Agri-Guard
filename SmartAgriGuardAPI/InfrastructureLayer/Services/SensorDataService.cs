@@ -17,14 +17,12 @@ namespace InfrastructureLayer.Services
         private readonly ISensorDataRepository _sensorDataRepository;
         private readonly IPlantRepository _plantRepository;
         private readonly IMapper _mapper;
-        private readonly ISensorDataArchiveRepository _sensorDataArchiveRepository;
 
-        public SensorDataService(ISensorDataRepository sensorDataRepository, IPlantRepository plantRepository,IMapper mapper,ISensorDataArchiveRepository sensorDataArchiveRepository)
+        public SensorDataService(ISensorDataRepository sensorDataRepository, IPlantRepository plantRepository,IMapper mapper)
         {
             _sensorDataRepository = sensorDataRepository;
             _plantRepository = plantRepository;
             _mapper = mapper;
-            _sensorDataArchiveRepository = sensorDataArchiveRepository;
         }
 
         public async Task AddSensorData(Guid plantId, SensorDataRegisterDTO dto)
@@ -70,12 +68,6 @@ namespace InfrastructureLayer.Services
                 return null;
             return _mapper.Map<SensorDataDTO>(sensorData);
 
-
-        }
-
-        public Task<SensorTrendResponseDTO> GetSensorArchiveTrendsAsync(SensorTrendArchiveRequestDTO dto)
-        {
-            var data =  _sensorDataArchiveRepository.GetByPlantIdAndDateRangeAsync(dto.PlantId, dto.StartDate, dto.EndDate);
 
         }
 
