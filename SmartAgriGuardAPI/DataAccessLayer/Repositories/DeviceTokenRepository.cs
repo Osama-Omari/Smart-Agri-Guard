@@ -41,12 +41,13 @@ namespace DataAccessLayer.Repositories
                 .ToListAsync();
         }
 
-        public async Task DeactivateTokenAsync(Guid id) //sofrt delete
+        public async Task DeactivateTokenAsync(Guid id) //soft delete
         {
             var token = await _context.DeviceTokens.FindAsync(id);
             if (token != null)
             {
                 token.IsActive = false;
+                token.LastUpdated = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
         }
@@ -60,6 +61,22 @@ namespace DataAccessLayer.Repositories
                 _context.DeviceTokens.Remove(token);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public Task<DeviceToken?> GetTokenByValueAsync(string token)
+        {
+            try
+            {
+                return _context.DeviceTokens
+                    .Include(dt => dt.User)
+                    .FirstOrDefaultAsync(dt => dt.Token == token);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving token by value", ex);
+            }
+            
         }
     }
 }

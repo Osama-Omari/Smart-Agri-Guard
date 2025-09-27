@@ -245,6 +245,18 @@ namespace DataAccessLayer.Data
                     .WithMany(e => e.DeviceTokens)
                     .HasForeignKey(e => e.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(e => e.DeviceType)
+                    .IsRequired()
+                    .HasMaxLength(100);
+                entity.Property(e => e.DeviceModel)
+                    .HasMaxLength(200);
+                entity.Property(e => e.CreatedAt)
+                    .IsRequired();
+                entity.Property(e => e.LastUpdated);
+                entity.Property(e => e.IsActive)
+                    .IsRequired();
+
             });
 
             modelBuilder.Entity<Prediction>(entity =>

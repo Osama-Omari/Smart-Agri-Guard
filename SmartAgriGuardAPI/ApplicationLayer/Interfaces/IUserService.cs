@@ -31,6 +31,8 @@ namespace ApplicationLayer.Interfaces
 
         Task ChangePasswordAsync(ChangePasswordDTO dto, Guid userId);
 
+        Task LogoutAsync(LogoutRequestDTO logoutRequestDTO);
+
 
     }
 }

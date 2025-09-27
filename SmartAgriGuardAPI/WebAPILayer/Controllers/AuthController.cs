@@ -3,6 +3,7 @@ using ApplicationLayer.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace WebAPILayer.Controllers
 {
@@ -28,7 +29,7 @@ namespace WebAPILayer.Controllers
 
             try
             {
-                if(await _userService.isUserNameExists(dto.UserName))
+                if (await _userService.isUserNameExists(dto.UserName))
                 {
                     return BadRequest("UserName Already Exist");
                 }
@@ -42,7 +43,7 @@ namespace WebAPILayer.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
-            
+
         }
 
         [HttpPost("Register-Farmer/{GreehouseId}")]
@@ -117,9 +118,33 @@ namespace WebAPILayer.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
         }
+
+
+        [Authorize]
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDTO dto)
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+
+                var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Guid.TryParse(userIdString, out Guid userId);
+                if (userId == Guid.Empty)
+                {
+                    return Unauthorized("Invalid user ID.");
+                }
+                await _userService.LogoutAsync(dto);
+                return Ok("Logged out successfully.");
+
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
     }
-
-
-
 }
 

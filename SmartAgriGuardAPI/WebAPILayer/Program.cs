@@ -77,7 +77,7 @@ namespace WebAPILayer
             builder.Services.AddScoped<ISensorDataArchiveRepository, SensorDataArchiveRepository>();
             builder.Services.AddScoped<IPlantRepository,PlantRepository>();
             builder.Services.AddScoped<IPlantTypeRepository,PlantTypeRepository>();
-            builder.Services.AddScoped<DeviceTokenRepository,DeviceTokenRepository>();
+            builder.Services.AddScoped<IDeviceTokenRepository,DeviceTokenRepository>();
             builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             builder.Services.AddScoped<IFarmerPlantRepository,FarmerPlantRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
@@ -88,6 +88,7 @@ namespace WebAPILayer
             builder.Services.AddScoped<IFarmerPlantService, FarmerPlantService>();
             builder.Services.AddScoped<ISensorDataArchiveService, SensorDataArchiveService>();
             builder.Services.AddScoped<ISensorDataService, SensorDataService>();
+
 
 
             

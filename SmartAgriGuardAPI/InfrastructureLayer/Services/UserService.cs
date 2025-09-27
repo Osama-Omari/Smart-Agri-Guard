@@ -8,6 +8,7 @@ using DataAccessLayer.Interfaces;
 using ApplicationLayer.Interfaces;
 using AutoMapper;
 using DataAccessLayer.Models;
+using System.Security.AccessControl;
 
 namespace InfrastructureLayer.Services
 {
@@ -20,10 +21,11 @@ namespace InfrastructureLayer.Services
         private readonly IGreenhouseRepository _greenhouseRepository;
         private readonly IPlantRepository _plantRepository;
         private readonly IFarmerPlantRepository _farmerPlantRepository;
+        private readonly IDeviceTokenRepository _deviceTokenRepository;
 
 
         public UserService(IUserRepository userRepository,IMapper mapper, IPasswordHasherService passwordHasherService , IUserRoleRepository userRoleRepository, IGreenhouseRepository greenhouseRepository,
-            IPlantRepository plantRepository, IFarmerPlantRepository farmerPlantRepository)
+            IPlantRepository plantRepository, IFarmerPlantRepository farmerPlantRepository,IDeviceTokenRepository deviceTokenRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -32,6 +34,7 @@ namespace InfrastructureLayer.Services
             _greenhouseRepository = greenhouseRepository;
             _plantRepository = plantRepository;
             _farmerPlantRepository = farmerPlantRepository;
+            _deviceTokenRepository = deviceTokenRepository;
         }
         public async Task<UserDTO?> Authenticate(UserLoginDTO loginDTO)
         {
@@ -40,6 +43,25 @@ namespace InfrastructureLayer.Services
                 return null;
             if (_passwordHasherService.VerifyPasswordHash(loginDTO.Password, loginDTO.UserName, user.PasswordHash) == false)
                 return null;
+
+            if(!string.IsNullOrEmpty(loginDTO.DeviceToken))
+            {
+               var existingToken = user.DeviceTokens.FirstOrDefault(t => t.Token == loginDTO.DeviceToken);
+                if (existingToken == null)
+                {
+                    user.DeviceTokens.Add(new DeviceToken { Token = loginDTO.DeviceToken, UserId = user.Id, CreatedAt = DateTime.UtcNow,
+                        DeviceType = loginDTO.DeviceType,DeviceModel = loginDTO.DeviceModel,IsActive = true, LastUpdated = DateTime.UtcNow });
+                    await _userRepository.UpdateUserAsync(user);
+
+
+                }
+                else
+                {
+                    existingToken.IsActive = true;
+                    existingToken.LastUpdated = DateTime.UtcNow;
+                    await _userRepository.UpdateUserAsync(user);
+                }
+            }    
 
             return _mapper.Map<UserDTO>(user);
         }
@@ -103,6 +125,14 @@ namespace InfrastructureLayer.Services
             }
             return true;
 
+        }
+
+        public async Task LogoutAsync(LogoutRequestDTO logoutRequestDTO)
+        {
+            var deviceToken = await _deviceTokenRepository.GetTokenByValueAsync(logoutRequestDTO.DeviceToken);
+            if(deviceToken == null)
+                throw new Exception("Device token not found");
+            await _deviceTokenRepository.DeactivateTokenAsync(deviceToken.Id);
         }
 
         public async Task RegisterAdmin(AdminRegisterDTO adminRegisterDTO)

@@ -7,5 +7,6 @@ namespace WebAPILayer.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
+
     }
 }

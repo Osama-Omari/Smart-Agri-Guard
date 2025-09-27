@@ -12,6 +12,8 @@ namespace DataAccessLayer.Interfaces
         Task AddTokenAsync(DeviceToken deviceToken);
         Task<DeviceToken?> GetTokenByIdAsync(Guid id);
         Task<List<DeviceToken>> GetTokensByUserIdAsync(Guid userId);
+
+        Task<DeviceToken?> GetTokenByValueAsync(string token);
         Task DeactivateTokenAsync(Guid id);
         Task DeleteTokenAsync(Guid id);
     }
