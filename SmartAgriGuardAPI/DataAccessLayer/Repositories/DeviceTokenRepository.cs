@@ -19,7 +19,7 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
-        
+
         public async Task AddTokenAsync(DeviceToken deviceToken)
         {
             await _context.DeviceTokens.AddAsync(deviceToken);
@@ -33,7 +33,7 @@ namespace DataAccessLayer.Repositories
                 .FirstOrDefaultAsync(dt => dt.Id == id);
         }
 
-        
+
         public async Task<List<DeviceToken>> GetTokensByUserIdAsync(Guid userId)//all tokens for user
         {
             return await _context.DeviceTokens
@@ -76,7 +76,42 @@ namespace DataAccessLayer.Repositories
             {
                 throw new Exception("Error retrieving token by value", ex);
             }
-            
+
+        }
+
+        public async Task DeleteTokensAsync(Guid[] ids)
+        {
+            try
+            {
+                var tokens = await _context.DeviceTokens
+                    .Where(dt => ids.Contains(dt.Id))
+                    .ToListAsync();
+                if (tokens.Any())
+                {
+                    _context.DeviceTokens.RemoveRange(tokens);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting tokens {ex.Message}");
+            }
+        }
+
+        public async Task<List<Guid>> GetOldTokenIdsAsync(DateTime cutoffDate)
+        {
+            try
+            {
+                return await _context.DeviceTokens
+                    .Where(dt => dt.LastUpdated < cutoffDate)
+                    .Select(dt => dt.Id)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving old tokens: { ex.Message } ");
+            }
+
         }
     }
 }

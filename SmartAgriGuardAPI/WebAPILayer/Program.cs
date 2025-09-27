@@ -7,6 +7,7 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using InfrastructureLayer.BackgroundServices;
 using InfrastructureLayer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -88,10 +89,9 @@ namespace WebAPILayer
             builder.Services.AddScoped<IFarmerPlantService, FarmerPlantService>();
             builder.Services.AddScoped<ISensorDataArchiveService, SensorDataArchiveService>();
             builder.Services.AddScoped<ISensorDataService, SensorDataService>();
+            builder.Services.AddHostedService<DeviceTokenCleanupService>();
 
 
-
-            
 
 
             var app = builder.Build();
