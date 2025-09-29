@@ -90,6 +90,10 @@ namespace WebAPILayer
             builder.Services.AddScoped<ISensorDataArchiveService, SensorDataArchiveService>();
             builder.Services.AddScoped<ISensorDataService, SensorDataService>();
             builder.Services.AddHostedService<DeviceTokenCleanupService>();
+            builder.Services.AddScoped<IReportServcie, ReportServcie>();
+            builder.Services.AddScoped<PdfReportStrategy>();
+            builder.Services.AddScoped<ExcelReportStrategy>();
+
 
 
 
