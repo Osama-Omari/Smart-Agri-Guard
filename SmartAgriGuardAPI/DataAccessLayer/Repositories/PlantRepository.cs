@@ -78,11 +78,14 @@ namespace DataAccessLayer.Repositories
 
         }
 
-        public async Task<Plant> GetPlantWithFarmerPlant(Guid plantId)
+        public async Task<Plant?> GetPlantWithFarmerPlant(Guid plantId)
         {
             try
             {
-                return await _context.Plants.Include(fp=>fp.FarmerPlants).FirstOrDefaultAsync(x=>x.Id == plantId);
+                return await _context.Plants.Include(fp=>fp.FarmerPlants)
+                    .ThenInclude(fp=>fp.Farmer)
+                    .Include(p=>p.Greenhouse)
+                    .FirstOrDefaultAsync(x=>x.Id == plantId);
             }
             catch(Exception ex) { throw new Exception(ex.Message); }    
         }

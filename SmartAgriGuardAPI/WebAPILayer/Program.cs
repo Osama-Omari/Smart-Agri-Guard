@@ -93,6 +93,7 @@ namespace WebAPILayer
             builder.Services.AddScoped<IReportServcie, ReportServcie>();
             builder.Services.AddScoped<PdfReportStrategy>();
             builder.Services.AddScoped<ExcelReportStrategy>();
+            builder.Services.AddScoped<INotificationService, FirebaseNotificationService>();
 
 
 

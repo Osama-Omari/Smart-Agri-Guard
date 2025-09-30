@@ -18,7 +18,7 @@ namespace DataAccessLayer.Interfaces
 
         Task DeleteAsync(Guid plantId);
 
-        Task<Plant> GetPlantWithFarmerPlant(Guid plantId);
+        Task<Plant?> GetPlantWithFarmerPlant(Guid plantId);
 
         Task<List<Plant>> GetAssignedPlantsByFarmerIdAsync(Guid farmerId);
     }
