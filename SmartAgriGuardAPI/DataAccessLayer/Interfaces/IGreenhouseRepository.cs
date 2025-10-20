@@ -9,7 +9,8 @@ namespace DataAccessLayer.Interfaces
 {
     public interface IGreenhouseRepository
     {
-        Task<Greenhouse?> GetGreenhouseById(Guid id);            
+        Task<Greenhouse?> GetGreenhouseById(Guid id);  
+        Task<List<Greenhouse>?> GetGreenhousesByManagerIdAsync(Guid managerId);
         Task<List<Greenhouse>> GetAllAsync();                    
         Task AddAsync(Greenhouse greenhouse);                   
         Task UpdateAsync(Greenhouse greenhouse);                

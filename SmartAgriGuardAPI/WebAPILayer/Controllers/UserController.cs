@@ -73,7 +73,7 @@ namespace WebAPILayer.Controllers
                 Guid.TryParse(UserIdString, out Guid userId);
                 if (userId == Guid.Empty)
                 {
-                    return Unauthorized("Invalid farmer ID.");
+                    return Unauthorized("Invalid user ID.");
                 }
 
                 var user = await _userService.UpdateUserAsync(dto,userId);

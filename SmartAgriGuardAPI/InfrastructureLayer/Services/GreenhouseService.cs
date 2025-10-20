@@ -90,6 +90,15 @@ namespace InfrastructureLayer.Services
             return _mapper.Map<GreenhouseDTO>(greenhouse);
         }
 
+        public async Task<List<GreenhouseDTO>> GetGreenhousesByManagerIdAsync(Guid managerId)
+        {
+            var greenhouses = await _greenhouseRepository.GetGreenhousesByManagerIdAsync(managerId);
+            if (greenhouses == null || !greenhouses.Any())
+                return null;
+            return _mapper.Map<List<GreenhouseDTO>>(greenhouses);
+
+        }
+
         public async Task UnAssignManagerAsync(Guid GreenhouseId)
         {
             var greenhouse = await _greenhouseRepository.GetGreenhouseById(GreenhouseId);

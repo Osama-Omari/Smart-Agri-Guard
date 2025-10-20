@@ -21,5 +21,7 @@ namespace ApplicationLayer.Interfaces
         Task DeleteGreenhouseAsync(Guid id);
 
         Task UpdateGreenhouseAsync(Guid id, GreenhouseUpdateDTO dto);
+
+        Task<List<GreenhouseDTO>> GetGreenhousesByManagerIdAsync(Guid managerId);
     }
 }

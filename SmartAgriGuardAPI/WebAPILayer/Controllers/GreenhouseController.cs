@@ -189,7 +189,30 @@ namespace WebAPILayer.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
-        }   
+        }
+
+        [HttpGet("Assigned-Greenhouses")]
+        [Authorize(Roles = "Manager,Admin")]
+        public async Task<IActionResult> GetAssignedGreenhouses()
+        {
+            try
+            {
+                var managerIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+                if (managerIdClaim == null)
+                {
+                    return Unauthorized("Manager ID claim not found.");
+                }
+                Guid managerId = Guid.Parse(managerIdClaim.Value);
+                var greenhouses = await _greenhouseService.GetGreenhousesByManagerIdAsync(managerId);
+                return Ok(greenhouses);
+
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 
 }

@@ -69,6 +69,23 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task<List<Greenhouse>?> GetGreenhousesByManagerIdAsync(Guid managerId)
+        {
+            try
+            {
+                return  await _context.Greenhouses
+                    .Where(g => g.ManagerId == managerId)
+                    .Include(g => g.Plants)
+                    .Include(g => g.Farmers)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while retriving greenhouse by manager id: {ex.Message}");
+
+            }
+        }
+
         public async Task UpdateAsync(Greenhouse greenhouse)
         {
             try
