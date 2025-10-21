@@ -18,7 +18,7 @@ namespace WebAPILayer.Controllers
             _reportService = reportService;
         }
 
-        [HttpGet("Generate")]
+        [HttpPost("Generate")]
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> GenerateReport([FromBody] ReportRequestDTO dto)
         {

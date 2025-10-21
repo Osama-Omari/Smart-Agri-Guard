@@ -86,10 +86,10 @@ namespace WebAPILayer.Controllers
         {
             try
             {
-                var greenhouses = await _plantService.GetAllGreenhousePlants(GreenhouseId);
-                if(greenhouses == null)
+                var plants = await _plantService.GetAllGreenhousePlants(GreenhouseId);
+                if(plants == null)
                     return NotFound();
-                return Ok(greenhouses);
+                return Ok(plants);
 
             }
             catch (Exception ex)

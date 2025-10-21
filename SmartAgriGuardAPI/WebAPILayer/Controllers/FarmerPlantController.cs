@@ -17,7 +17,7 @@ namespace WebAPILayer.Controllers
         }
 
         [HttpGet("{farmerId}")]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager,Farmer")]
         public async Task<IActionResult> GetAssignedPlantsForFarmer([FromRoute] Guid farmerId)
         {
             try
