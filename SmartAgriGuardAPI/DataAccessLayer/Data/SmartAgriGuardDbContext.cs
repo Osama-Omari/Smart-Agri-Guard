@@ -36,6 +36,10 @@ namespace DataAccessLayer.Data
 
         public DbSet<PlantType> PlantTypes { get; set; }
 
+        public DbSet<PlantNotifications> PlantNotifications { get; set; }
+
+        public DbSet<SystemReports> SystemReports { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,6 +62,52 @@ namespace DataAccessLayer.Data
                     .HasForeignKey(e => e.UserRoleId)
                     .OnDelete(DeleteBehavior.Restrict);
 
+            });
+
+            modelBuilder.Entity<PlantNotifications>(entity =>
+            {
+                entity.ToTable("PlantNotifications");
+                entity.HasKey(e => e.Id);
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+                entity.Property(e => e.TriggerType)
+                    .IsRequired()
+                    .HasMaxLength(100);
+                entity.Property(e => e.Message)
+                    .IsRequired()
+                    .HasMaxLength(500);
+                entity.Property(e => e.NotificationDate)
+                    .IsRequired();
+                entity.Property(e => e.IsRead)
+                    .IsRequired();
+                entity.HasOne(e => e.Plant)
+                    .WithMany(e=> e.PlantNotifications)
+                    .HasForeignKey(e => e.PlantId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<SystemReports>(entity =>
+            {
+                entity.ToTable("SystemReports");
+                entity.HasKey(e => e.Id);
+                entity.Property(u => u.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+                entity.Property(e => e.ErrorType)
+                    .IsRequired()
+                    .HasMaxLength(100);
+                entity.Property(e => e.IsRead)
+                    .IsRequired();
+                entity.Property(e => e.Message)
+                    .IsRequired()
+                    .HasMaxLength(1000);
+                entity.Property(e => e.ReportDate)
+                    .IsRequired();
+                entity.HasOne(e => e.Greenhouse)
+                    .WithMany(e=>e.SystemReports)
+                    .HasForeignKey(e => e.GreenhouseId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<User>(entity =>

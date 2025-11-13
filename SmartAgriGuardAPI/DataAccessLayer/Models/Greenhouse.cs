@@ -20,6 +20,8 @@ namespace DataAccessLayer.Models
 
         public User Manager { get; set; }
 
+        public List<SystemReports> SystemReports { get; set; }
+
         public List<Plant> Plants { get; set; }
 
         public List<User> Farmers { get; set; }

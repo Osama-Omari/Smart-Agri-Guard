@@ -94,6 +94,8 @@ namespace WebAPILayer
             builder.Services.AddScoped<PdfReportStrategy>();
             builder.Services.AddScoped<ExcelReportStrategy>();
             builder.Services.AddScoped<INotificationService, FirebaseNotificationService>();
+            builder.Services.AddScoped<IPlantNotificationsRepository, PlantNotificationsRepository>();
+            builder.Services.AddScoped<ISystemReportsRepository, SystemReportsRepository>();
 
 
 

@@ -4,6 +4,7 @@ using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(SmartAgriGuardDbContext))]
-    partial class SmartAgriGuardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251113190552_addingTables")]
+    partial class addingTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -353,9 +356,6 @@ namespace DataAccessLayer.Migrations
                     b.Property<Guid>("GreenhouseId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -486,7 +486,7 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("DataAccessLayer.Models.PlantNotifications", b =>
                 {
                     b.HasOne("DataAccessLayer.Models.Plant", "Plant")
-                        .WithMany("PlantNotifications")
+                        .WithMany()
                         .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -541,7 +541,7 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("DataAccessLayer.Models.SystemReports", b =>
                 {
                     b.HasOne("DataAccessLayer.Models.Greenhouse", "Greenhouse")
-                        .WithMany("SystemReports")
+                        .WithMany()
                         .HasForeignKey("GreenhouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -572,15 +572,11 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Farmers");
 
                     b.Navigation("Plants");
-
-                    b.Navigation("SystemReports");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.Plant", b =>
                 {
                     b.Navigation("FarmerPlants");
-
-                    b.Navigation("PlantNotifications");
 
                     b.Navigation("Predictions");
 
