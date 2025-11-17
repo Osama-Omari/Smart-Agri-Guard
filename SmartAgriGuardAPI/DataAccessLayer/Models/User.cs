@@ -24,11 +24,11 @@ namespace DataAccessLayer.Models
 
         public Greenhouse Greenhouse { get; set; }
 
-        public List<Greenhouse>? ManagedGreenhouses { get; set; }
+        public List<Greenhouse>? ManagedGreenhouses { get; set; } = new List<Greenhouse>();
 
-        public List<FarmerPlant> FarmerPlants { get; set; }
+        public List<FarmerPlant> FarmerPlants { get; set; } = new List<FarmerPlant>();
 
-        public List<DeviceToken> DeviceTokens { get; set; }
+        public List<DeviceToken> DeviceTokens { get; set; } = new List<DeviceToken>();
 
 
 

@@ -89,7 +89,7 @@ namespace WebAPILayer.Controllers
                     ImagePath = imagePath
                 };
                 var result = await _greenhouseService.AddGreenhouse(greenhouseRegisterDTO);
-                return Ok(result);
+                return Ok("The greenhhouse registered successfully");
 
             }
             catch (Exception ex)
@@ -192,7 +192,7 @@ namespace WebAPILayer.Controllers
         }
 
         [HttpGet("Assigned-Greenhouses")]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> GetAssignedGreenhouses()
         {
             try

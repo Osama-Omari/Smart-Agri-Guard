@@ -1,5 +1,6 @@
 ﻿using ApplicationLayer.DTOs;
 using ApplicationLayer.Interfaces;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +36,7 @@ namespace WebAPILayer.Controllers
                 }
 
                 var user = await _userService.RegisterManager(dto);
-                return Ok(user);
+                return Ok("The manager registered successfully");
 
 
             }
@@ -61,7 +62,7 @@ namespace WebAPILayer.Controllers
                 }
 
                 var user = await _userService.RegisterFarmer(dto, GreehouseId);
-                return Ok(user);
+                return Ok("The farmer registered successfully");
 
 
             }

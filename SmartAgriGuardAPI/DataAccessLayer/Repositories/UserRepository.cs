@@ -28,7 +28,7 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                return await _context.Users.Include(x=>x.UserRole).FirstOrDefaultAsync(x => x.username == username);
+                return await _context.Users.Include(x=>x.UserRole).Include(u=>u.DeviceTokens).FirstOrDefaultAsync(x => x.username == username);
             }
             catch (Exception ex)
             {

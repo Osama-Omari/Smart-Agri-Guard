@@ -14,7 +14,8 @@ namespace ApplicationLayer.MappingProfiles
     {
         public SensorDataMappingProfile() {
 
-            CreateMap<SensorDataDTO, DataAccessLayer.Models.SensorData>();
+            CreateMap<SensorData, SensorDataDTO>();
+
 
             CreateMap<SensorData, SensorReadingMultiDto>();
 
