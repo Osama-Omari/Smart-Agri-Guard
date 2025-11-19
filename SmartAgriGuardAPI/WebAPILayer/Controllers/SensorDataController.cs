@@ -21,7 +21,7 @@ namespace WebAPILayer.Controllers
         }
 
         [HttpPost("Add/{plantId}")]
-        //[ApiKeyAuth]
+        [ApiKeyAuth]
         public async Task<IActionResult> AddSensorData(Guid plantId, [FromBody] SensorDataRegisterDTO dto)
         {
             try
