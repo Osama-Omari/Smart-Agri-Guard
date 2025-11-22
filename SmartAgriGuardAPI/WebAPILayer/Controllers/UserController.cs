@@ -45,6 +45,21 @@ namespace WebAPILayer.Controllers
             }
         }
 
+        [HttpGet("AllManagers")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllManagers()
+        {
+            try
+            {
+                var managers = await _userService.GetAllManagersAsync();
+                return Ok(managers);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpDelete("DeleteManager/{managerId}")]
         [Authorize(Roles = "Admin")]    
         public async Task<IActionResult> DeleteManager(Guid managerId)

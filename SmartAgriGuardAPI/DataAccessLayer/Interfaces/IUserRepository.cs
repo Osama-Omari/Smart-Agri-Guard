@@ -21,6 +21,8 @@ namespace DataAccessLayer.Interfaces
 
         Task<User?> GetManagerById(Guid managerId);
 
+        Task<List<User>> GetAllManagersAsync();
+
 
     }
 }

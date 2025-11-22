@@ -100,6 +100,12 @@ namespace InfrastructureLayer.Services
             await _userRepository.DeleteUserAsync(managerId);
         }
 
+        public async Task<List<ManagerDTO>> GetAllManagersAsync()
+        {
+            var managers = await _userRepository.GetAllManagersAsync();
+            return _mapper.Map<List<ManagerDTO>>(managers);
+        }
+
         public async Task<FarmerDTO> GetFarmer(Guid farmerId)
         {
             var farmer = await _userRepository.GetFarmerWithPlants(farmerId);

@@ -113,6 +113,22 @@ namespace DataAccessLayer.Repositories
                 throw new Exception($"Error while getting manager by id: {ex.Message}");
             }
         }
+
+        public async Task<List<User>> GetAllManagersAsync()
+        {
+            try
+            {
+                return await _context.Users
+                .Include(u => u.UserRole)
+                .Include(u => u.ManagedGreenhouses)
+                .Where(u => u.UserRole.Name == "Manager")
+                .ToListAsync();
+
+            }
+            catch (Exception ex) {
+                throw new Exception($"Error while getting all managers : {ex.Message}");
+                    }
+        }
     }
     
 }

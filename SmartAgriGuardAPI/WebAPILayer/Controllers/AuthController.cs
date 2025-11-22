@@ -112,7 +112,7 @@ namespace WebAPILayer.Controllers
                     return Unauthorized("Invalid username or password");
                 }
                 var token = _jwtService.GenerateToken(user);
-                return Ok(new { Token = token, User = user });
+                return new JsonResult(new { Token = token, User = user });
             }
             catch (Exception ex)
             {

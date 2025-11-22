@@ -33,6 +33,8 @@ namespace ApplicationLayer.Interfaces
 
         Task LogoutAsync(LogoutRequestDTO logoutRequestDTO);
 
+        Task<List<ManagerDTO>> GetAllManagersAsync();
+
 
     }
 }

@@ -16,6 +16,8 @@ namespace ApplicationLayer.DTOs
 
         public Guid GreenhouseId { get; set; }
 
+        //public List<string>? AssignedPlantsNames { get; set; }
+
 
     }
 }

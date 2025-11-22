@@ -5,13 +5,13 @@ using InfrastructureLayer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebAPILayer.RequestDTO;
 
 namespace WebAPILayer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class GreenhouseController : ControllerBase
     {
         private readonly IFileStorageService _fileStorageService;
@@ -26,6 +26,8 @@ namespace WebAPILayer.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> GetGreenhouseById(Guid Id)
         {
             try
@@ -43,6 +45,8 @@ namespace WebAPILayer.Controllers
 
 
         [HttpGet("All")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> GetAllGreenhouses()
         {
             try
@@ -63,6 +67,8 @@ namespace WebAPILayer.Controllers
 
 
         [HttpPost("Add")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> CreateGreenhouse([FromForm] CreateGreenhouseRequestDTO dto)
         {
             if (!ModelState.IsValid)
@@ -101,6 +107,8 @@ namespace WebAPILayer.Controllers
 
 
         [HttpPatch("Assign-Manager/{ManagerId}/{GreenhouseId}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> AssignManagerToGreenhouse(Guid ManagerId, Guid GreenhouseId)
         {
             try
@@ -120,6 +128,8 @@ namespace WebAPILayer.Controllers
 
 
         [HttpPatch("UnAssign-Manager/{GreenhouseId}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> UnAssignManager([FromRoute] Guid GreenhouseId)
         {
             try
@@ -135,6 +145,8 @@ namespace WebAPILayer.Controllers
 
 
         [HttpDelete("Delete/{id}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DeleteGreenhouse(Guid id)
         {
             try
@@ -153,6 +165,8 @@ namespace WebAPILayer.Controllers
         }
 
         [HttpPut("Update/{id}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> UpdateGreenhouse([FromRoute] Guid id, [FromForm] UpdateGreenhouseRequestDTO dto)
         {
             if (!ModelState.IsValid)
@@ -193,16 +207,17 @@ namespace WebAPILayer.Controllers
 
         [HttpGet("Assigned-Greenhouses")]
         [Authorize(Roles = "Manager")]
+
         public async Task<IActionResult> GetAssignedGreenhouses()
         {
             try
             {
-                var managerIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
-                if (managerIdClaim == null)
+                var UserIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Guid.TryParse(UserIdString, out Guid managerId);
+                if (managerId == Guid.Empty)
                 {
-                    return Unauthorized("Manager ID claim not found.");
+                    return Unauthorized("Invalid manager ID.");
                 }
-                Guid managerId = Guid.Parse(managerIdClaim.Value);
                 var greenhouses = await _greenhouseService.GetGreenhousesByManagerIdAsync(managerId);
                 return Ok(greenhouses);
 
@@ -213,6 +228,28 @@ namespace WebAPILayer.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
         }
+
+
+
+
+        [HttpGet("Farmers/{Id}")]
+        [Authorize(Roles = "Manager")]
+
+        public async Task<IActionResult> GetGreenhouseFarmers(Guid Id)
+        {
+            try
+            {
+                var farmers = await _greenhouseService.GetFarmersByGreenhouseIdAsync(Id);
+                if(farmers  == null)
+                    return NotFound("No farmers found for this greenhouse.");
+                return Ok(farmers);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+        
     }
 
 }

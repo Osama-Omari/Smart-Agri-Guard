@@ -28,6 +28,8 @@ namespace DataAccessLayer.Repositories
             catch (Exception ex) { throw new Exception($"Error while adding GreenHouse: {ex.Message}"); }
         }
 
+        
+
         public async Task DeleteAsync(Guid id)
         {
             try
@@ -61,6 +63,7 @@ namespace DataAccessLayer.Repositories
                 return await _context.Greenhouses
                     .Include(x=>x.Plants)
                     .Include(x=> x.Farmers)
+                    .ThenInclude(f=> f.FarmerPlants)
                    . FirstOrDefaultAsync(x => x.Id == id)
                     ;
             }

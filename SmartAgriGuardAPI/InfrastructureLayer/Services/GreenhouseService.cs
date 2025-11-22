@@ -82,6 +82,17 @@ namespace InfrastructureLayer.Services
             
         }
 
+        public async Task<List<FarmerDTO>> GetFarmersByGreenhouseIdAsync(Guid greenhouseId)
+        {
+            var greenhouse = await _greenhouseRepository.GetGreenhouseById(greenhouseId);
+            if(greenhouse == null)
+                throw new KeyNotFoundException("greenhouse not found");
+            if (greenhouse.Farmers == null || !greenhouse.Farmers.Any())
+                return null;
+            return _mapper.Map<List<FarmerDTO>>(greenhouse.Farmers);
+
+        }
+
         public async Task<GreenhouseDTO> GetGreenhouseById(Guid id)
         {
             var greenhouse = await _greenhouseRepository.GetGreenhouseById(id);
@@ -89,6 +100,8 @@ namespace InfrastructureLayer.Services
                 throw new KeyNotFoundException("greenhouse not found");
             return _mapper.Map<GreenhouseDTO>(greenhouse);
         }
+
+        
 
         public async Task<List<GreenhouseDTO>> GetGreenhousesByManagerIdAsync(Guid managerId)
         {
@@ -107,6 +120,7 @@ namespace InfrastructureLayer.Services
 
             if (greenhouse.ManagerId == null)
                 throw new Exception("The greenhouse does not have a manager");
+
 
             greenhouse.ManagerId = null;
             await _greenhouseRepository.UpdateAsync(greenhouse);
