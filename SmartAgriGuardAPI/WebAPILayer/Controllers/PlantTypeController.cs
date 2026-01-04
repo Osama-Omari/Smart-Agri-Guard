@@ -6,27 +6,38 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPILayer.Controllers
 {
+    /// <summary>
+    /// Provides administrative endpoints to manage plant types (categories).
+    /// Access is restricted to users with the 'Admin' role.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
     public class PlantTypeController : ControllerBase
     {
         private readonly IPlantTypeService _plantTypeService;
+
         public PlantTypeController(IPlantTypeService plantTypeService)
         {
             _plantTypeService = plantTypeService;
         }
+
+        /// <summary>
+        /// Registers a new plant type in the system.
+        /// </summary>
+        /// <param name="dto">The plant type registration details (e.g., Species name, care requirements).</param>
+        /// <returns>A confirmation message.</returns>
+        /// <response code="200">Plant type created successfully.</response>
+        /// <response code="400">If the data provided is invalid.</response>
         [HttpPost("Add")]
         public async Task<IActionResult> AddPlantType(PlantTypeRegisterDTO dto)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
                 await _plantTypeService.AddPlantType(dto);
                 return Ok("The plantType has been registered successfully");
-
-
             }
             catch (Exception ex)
             {
@@ -34,6 +45,12 @@ namespace WebAPILayer.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves all plant types available in the database.
+        /// </summary>
+        /// <returns>A list of plant types.</returns>
+        /// <response code="200">Returns the list of plant types.</response>
+        /// <response code="404">If no plant types exist.</response>
         [HttpGet("All")]
         public async Task<IActionResult> GetAllPlantTypes()
         {
@@ -50,6 +67,13 @@ namespace WebAPILayer.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates the details of an existing plant type.
+        /// </summary>
+        /// <param name="Id">The unique identifier of the plant type.</param>
+        /// <param name="dto">The updated information.</param>
+        /// <response code="200">Update successful.</response>
+        /// <response code="404">If the specified ID does not exist.</response>
         [HttpPut("Update/{Id}")]
         public async Task<IActionResult> UpdatePlantType([FromRoute] Guid Id, [FromBody] PlantTypeUpdateDTO dto)
         {
@@ -70,6 +94,10 @@ namespace WebAPILayer.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves details for a specific plant type by ID.
+        /// </summary>
+        /// <param name="Id">The GUID of the plant type.</param>
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetPlantTypeById([FromRoute] Guid Id)
         {
@@ -86,7 +114,12 @@ namespace WebAPILayer.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Deletes a plant type from the system.
+        /// </summary>
+        /// <param name="Id">The GUID of the plant type to remove.</param>
+        /// <response code="200">Deletion successful.</response>
+        /// <response code="404">If the plant type was not found.</response>
         [HttpDelete("Delete/{Id}")]
         public async Task<IActionResult> DeletePlantType([FromRoute] Guid Id)
         {
@@ -104,6 +137,5 @@ namespace WebAPILayer.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
     }
 }

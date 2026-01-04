@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
+    /// <summary>
+    /// Repository responsible for managing the classification of plants (Plant Types).
+    /// Handles the lookup and persistence of species categories within the system.
+    /// </summary>
     public class PlantTypeRepository : IPlantTypeRepository
     {
         private readonly SmartAgriGuardDbContext _context;
@@ -19,6 +23,10 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
+        /// <summary>
+        /// Persists a new plant category to the database.
+        /// </summary>
+        /// <param name="plantType">The PlantType entity to add.</param>
         public async Task AddAsync(PlantType plantType)
         {
             try
@@ -27,9 +35,12 @@ namespace DataAccessLayer.Repositories
                 await _context.SaveChangesAsync();
             }
             catch { throw new Exception("Error while adding a new plant type "); }
-            
         }
 
+        /// <summary>
+        /// Removes a plant category from the database.
+        /// </summary>
+        /// <param name="id">The GUID of the plant type.</param>
         public async Task DeleteAsync(Guid id)
         {
             try
@@ -43,10 +54,13 @@ namespace DataAccessLayer.Repositories
             }
             catch
             {
-                throw new Exception("Erreor while deleting the plant type");
+                throw new Exception("Error while deleting the plant type");
             }
         }
 
+        /// <summary>
+        /// Retrieves all plant classifications including the list of plants associated with each type.
+        /// </summary>
         public async Task<List<PlantType>> GetAllAsync()
         {
             try
@@ -57,10 +71,14 @@ namespace DataAccessLayer.Repositories
             }
             catch
             {
-                throw new Exception("error whie getting all plant types");
+                throw new Exception("Error while getting all plant types");
             }
         }
 
+        /// <summary>
+        /// Retrieves a specific plant category by its unique identifier.
+        /// Includes eager loading of the associated Plants collection.
+        /// </summary>
         public async Task<PlantType?> GetByIdAsync(Guid id)
         {
             try
@@ -71,16 +89,21 @@ namespace DataAccessLayer.Repositories
             }
             catch
             {
-                throw new Exception("error while getting plant type");
+                throw new Exception("Error while getting plant type");
             }
         }
 
+        /// <summary>
+        /// Checks if a plant category name already exists in the system.
+        /// Useful for preventing duplicate species entries.
+        /// </summary>
+        /// <param name="name">The name to check (e.g., "Lavender").</param>
+        /// <returns>True if the name exists, otherwise false.</returns>
         public async Task<bool> IsNameExists(string name)
         {
             try
             {
-               return await _context.PlantTypes.AnyAsync(pt => pt.Name == name);
-
+                return await _context.PlantTypes.AnyAsync(pt => pt.Name == name);
             }
             catch (Exception ex)
             {
@@ -88,6 +111,9 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Updates the details (Name or Description) of an existing plant category.
+        /// </summary>
         public async Task UpdateAsync(PlantType plantType)
         {
             try
@@ -96,7 +122,6 @@ namespace DataAccessLayer.Repositories
                 await _context.SaveChangesAsync();
             }
             catch { throw new Exception("Error while updating the plantType"); }
-
         }
     }
 }

@@ -10,14 +10,15 @@ using System.Threading.Tasks;
 
 namespace InfrastructureLayer.Services
 {
+    /// <summary>
+    /// Service responsible for aggregating and preparing data for report generation.
+    /// It intelligently merges real-time sensor data with historical archives based on requested date ranges.
+    /// </summary>
     public class ReportServcie : IReportServcie
     {
         private readonly ISensorDataRepository _sensorDataRepository;
-
         private readonly ISensorDataArchiveRepository _sensorDataArchiveRepository;
-
         private readonly IGreenhouseRepository _greenhouseRepository;
-
         private readonly IPlantRepository _plantRepository;
 
         public ReportServcie(
@@ -32,12 +33,22 @@ namespace InfrastructureLayer.Services
             _plantRepository = plantRepository;
         }
 
+        /// <summary>
+        /// Builds the comprehensive data structure required for a greenhouse report.
+        /// </summary>
+        /// <remarks>
+        /// The logic uses an 'archiveThreshold' (set to 2 months ago). Data is retrieved from 
+        /// either the Live table, the Archive table, or concatenated from both, ensuring 
+        /// report continuity across data migration boundaries.
+        /// </remarks>
+        /// <param name="request">The report parameters including date range and specific plants.</param>
+        /// <returns>A populated ReportDataDTO ready for the reporting strategies (PDF/Excel).</returns>
+        /// <exception cref="ArgumentException">Thrown if the greenhouse ID is invalid.</exception>
         public async Task<ReportDataDTO> BuildReportDataAsync(ReportRequestDTO request)
         {
             var greenhouse = await _greenhouseRepository.GetGreenhouseById(request.GreenhouseId);
             if (greenhouse == null)
                 throw new ArgumentException("Invalid greenhouse ID.");
-
 
             var report = new ReportDataDTO
             {
@@ -45,6 +56,7 @@ namespace InfrastructureLayer.Services
                 SelectedSensorTypes = request.SensorTypes
             };
 
+            // Define the boundary between "Live" data and "Archived" data
             var archiveThreshold = DateTime.UtcNow.AddMonths(-2);
 
             foreach (var plantId in request.PlantIds)
@@ -54,12 +66,13 @@ namespace InfrastructureLayer.Services
 
                 List<SensorData> mergedData = new();
 
-                // Case 1: Entire range in archive
+                // Scenario 1: The entire requested range exists in the Archive storage
                 if (request.EndDate <= archiveThreshold)
                 {
                     var archiveData = await _sensorDataArchiveRepository.GetByPlantIdAndDateRangeAsync(
                         plantId, request.StartDate, request.EndDate);
 
+                    // Manual mapping from Archive Model to SensorData Model for consistency
                     mergedData = archiveData.Select(a => new SensorData
                     {
                         Id = a.Id,
@@ -75,13 +88,13 @@ namespace InfrastructureLayer.Services
                         Timestamp = a.Timestamp
                     }).ToList();
                 }
-                // Case 2: Entire range in live SensorData
+                // Scenario 2: The entire requested range exists in the Live storage
                 else if (request.StartDate >= archiveThreshold)
                 {
                     mergedData = (await _sensorDataRepository.GetByPlantIdAndDateRangeAsync(
                         plantId, request.StartDate, request.EndDate)).ToList();
                 }
-                // Case 3: Range spans both archive and live
+                // Scenario 3: The requested range spans across the threshold (starts in Archive, ends in Live)
                 else
                 {
                     var archiveData = await _sensorDataArchiveRepository.GetByPlantIdAndDateRangeAsync(
@@ -89,6 +102,7 @@ namespace InfrastructureLayer.Services
                     var liveData = await _sensorDataRepository.GetByPlantIdAndDateRangeAsync(
                         plantId, archiveThreshold, request.EndDate);
 
+                    // Map and concatenate both data sources
                     var archiveDataAsSensorData = archiveData.Select(a => new SensorData
                     {
                         Id = a.Id,
@@ -104,9 +118,11 @@ namespace InfrastructureLayer.Services
                         Timestamp = a.Timestamp
                     });
 
+                    // Merge and sort by timestamp to ensure chronological order in the report
                     mergedData = archiveDataAsSensorData.Concat(liveData).OrderBy(d => d.Timestamp).ToList();
                 }
 
+                // Add the processed plant data to the final report collection
                 report.Plants.Add(new PlantReportDTO
                 {
                     PlantId = plantId,
@@ -126,7 +142,6 @@ namespace InfrastructureLayer.Services
             }
 
             return report;
-
         }
     }
 }

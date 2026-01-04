@@ -10,21 +10,29 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
+    /// <summary>
+    /// Repository responsible for persisting and managing plant-specific alerts and notifications.
+    /// Tracks the status (Read/Unread) of environmental warnings for farmers.
+    /// </summary>
     public class PlantNotificationsRepository : IPlantNotificationsRepository
     {
         private readonly SmartAgriGuardDbContext _context;
+
         public PlantNotificationsRepository(SmartAgriGuardDbContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Saves a new notification record to the database.
+        /// </summary>
+        /// <param name="plantNotification">The notification entity to be added.</param>
         public async Task AddAsync(PlantNotifications plantNotification)
         {
             try
             {
                 await _context.PlantNotifications.AddAsync(plantNotification);
                 await _context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
@@ -32,6 +40,10 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Permanently removes a notification from the system.
+        /// </summary>
+        /// <param name="notificationId">The GUID of the notification.</param>
         public async Task DeleteAsync(Guid notificationId)
         {
             try
@@ -46,7 +58,6 @@ namespace DataAccessLayer.Repositories
                 {
                     throw new Exception("Plant notification not found.");
                 }
-
             }
             catch (Exception ex)
             {
@@ -54,6 +65,10 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Retrieves a batch of notifications based on a list of IDs.
+        /// Commonly used for bulk operations like "Mark all as read".
+        /// </summary>
         public async Task<List<PlantNotifications>> GetByIdsAsync(List<Guid> notificationIds)
         {
             try
@@ -68,16 +83,19 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Retrieves all notifications for a specific plant, ordered by the most recent first.
+        /// Includes the related Plant data via Eager Loading.
+        /// </summary>
         public async Task<List<PlantNotifications>> GetByPlantIdAsync(Guid plantId)
         {
             try
             {
                 return await _context.PlantNotifications
                     .Where(n => n.PlantId == plantId)
-                    .OrderByDescending(x=>x.NotificationDate)
+                    .OrderByDescending(x => x.NotificationDate)
                     .Include(n => n.Plant)
                     .ToListAsync();
-
             }
             catch (Exception ex)
             {
@@ -85,6 +103,9 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Updates the status of a specific notification to 'Read'.
+        /// </summary>
         public async Task MarkAsReadAsync(Guid notificationId)
         {
             try
@@ -100,7 +121,6 @@ namespace DataAccessLayer.Repositories
                 {
                     throw new Exception("Plant notification not found.");
                 }
-
             }
             catch (Exception ex)
             {
@@ -108,6 +128,9 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Updates an existing notification record with new information.
+        /// </summary>
         public async Task UpdateAsync(PlantNotifications plantNotifications)
         {
             try
@@ -119,7 +142,6 @@ namespace DataAccessLayer.Repositories
             {
                 throw new Exception("An error occurred while updating the plant notification.", ex);
             }
-
         }
     }
 }

@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
+    /// <summary>
+    /// Repository managing the UserRole entities.
+    /// Provides the data layer for the system's security and authorization levels.
+    /// </summary>
     public class UserRoleRepository : IUserRoleRepository
     {
         private readonly SmartAgriGuardDbContext _context;
@@ -19,6 +23,10 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
+        /// <summary>
+        /// Retrieves a role by its unique name (e.g., "Admin", "Manager").
+        /// Essential for assigning roles during user registration.
+        /// </summary>
         public async Task<UserRole?> GetUserRoleByName(string roleName)
         {
             try
@@ -29,10 +37,13 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while retrieving the user role.", ex);
+                throw new Exception("An error occurred while retrieving the user role by name.", ex);
             }
         }
 
+        /// <summary>
+        /// Fetches a specific user role using its unique GUID.
+        /// </summary>
         public async Task<UserRole?> GetUserRoleByIdAsync(Guid id)
         {
             try
@@ -41,19 +52,25 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception("Error while getting user role by its id");
+                throw new Exception("Error while getting user role by its id", ex);
             }
         }
 
+        /// <summary>
+        /// Returns a list of all defined roles in the system.
+        /// </summary>
         public async Task<List<UserRole>> GetAllUserRolesAsync()
         {
             try
             {
                 return await _context.UserRoles.ToListAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while getting all users"); }
+            catch (Exception ex) { throw new Exception("Error while getting all user roles", ex); }
         }
 
+        /// <summary>
+        /// Adds a new role type to the system.
+        /// </summary>
         public async Task AddUserRoleAsync(UserRole role)
         {
             try
@@ -61,9 +78,12 @@ namespace DataAccessLayer.Repositories
                 await _context.UserRoles.AddAsync(role);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while adding a user role"); }
+            catch (Exception ex) { throw new Exception("Error while adding a user role", ex); }
         }
 
+        /// <summary>
+        /// Updates the name of an existing user role.
+        /// </summary>
         public async Task<UserRole> UpdateUserRoleAsync(UserRole role)
         {
             try
@@ -77,9 +97,12 @@ namespace DataAccessLayer.Repositories
                 await _context.SaveChangesAsync();
                 return existing;
             }
-            catch (Exception ex) { throw new Exception("Error while updating user role"); }
+            catch (Exception ex) { throw new Exception("Error while updating user role", ex); }
         }
 
+        /// <summary>
+        /// Physically removes a role from the database.
+        /// </summary>
         public async Task DeleteUserRoleAsync(Guid id)
         {
             try
@@ -91,7 +114,7 @@ namespace DataAccessLayer.Repositories
                     await _context.SaveChangesAsync();
                 }
             }
-            catch (Exception ex) { throw new Exception("Error while deleting user role "); }
+            catch (Exception ex) { throw new Exception("Error while deleting user role ", ex); }
         }
     }
 }

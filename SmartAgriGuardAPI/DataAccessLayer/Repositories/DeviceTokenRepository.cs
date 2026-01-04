@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
+    /// <summary>
+    /// Repository responsible for managing mobile device tokens used for push notifications.
+    /// Handles registration, deactivation, and maintenance of token data.
+    /// </summary>
     public class DeviceTokenRepository : IDeviceTokenRepository
     {
         private readonly SmartAgriGuardDbContext _context;
@@ -19,21 +23,46 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
-
+        /// <summary>
+        /// Persists a new device token to the database.
+        /// </summary>
+        /// <param name="deviceToken">The token entity to be added.</param>
         public async Task AddTokenAsync(DeviceToken deviceToken)
         {
-            await _context.DeviceTokens.AddAsync(deviceToken);
-            await _context.SaveChangesAsync();
-        }
+            try
+            {
+                await _context.DeviceTokens.AddAsync(deviceToken);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error adding device token", ex);
+            }
+            }
 
+        /// <summary>
+        /// Retrieves a specific token by its unique identifier, including associated User data.
+        /// </summary>
+        /// <param name="id">The GUID of the token record.</param>
+        /// <returns>The DeviceToken if found; otherwise, null.</returns>
         public async Task<DeviceToken?> GetTokenByIdAsync(Guid id)
         {
+            try { 
             return await _context.DeviceTokens
                 .Include(dt => dt.User)
                 .FirstOrDefaultAsync(dt => dt.Id == id);
+            }
+            catch (Exception ex) {
+                throw new Exception("Error retrieving token by ID", ex);
+            }
         }
 
-
+        /// <summary>
+        /// Retrieves the most recently updated active token for a specific user.
+        /// </summary>
+        /// <param name="userId">The GUID of the user.</param>
+        /// <returns>The active DeviceToken record.</returns>
+        /// <exception cref="Exception">Thrown if no active token is found for the user.</exception>
         public async Task<DeviceToken> GetTokenByUserIdAsync(Guid userId)
         {
             try
@@ -41,21 +70,25 @@ namespace DataAccessLayer.Repositories
                 var token = await _context.DeviceTokens
                     .OrderByDescending(dt => dt.LastUpdated)
                     .Where(dt => dt.UserId == userId && dt.IsActive)
-                    .FirstOrDefaultAsync(dt => dt.UserId == userId);
+                    .FirstOrDefaultAsync();
+
                 if (token == null)
                 {
                     throw new Exception("Token not found for the specified user ID");
                 }
                 return token;
-
             }
             catch (Exception ex)
             {
                 throw new Exception("Error retrieving token by user ID", ex);
             }
+        }
 
-            }
-
+        /// <summary>
+        /// Performs a soft-delete by deactivating a token instead of removing it.
+        /// Useful for maintaining history or handling temporary logouts.
+        /// </summary>
+        /// <param name="id">The GUID of the token to deactivate.</param>
         public async Task DeactivateTokenAsync(Guid id)
         {
             var token = await _context.DeviceTokens.FindAsync(id);
@@ -67,6 +100,10 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Physically deletes a token record from the database.
+        /// </summary>
+        /// <param name="id">The GUID of the token to delete.</param>
         public async Task DeleteTokenAsync(Guid id)
         {
             var token = await _context.DeviceTokens.FindAsync(id);
@@ -77,22 +114,28 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public Task<DeviceToken?> GetTokenByValueAsync(string token)
+        /// <summary>
+        /// Retrieves a token record using the raw string value (the actual push token).
+        /// </summary>
+        /// <param name="token">The unique string token provided by the mobile device.</param>
+        public async Task<DeviceToken?> GetTokenByValueAsync(string token)
         {
             try
             {
-                return _context.DeviceTokens
+                return await _context.DeviceTokens
                     .Include(dt => dt.User)
                     .FirstOrDefaultAsync(dt => dt.Token == token);
-
             }
             catch (Exception ex)
             {
                 throw new Exception("Error retrieving token by value", ex);
             }
-
         }
 
+        /// <summary>
+        /// Bulk deletes multiple token records.
+        /// </summary>
+        /// <param name="ids">An array of token GUIDs to remove.</param>
         public async Task DeleteTokensAsync(Guid[] ids)
         {
             try
@@ -100,6 +143,7 @@ namespace DataAccessLayer.Repositories
                 var tokens = await _context.DeviceTokens
                     .Where(dt => ids.Contains(dt.Id))
                     .ToListAsync();
+
                 if (tokens.Any())
                 {
                     _context.DeviceTokens.RemoveRange(tokens);
@@ -112,6 +156,12 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Identifies tokens that haven't been updated since a specific date.
+        /// Primarily used for background cleanup tasks to remove stale device data.
+        /// </summary>
+        /// <param name="cutoffDate">The date threshold for staleness.</param>
+        /// <returns>A list of GUIDs for tokens older than the cutoff.</returns>
         public async Task<List<Guid>> GetOldTokenIdsAsync(DateTime cutoffDate)
         {
             try
@@ -123,9 +173,8 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error retrieving old tokens: { ex.Message } ");
+                throw new Exception($"Error retrieving old tokens: {ex.Message} ");
             }
-
         }
     }
 }

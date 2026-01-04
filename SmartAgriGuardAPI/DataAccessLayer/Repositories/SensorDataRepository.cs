@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
+    /// <summary>
+    /// Repository for managing real-time sensor telemetry.
+    /// Optimized for high-frequency inserts and time-sensitive retrieval of environmental metrics.
+    /// </summary>
     public class SensorDataRepository : ISensorDataRepository
     {
         private readonly SmartAgriGuardDbContext _context;
@@ -18,7 +22,12 @@ namespace DataAccessLayer.Repositories
         {
             _context = context;
         }
-        
+
+        /// <summary>
+        /// Records new telemetry data. Automatically assigns a unique ID and a UTC timestamp 
+        /// to ensure data consistency across different sensor hardware.
+        /// </summary>
+        /// <param name="sensorData">The telemetry object containing soil, temperature, and nutrient metrics.</param>
         public async Task<SensorData> AddAsync(SensorData sensorData)
         {
             try
@@ -30,10 +39,12 @@ namespace DataAccessLayer.Repositories
                 await _context.SaveChangesAsync();
                 return sensorData;
             }
-            catch (Exception ex) { throw new Exception("Error while adding sensor"); }
+            catch (Exception ex) { throw new Exception("Error while adding sensor data."); }
         }
 
-       
+        /// <summary>
+        /// Retrieves a specific sensor reading by its ID, including the related Plant profile.
+        /// </summary>
         public async Task<SensorData?> GetByIdAsync(Guid id)
         {
             try
@@ -42,12 +53,12 @@ namespace DataAccessLayer.Repositories
                     .Include(s => s.Plant)
                     .FirstOrDefaultAsync(s => s.Id == id);
             }
-            catch (Exception ex) { throw new Exception("error while getting sensor"); }
-
+            catch (Exception ex) { throw new Exception("Error while retrieving specific sensor record."); }
         }
 
-        
-        
+        /// <summary>
+        /// Retrieves all active telemetry for a specific plant, ordered from newest to oldest.
+        /// </summary>
         public async Task<IEnumerable<SensorData>> GetByPlantIdAsync(Guid plantId)
         {
             try
@@ -58,21 +69,29 @@ namespace DataAccessLayer.Repositories
                     .OrderByDescending(s => s.Timestamp)
                     .ToListAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while gettind a sensor"); }
+            catch (Exception ex) { throw new Exception("Error while retrieving plant telemetry history."); }
         }
 
-
-       
+        /// <summary>
+        /// Prepares a collection of sensor records for removal (e.g., during a data archiving process).
+        /// </summary>
         public void RemoveRange(IEnumerable<SensorData> sensorData)
         {
-             _context.SensorData.RemoveRange(sensorData);
+            _context.SensorData.RemoveRange(sensorData);
         }
 
+        /// <summary>
+        /// Commits all pending telemetry changes to the database.
+        /// </summary>
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Fetches the single most recent reading for a plant. 
+        /// This is the primary query for live monitoring dashboards.
+        /// </summary>
         public Task<SensorData?> GetLatestByPlantIdAsync(Guid plantId)
         {
             try
@@ -82,12 +101,19 @@ namespace DataAccessLayer.Repositories
                     .OrderByDescending(s => s.Timestamp)
                     .FirstOrDefaultAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new Exception($"Error while getting the last sensors data: {ex.Message}");
+                throw new Exception($"Error while getting the latest sensor reading: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Retrieves a time-series window of telemetry data. 
+        /// Essential for rendering trend charts for the last 24-48 hours.
+        /// </summary>
+        /// <param name="plantId">The target plant GUID.</param>
+        /// <param name="startDate">Start of the window (UTC).</param>
+        /// <param name="endDate">End of the window (UTC).</param>
         public async Task<List<SensorData>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTimeOffset startDate, DateTimeOffset endDate)
         {
             try
@@ -99,10 +125,8 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while getting sensors data in range: {ex.Message}");
+                throw new Exception($"Error while retrieving telemetry range: {ex.Message}");
             }
-
         }
     }
 }
-    
