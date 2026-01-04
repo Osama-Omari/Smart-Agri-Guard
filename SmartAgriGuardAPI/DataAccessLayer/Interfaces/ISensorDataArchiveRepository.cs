@@ -14,8 +14,6 @@ namespace DataAccessLayer.Interfaces
         Task<SensorDataArchive?> GetByIdAsync(Guid id);
         Task<List<SensorDataArchive>> GetAllAsync();
         Task<List<SensorDataArchive>> GetByPlantIdAsync(Guid plantId);
-        Task<List<SensorDataArchive>> GetByDateRangeAsync(Guid plantId, DateTime startDate, DateTime endDate);
-
         Task UpdateAsync(SensorDataArchive archive);
 
         Task DeleteAsync(Guid id);

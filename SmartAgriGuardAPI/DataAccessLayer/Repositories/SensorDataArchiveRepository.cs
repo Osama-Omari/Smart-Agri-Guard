@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories
 {
+    /// <summary>
+    /// Repository managing historical sensor telemetry (Archived Data).
+    /// Used for long-term data analysis, reporting, and auditing without slowing down real-time operations.
+    /// </summary>
     public class SensorDataArchiveRepository : ISensorDataArchiveRepository
     {
         private readonly SmartAgriGuardDbContext _context;
@@ -19,16 +23,22 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
-      public async Task AddAsync(SensorDataArchive archive)
+        /// <summary>
+        /// Persists a new archive record to the database.
+        /// </summary>
+        public async Task AddAsync(SensorDataArchive archive)
         {
             try
             {
                 await _context.SensorDataArchives.AddAsync(archive);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex) { throw new Exception("Erroe while adding Sensor Archive"); }
+            catch (Exception ex) { throw new Exception("Error while adding Sensor Archive"); }
         }
 
+        /// <summary>
+        /// Retrieves a specific archive entry by its ID, including the associated Plant metadata.
+        /// </summary>
         public async Task<SensorDataArchive?> GetByIdAsync(Guid id)
         {
             try
@@ -40,6 +50,10 @@ namespace DataAccessLayer.Repositories
             catch (Exception ex) { throw new Exception("Error while getting Sensor Archive by id"); }
         }
 
+        /// <summary>
+        /// Retrieves all archived sensor data entries. 
+        /// Use with caution as this table is expected to be very large.
+        /// </summary>
         public async Task<List<SensorDataArchive>> GetAllAsync()
         {
             try
@@ -51,6 +65,9 @@ namespace DataAccessLayer.Repositories
             catch (Exception ex) { throw new Exception("Error while getting all Sensor Archive "); }
         }
 
+        /// <summary>
+        /// Retrieves the complete sensor history for a specific plant from the archive.
+        /// </summary>
         public async Task<List<SensorDataArchive>> GetByPlantIdAsync(Guid plantId)
         {
             try
@@ -60,21 +77,12 @@ namespace DataAccessLayer.Repositories
                     .Include(a => a.Plant)
                     .ToListAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while getting Sensor Archive by plan id "); }
+            catch (Exception ex) { throw new Exception("Error while getting Sensor Archive by plant id "); }
         }
 
-        public async Task<List<SensorDataArchive>> GetByDateRangeAsync(Guid plantId, DateTime startDate, DateTime endDate)
-        {
-            try
-            {
-                return await _context.SensorDataArchives
-                    .Where(a => a.PlantId == plantId && a.Timestamp >= startDate && a.Timestamp <= endDate)
-                    .Include(a => a.Plant)
-                    .ToListAsync();
-            }
-            catch (Exception ex) { throw new Exception("Error while getting archieve by it date "); }
-        }
-
+        /// <summary>
+        /// Updates an existing archive record.
+        /// </summary>
         public async Task UpdateAsync(SensorDataArchive archive)
         {
             try
@@ -82,9 +90,12 @@ namespace DataAccessLayer.Repositories
                 _context.SensorDataArchives.Update(archive);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while updatig arhieve"); }
+            catch (Exception ex) { throw new Exception("Error while updating archive"); }
         }
 
+        /// <summary>
+        /// Physically removes a specific archive record by ID.
+        /// </summary>
         public async Task DeleteAsync(Guid id)
         {
             try
@@ -96,29 +107,41 @@ namespace DataAccessLayer.Repositories
                     await _context.SaveChangesAsync();
                 }
             }
-            catch (Exception ex) { throw new Exception("Error while deleting archieve"); }
+            catch (Exception ex) { throw new Exception("Error while deleting archive"); }
         }
 
+        /// <summary>
+        /// Prepares a collection of archive records for deletion. 
+        /// Note: Must call SaveChangesAsync() to commit the removal.
+        /// </summary>
         public void RemoveRange(IEnumerable<SensorDataArchive> archives)
         {
             try
             {
                 _context.SensorDataArchives.RemoveRange(archives);
-
             }
-            catch(Exception ex) { throw new Exception(ex.Message); }    
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        /// <summary>
+        /// Commits all pending changes (Add/Update/Delete) to the archive table.
+        /// </summary>
         public async Task SaveChangesAsync()
         {
             try
             {
                 await _context.SaveChangesAsync();
-
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        /// <summary>
+        /// Core query method for historical reporting. Retrieves sensor data for a plant
+        /// within a specific time window, ordered chronologically.
+        /// </summary>
+        /// <param name="plantId">Target plant GUID.</param>
+        /// <param name="startDate">Beginning of the history window.</param>
+        /// <param name="endDate">End of the history window.</param>
         public Task<List<SensorDataArchive>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTimeOffset startDate, DateTimeOffset endDate)
         {
             try
@@ -128,8 +151,7 @@ namespace DataAccessLayer.Repositories
                     .OrderBy(sd => sd.Timestamp)
                     .ToListAsync();
             }
-            catch (Exception ex) { throw new Exception($"Error while getting archieve by it date :{ex.Message}"); }
-
+            catch (Exception ex) { throw new Exception($"Error while getting archive by date range: {ex.Message}"); }
         }
     }
 }
