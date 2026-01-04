@@ -13,9 +13,7 @@ namespace ApplicationLayer.DTOs
 
         public string Location { get; set; }
 
-        public List<FarmerDTO> Farmers { get; set; }
-
-        public List<PlantDTO> Plants { get; set; }
+        public string ? ImagePath { get; set; }
 
     }
 }

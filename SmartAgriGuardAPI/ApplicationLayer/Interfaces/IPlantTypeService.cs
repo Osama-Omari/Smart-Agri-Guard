@@ -17,5 +17,7 @@ namespace ApplicationLayer.Interfaces
 
         Task<PlantTypeDTO> GetPlantTypeById(Guid Id);
 
+        Task DeletePlantType(Guid Id);
+
     }
 }

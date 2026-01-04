@@ -28,17 +28,17 @@ namespace WebAPILayer.Controllers
             }
             try
             {
-                var reportData = await _reportService.BuildReportDataAsync(dto);
-
                 IReportStrategy strategy = dto.ReportFormat.ToLower() switch
                 {
                     "pdf" => new InfrastructureLayer.Services.PdfReportStrategy(),
                     "excel" => new InfrastructureLayer.Services.ExcelReportStrategy(),
                     _ => throw new ArgumentException("Unsupported report format.")
                 };
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value ?? "UTC";
 
-                var generator = new ReportGenerator(strategy);
-                var result = await generator.GenerateAsync(reportData);
+                var reportData = await _reportService.BuildReportDataAsync(dto);
+                var generator = new ReportGeneratorContext(strategy);
+                var result = await generator.GenerateAsync(reportData, userTimeZoneId);
 
                 return File(result.FileContent, result.ContentType, result.FileName);
 

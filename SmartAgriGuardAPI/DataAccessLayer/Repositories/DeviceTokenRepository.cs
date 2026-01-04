@@ -34,14 +34,29 @@ namespace DataAccessLayer.Repositories
         }
 
 
-        public async Task<List<DeviceToken>> GetTokensByUserIdAsync(Guid userId)//all tokens for user
+        public async Task<DeviceToken> GetTokenByUserIdAsync(Guid userId)
         {
-            return await _context.DeviceTokens
-                .Where(dt => dt.UserId == userId && dt.IsActive)
-                .ToListAsync();
-        }
+            try
+            {
+                var token = await _context.DeviceTokens
+                    .OrderByDescending(dt => dt.LastUpdated)
+                    .Where(dt => dt.UserId == userId && dt.IsActive)
+                    .FirstOrDefaultAsync(dt => dt.UserId == userId);
+                if (token == null)
+                {
+                    throw new Exception("Token not found for the specified user ID");
+                }
+                return token;
 
-        public async Task DeactivateTokenAsync(Guid id) //soft delete
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving token by user ID", ex);
+            }
+
+            }
+
+        public async Task DeactivateTokenAsync(Guid id)
         {
             var token = await _context.DeviceTokens.FindAsync(id);
             if (token != null)
@@ -52,7 +67,6 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        // Optional: Remove token completely
         public async Task DeleteTokenAsync(Guid id)
         {
             var token = await _context.DeviceTokens.FindAsync(id);

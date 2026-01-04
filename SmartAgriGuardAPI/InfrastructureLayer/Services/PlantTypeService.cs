@@ -36,6 +36,23 @@ namespace InfrastructureLayer.Services
             await _plantTypeRepository.AddAsync(plantType);
         }
 
+        public async Task DeletePlantType(Guid Id)
+        {
+            var plantType = await _plantTypeRepository.GetByIdAsync(Id);
+            if (plantType.Plants == null || plantType.Plants.Count == 0)
+            {
+                await _plantTypeRepository.DeleteAsync(plantType.Id);
+            }
+            else if (plantType.Plants.Any())
+            {
+                throw new Exception("Cannot delete plant type with associated plants.");
+            }
+            else
+            {
+                throw new KeyNotFoundException("Plant type not found.");
+            }
+        }
+
         public async Task<List<PlantTypeDTO>> GetAllPlantTypes()
         {
             var plantTypes = await _plantTypeRepository.GetAllAsync();
@@ -57,6 +74,10 @@ namespace InfrastructureLayer.Services
                 throw new KeyNotFoundException("Plant type not found.");
             if (!string.IsNullOrEmpty(dto.Description))
                 plantType.Description = dto.Description;
+            else
+            {
+                plantType.Description = null;
+            }
 
             if (!string.IsNullOrEmpty(dto.Name) && !plantType.Name.Equals(dto.Name.Trim(), StringComparison.OrdinalIgnoreCase))
             {

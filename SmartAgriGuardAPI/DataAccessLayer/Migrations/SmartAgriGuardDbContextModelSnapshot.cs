@@ -29,8 +29,8 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("DeviceModel")
                         .HasMaxLength(200)
@@ -44,8 +44,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("LastUpdated")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("LastUpdated")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Token")
                         .IsRequired()
@@ -70,8 +70,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<Guid>("PlantId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("AssignedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("AssignedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("FarmerId", "PlantId");
 
@@ -161,8 +161,8 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<DateTime>("NotificationDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("NotificationDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid>("PlantId")
                         .HasColumnType("uniqueidentifier");
@@ -210,8 +210,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<Guid>("PlantId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("PredictionDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("PredictionDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("healthStatus")
                         .IsRequired()
@@ -235,8 +235,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<Guid>("PlantId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("RecommendationDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("RecommendationDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("advice")
                         .IsRequired()
@@ -284,8 +284,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<double?>("Temperature")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
 
@@ -301,8 +301,8 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<DateTime>("ArchivedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("ArchivedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<double>("Humidity")
                         .HasColumnType("float");
@@ -328,8 +328,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<double>("Temperature")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
 
@@ -361,8 +361,8 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<DateTime>("ReportDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("ReportDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
 
@@ -389,6 +389,10 @@ namespace DataAccessLayer.Migrations
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("TimeZoneId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid>("UserRoleId")
                         .HasColumnType("uniqueidentifier");

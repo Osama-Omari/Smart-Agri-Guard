@@ -14,7 +14,7 @@ namespace DataAccessLayer.Models
 
         public Plant Plant { get; set; }
 
-        public DateTime NotificationDate { get; set; }
+        public DateTimeOffset NotificationDate { get; set; }
 
         public string TriggerType { get; set; }
 

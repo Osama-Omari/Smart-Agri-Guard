@@ -21,6 +21,6 @@ namespace DataAccessLayer.Interfaces
 
         Task<SensorData?> GetLatestByPlantIdAsync(Guid plantId);
 
-        Task<List<SensorData>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTime startDate, DateTime endDate);
+        Task<List<SensorData>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTimeOffset startDate, DateTimeOffset endDate);
     }
 }

@@ -19,5 +19,9 @@ namespace DataAccessLayer.Interfaces
 
         Task<List<SystemReports>> GetAllAsync();
 
+        Task<List<SystemReports>> GetSystemReportsAsyncByIds(List<Guid> ids);
+
+        Task UpdateAsync(SystemReports systemReports);
+
     }
 }

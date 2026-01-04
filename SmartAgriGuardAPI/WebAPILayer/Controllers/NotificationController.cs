@@ -7,17 +7,20 @@ namespace WebAPILayer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
-    [ApiExplorerSettings(IgnoreApi = true)]
     public class NotificationController : ControllerBase
     {
 
         private readonly INotificationService _notificationService;
-        public NotificationController(INotificationService notificationService)
+        private readonly IPlantService _plantService;
+        private readonly IGreenhouseService _greenhouseService;
+        public NotificationController(INotificationService notificationService, IPlantService plantService, IGreenhouseService greenhouseService)
         {
             _notificationService = notificationService;
+            _plantService = plantService;
+            _greenhouseService = greenhouseService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("plant/{plantId}/watering")]
         public async Task<IActionResult> NotifyPlantNeedsWatering(Guid plantId)
         {
@@ -32,6 +35,7 @@ namespace WebAPILayer.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("plant/{plantId}/nutrients")]
         public async Task<IActionResult> NotifyPlantNeedsNutrients(Guid plantId)
         {
@@ -46,5 +50,86 @@ namespace WebAPILayer.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("Plant/{plantId}/notifications")]
+        public async Task<IActionResult> GetPlantNotifications(Guid plantId)
+        {
+            try
+            {
+                var notifications = await _plantService.GetPlantNotificationDTOs(plantId);
+                return Ok(notifications);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while retrieving notifications.", Details = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPatch("plants/notifications/read")]
+        public async Task<IActionResult> MarkNotificationsAsRead(
+        [FromBody] List<Guid> notificationIds)
+        {
+            if (notificationIds == null || !notificationIds.Any())
+                return BadRequest("Notification IDs are required.");
+
+            await _plantService.MarkPlantNotificationsAsRead(notificationIds);
+
+            return Ok(new { Message = "Notifications marked as read." });
+        }
+
+
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpGet("Greenhouse/{greenhouseId}/notifications")]
+        public async Task<IActionResult> GetGreenhouseNotifications(Guid greenhouseId)
+        {
+            try
+            {
+                var notifications = await _greenhouseService.GetGreenhouseNotifications(greenhouseId);
+                if (notifications == null)
+                    return BadRequest("There is no notifications for this greenhouse");
+                return Ok(notifications);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while retrieving notifications.", Details = ex.Message });
+            }
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Greenhouses/notifications")]
+        public async Task<IActionResult> GetAllGreenhousesNotifications()
+        {
+            try
+            {
+                var notifications = await _greenhouseService.GetAllGreenhousesNotifications();
+                if (notifications == null)
+                    return BadRequest("There is no notifications for greenhouses");
+                return Ok(notifications);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while retrieving notifications.", Details = ex.Message });
+            }
+        }
+
+
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpPatch("greenhouse/notifications/read")]
+        public async Task<IActionResult> MarkGreenhouseNotificationAsRead([FromBody] List<Guid> notificationIds)
+        {
+            try
+            {
+                await _greenhouseService.MarkGreenhouseNotificationAsRead(notificationIds);
+                return Ok(new { Message = "Notification for the greenhouse marked as read." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while marking notification as read.", Details = ex.Message });
+            }
+        }
+
+        
     }
 }

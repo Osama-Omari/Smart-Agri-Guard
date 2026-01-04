@@ -8,7 +8,7 @@ namespace ApplicationLayer.DTOs
 {
     public class SensorRowDTO
     {
-        public DateTime Timestamp { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
         public double? Temperature { get; set; }
         public double? Humidity { get; set; }
         public double? SoilMoisture { get; set; }

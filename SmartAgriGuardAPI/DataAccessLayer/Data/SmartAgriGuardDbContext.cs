@@ -119,6 +119,8 @@ namespace DataAccessLayer.Data
                     .ValueGeneratedOnAdd()
                     .HasDefaultValueSql("NEWID()");
 
+                entity.Property(e => e.TimeZoneId)
+                    .HasMaxLength(100);
                 entity.Property(e => e.FullName)
                     .IsRequired()
                     .HasMaxLength(200);

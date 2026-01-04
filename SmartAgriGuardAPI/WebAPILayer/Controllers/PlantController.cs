@@ -42,7 +42,7 @@ namespace WebAPILayer.Controllers
                 {
                     ImagePath = imagePath,
                     Location = dto.Location,
-                    Name = dto.Name,
+                    Name = dto.PlantName,
                     PlantTypeId = dto.PlantTypeId,
                 };
                 await _plantService.AddPlantToGreenhouse(GreenhouseId, plantRegisterDto);
@@ -88,6 +88,43 @@ namespace WebAPILayer.Controllers
             {
                 var plants = await _plantService.GetAllGreenhousePlants(GreenhouseId);
                 if(plants == null)
+                    return NotFound();
+                return Ok(plants);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+
+            }
+        }
+
+        [HttpGet("Plants-With-Assigned-Farmers/{GreenhouseId}")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> GetPlantsWithAssignedFarmers(Guid GreenhouseId)
+        {
+            try
+            {
+                var plants = await _plantService.getPlantsWithAssignedFarmers(GreenhouseId);
+                return Ok(plants);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+
+            }
+        }
+
+
+
+        [HttpGet("All-Greenhouse-Plants-With-Metrics/{GreenhouseId}")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> GetAllGreenhousePlantsWithMetrics([FromRoute] Guid GreenhouseId)
+        {
+            try
+            {
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+                var plants = await _plantService.GetAllGreenhousePlantsWithMetrics(GreenhouseId, userTimeZoneId);
+                if (plants == null)
                     return NotFound();
                 return Ok(plants);
 
@@ -141,7 +178,7 @@ namespace WebAPILayer.Controllers
                 {
                     ImagePath = imagePath,
                     Location = dto.Location,
-                    Name = dto.Name,
+                    Name = dto.PlantName,
                 };
                 await _plantService.UpdatePlantAsync(plantId, plantUpdateDto);
                 return Ok("The plant has been updated successfully");

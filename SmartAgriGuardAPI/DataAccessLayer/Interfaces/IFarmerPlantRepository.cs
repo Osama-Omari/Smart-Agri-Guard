@@ -11,8 +11,6 @@ namespace DataAccessLayer.Interfaces
     {
         Task AddAsync(FarmerPlant obj);
 
-        Task<List<FarmerPlant>> GetPlantsByFarmerIdAsync(Guid farmerId);
-
-        Task RemoveAsync(Guid farmerId, Guid plantId);
+        Task AddAsync(List<FarmerPlant> obj);
     }
 }

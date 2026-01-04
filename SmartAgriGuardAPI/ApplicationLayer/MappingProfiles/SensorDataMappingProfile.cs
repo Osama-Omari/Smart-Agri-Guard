@@ -1,4 +1,5 @@
 ﻿using ApplicationLayer.DTOs;
+using ApplicationLayer.Resolvers;
 using AutoMapper;
 using DataAccessLayer.Models;
 using FluentValidation;
@@ -18,6 +19,12 @@ namespace ApplicationLayer.MappingProfiles
 
 
             CreateMap<SensorData, SensorReadingMultiDto>();
+
+            CreateMap<SensorData, SensorMetricDTO>();
+
+
+
+
 
 
         }

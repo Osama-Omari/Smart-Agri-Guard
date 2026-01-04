@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Interface Name="ApplicationLayer.Interfaces.IDateService">
+    <Position X="5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IDateService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IFarmerPlantService">
+    <Position X="14.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAEAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IFarmerPlantService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IFileStorageService">
+    <Position X="10.5" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IFileStorageService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IGreenhouseService">
+    <Position X="8.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IgAAgAAAAAAQAAACCAgAAAAAAAABQAAAhAAAAAAAFgA=</HashCode>
+      <FileName>Interfaces\IGreenhouseService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IJWTService">
+    <Position X="6.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IJWTService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.INotificationService">
+    <Position X="14.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAABAAAAAAAAAAAAAAACAAAAAQAAAAAQAAAAAAA=</HashCode>
+      <FileName>Interfaces\INotificationService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IPasswordHasherService">
+    <Position X="12.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IPasswordHasherService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IPlantService">
+    <Position X="10.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAEAAAAAAAACAgABAAAAgAIABAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Interfaces\IPlantService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IPlantTypeService">
+    <Position X="12.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAIAAAAAIAAAAAAAAAAAAAAAAAAAIQA=</HashCode>
+      <FileName>Interfaces\IPlantTypeService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IReportServcie">
+    <Position X="8.75" Y="2.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IReportServcie.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IReportStrategy">
+    <Position X="12.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEQAAAAAAA=</HashCode>
+      <FileName>Interfaces\IReportStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.ISensorDataArchiveService">
+    <Position X="14.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\ISensorDataArchiveService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.ISensorDataService">
+    <Position X="5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAgAAAAAAgAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\ISensorDataService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IUserService">
+    <Position X="6.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAEAACAAwBAABAAAAAIACAABIAAQAAAQAAAAAAA=</HashCode>
+      <FileName>Interfaces\IUserService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

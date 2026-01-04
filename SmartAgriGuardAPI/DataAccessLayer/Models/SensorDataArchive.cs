@@ -21,8 +21,8 @@ namespace DataAccessLayer.Models
         public double Potassium { get; set; }
         public double Ph { get; set; }
 
-        public DateTime Timestamp { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
 
-        public DateTime ArchivedAt { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset ArchivedAt { get; set; } = DateTime.UtcNow;
     }
 }

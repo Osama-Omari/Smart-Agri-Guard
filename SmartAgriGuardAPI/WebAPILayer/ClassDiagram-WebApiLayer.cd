@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WebAPILayer.Controllers.AuthController">
+    <Position X="8.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAIAAAAAIAAQAABUAAAAAAA=</HashCode>
+      <FileName>Controllers\AuthController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPILayer.Controllers.FarmerPlantController">
+    <Position X="7.75" Y="6.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAEAAAAIAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Controllers\FarmerPlantController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPILayer.Controllers.GreenhouseController">
+    <Position X="10.5" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAgAAAAAAAAAiAAAAAIAAQAIAgQBAAiCAAAAAAAAA=</HashCode>
+      <FileName>Controllers\GreenhouseController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPILayer.Controllers.NotificationController">
+    <Position X="2.75" Y="2.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAABEAAAAAACAEAAAAACRAABABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\NotificationController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPILayer.Controllers.PlantController">
+    <Position X="2.75" Y="6.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>BQAAAEAAEAAAAAgAAEAAAAAAAAABAEAAAAAAAAAAgAA=</HashCode>
+      <FileName>Controllers\PlantController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPILayer.Controllers.PlantTypeController">
+    <Position X="10" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAIAAAAAIAAAAAAAAAAAAAAAAAAAIQg=</HashCode>
+      <FileName>Controllers\PlantTypeController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPILayer.Controllers.ReportController">
+    <Position X="12" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Controllers\ReportController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPILayer.Controllers.SensorDataController">
+    <Position X="5.75" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAABEAgACAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\SensorDataController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebAPILayer.Controllers.UserController">
+    <Position X="5.75" Y="6.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAgACAAAAABAAQAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Controllers\UserController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -105,6 +105,27 @@ namespace WebAPILayer.Controllers
 
         }
 
+        [HttpGet("Get-Without-Manager")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetGreenhousesWithoutManager()
+        {
+            try
+            {
+                var greenhouses = await _greenhouseService.GetGreenhousesWithoutManagerAsync();
+                if(greenhouses ==  null)
+                    return NotFound("There is no greenhouses without managers");
+                return Ok(greenhouses);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         [HttpPatch("Assign-Manager/{ManagerId}/{GreenhouseId}")]
         [Authorize(Roles = "Admin")]
@@ -136,6 +157,10 @@ namespace WebAPILayer.Controllers
             {
                 await _greenhouseService.UnAssignManagerAsync(GreenhouseId);
                 return Ok("The unassignment process succeed");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
@@ -219,6 +244,8 @@ namespace WebAPILayer.Controllers
                     return Unauthorized("Invalid manager ID.");
                 }
                 var greenhouses = await _greenhouseService.GetGreenhousesByManagerIdAsync(managerId);
+                if (greenhouses == null)
+                    return NotFound("There is no greenhouses assigned to this manager");
                 return Ok(greenhouses);
 
 
@@ -249,7 +276,28 @@ namespace WebAPILayer.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
         }
-        
+
+
+        [HttpGet("Greenhouse-Manager/{Id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetGreenhouseManager(Guid Id)
+        {
+            try
+            {
+                var manager = await _greenhouseService.GetManagerByGreenhouseIdAsync(Id);
+                if (manager == null)
+                    return NotFound("No manager assigned to this greenhouse.");
+                return Ok(manager);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+
     }
 
 }

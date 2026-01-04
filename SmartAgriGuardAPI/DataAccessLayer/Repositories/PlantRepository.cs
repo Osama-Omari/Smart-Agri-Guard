@@ -26,7 +26,7 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception("Error While adding a plant");
+                throw new Exception($"Error While adding a plant: {ex.Message}");
             }
         }
         public async Task<Plant?> GetPlantById(Guid plantId)
@@ -39,7 +39,7 @@ namespace DataAccessLayer.Repositories
                     .Include(p => p.FarmerPlants)
                     .FirstOrDefaultAsync(p => p.Id == plantId);
             }
-            catch (Exception ex) { throw new Exception("Error while getting the plant"); }
+            catch (Exception ex) { throw new Exception($"Error while getting the plant: {ex.Message}"); }
         }
         public async Task<List<Plant>> GetAllGreenhousePlantsAsync(Guid greenhouseId)
         {
@@ -52,7 +52,22 @@ namespace DataAccessLayer.Repositories
                     .Where(p=> p.GreenhouseId == greenhouseId)
                     .ToListAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while getting the plant"); }
+            catch (Exception ex) { throw new Exception($"Error while getting the plant: {ex.Message}"); }
+        }
+
+        public async Task<List<Plant>> GetAllGreenhousePlantsWithMetrics(Guid greenhouseId)
+        {
+            try
+            {
+                return await _context.Plants
+                    .Include(p => p.Greenhouse)
+                    .Include(p => p.PlantType)
+                    .Include(p => p.FarmerPlants)
+                    .Include(p => p.SensorData)
+                    .Where(p => p.GreenhouseId == greenhouseId)
+                    .ToListAsync();
+            }
+            catch (Exception ex) { throw new Exception($"Error while getting the plant with metrics: {ex.Message}"); }
         }
         public async Task UpdateAsync(Plant plant)
         {
@@ -61,7 +76,7 @@ namespace DataAccessLayer.Repositories
                 _context.Plants.Update(plant);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while updating a plant "); }
+            catch (Exception ex) { throw new Exception($"Error while updating a plant: {ex.Message}"); }
         }
         public async Task DeleteAsync(Guid plantId)
         {
@@ -74,7 +89,7 @@ namespace DataAccessLayer.Repositories
                     await _context.SaveChangesAsync();
                 }
             }
-            catch (Exception ex) { throw new Exception("Error while deleting a plant "); }
+            catch (Exception ex) { throw new Exception($"Error while deleting a plant: {ex.Message}"); }
 
         }
 
@@ -90,19 +105,37 @@ namespace DataAccessLayer.Repositories
             catch(Exception ex) { throw new Exception(ex.Message); }    
         }
 
-        public Task<List<Plant>> GetAssignedPlantsByFarmerIdAsync(Guid farmerId)
+        public async Task<List<Plant>> GetAssignedPlantsByFarmerIdAsync(Guid farmerId)
         {
-            
             try
             {
-                return _context.Plants
+                return await _context.Plants
                     .Include(p => p.PlantType)
                     .Include(p => p.Greenhouse)
                     .Include(p => p.FarmerPlants)
+                    .Include(p => p.SensorData)
                     .Where(p => p.FarmerPlants.Any(fp => fp.FarmerId == farmerId))
                     .ToListAsync();
             }
             catch (Exception ex) { throw new Exception($"Error while getting assigned plants for the farmer: {ex.Message}"); }
         }
+
+        public async Task<List<Plant>> GetPlantsWithAssignedFarmers(Guid GreenhouseId)
+        {
+            try
+            {
+                return await _context.Plants
+                    .Include(p=> p.FarmerPlants)
+                    .ThenInclude(fp=> fp.Farmer)
+                    .ToListAsync();
+                     
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message); 
+            }
+        }
+
     }
 }

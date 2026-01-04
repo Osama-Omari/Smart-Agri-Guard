@@ -9,6 +9,6 @@ namespace ApplicationLayer.DTOs
     public class SensorTrendResponseDTO
     {
         public Guid PlantId { get; set; }
-        public List<SensorReadingMultiDto> Readings { get; set; } = new();
+        public List<Dictionary<string, object>> Readings { get; set; }
     }
 }

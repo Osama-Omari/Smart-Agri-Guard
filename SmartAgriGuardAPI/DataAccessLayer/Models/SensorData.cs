@@ -28,7 +28,7 @@ namespace DataAccessLayer.Models
 
         public double? Ph { get; set; }
 
-        public DateTime Timestamp { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
 
 
     }

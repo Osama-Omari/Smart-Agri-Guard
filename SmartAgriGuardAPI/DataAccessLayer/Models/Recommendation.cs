@@ -15,7 +15,7 @@ namespace DataAccessLayer.Models
 
         public string advice { get; set; }
 
-        public DateTime RecommendationDate { get; set; }
+        public DateTimeOffset RecommendationDate { get; set; }
 
         public bool isCritical { get; set; }
 

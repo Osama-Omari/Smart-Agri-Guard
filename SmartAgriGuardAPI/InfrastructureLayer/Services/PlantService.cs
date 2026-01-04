@@ -6,8 +6,10 @@ using DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using TimeZoneConverter;
 
 namespace InfrastructureLayer.Services
 {
@@ -20,9 +22,10 @@ namespace InfrastructureLayer.Services
         private readonly ISensorDataService _sensorDataService;
         private readonly ISensorDataArchiveService _sensorDataArchiveService;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IPlantNotificationsRepository _plantNotificationsRepository;
 
         public PlantService(IPlantRepository plantRepository, IPlantTypeRepository plantTypeRepository,IMapper mapper,IGreenhouseRepository greenhouseRepository,
-            ISensorDataService sensorDataService,ISensorDataArchiveService sensorDataArchiveService,IFileStorageService fileStorageService)
+            ISensorDataService sensorDataService,ISensorDataArchiveService sensorDataArchiveService,IFileStorageService fileStorageService,IPlantNotificationsRepository plantNotificationsRepository)
         {
             _plantRepository = plantRepository;
             _plantTypeRepository = plantTypeRepository;
@@ -31,6 +34,7 @@ namespace InfrastructureLayer.Services
             _sensorDataService = sensorDataService;
             _sensorDataArchiveService = sensorDataArchiveService;
             _fileStorageService = fileStorageService;
+            _plantNotificationsRepository = plantNotificationsRepository;
         }
 
         public async Task AddPlantToGreenhouse(Guid GreenhouseId, PlantRegisterDTO dTO)
@@ -81,8 +85,58 @@ namespace InfrastructureLayer.Services
         {
             var plants = await _plantRepository.GetAllGreenhousePlantsAsync(GreenhouseId);
             if (plants == null || plants.Count == 0)
-                return null;
+                throw new KeyNotFoundException("No Plants found for this greenhouse");             
             return _mapper.Map<List<PlantDTO>>(plants);
+
+        }
+
+        public async Task<List<PlantWithMetricsDTO>> GetAllGreenhousePlantsWithMetrics(Guid GreenhouseId, string userTimeZoneId)
+        {
+            var plants = await _plantRepository.GetAllGreenhousePlantsWithMetrics(GreenhouseId);
+            if (plants == null || plants.Count == 0)
+                throw new KeyNotFoundException("No Plants found for this greenhouse");
+            var dtos = _mapper.Map<List<PlantWithMetricsDTO>>(plants);
+
+            TimeZoneInfo tz;
+            try
+            {
+                tz = TZConvert.GetTimeZoneInfo(userTimeZoneId);
+            }
+            catch
+            {
+                tz = TimeZoneInfo.Utc;
+            }
+
+            foreach (var plant in dtos)
+            {
+                if (plant.LatestMetrics != null)
+                {
+                    plant.LatestMetrics.Timestamp = TimeZoneInfo.ConvertTime(plant.LatestMetrics.Timestamp, tz);
+                }
+            }
+
+            return dtos;
+
+        }
+
+        public async Task MarkPlantNotificationsAsRead(List<Guid> notificationsIds)
+        {
+            var notifications = await _plantNotificationsRepository.GetByIdsAsync(notificationsIds);
+            foreach(var notification in notifications)
+            {
+                notification.IsRead = true;
+                await _plantNotificationsRepository.UpdateAsync(notification);
+            }
+            
+        }
+
+        public async Task<List<PlantNotificationDTO>> GetPlantNotificationDTOs(Guid PlantId)
+        {
+            var plant = await _plantRepository.GetPlantById(PlantId);
+            if (plant == null)
+                throw new KeyNotFoundException("plant not found");
+            var notifications = await _plantNotificationsRepository.GetByPlantIdAsync(PlantId);
+            return _mapper.Map<List<PlantNotificationDTO>>(notifications);
         }
 
         public async Task<PlantDTO> GetPlantById(Guid PlantId)
@@ -113,5 +167,15 @@ namespace InfrastructureLayer.Services
             return _mapper.Map<PlantDTO>(plant);
 
         }
+
+        public async Task<List<PlantWithAssignedFarmersDTO>> getPlantsWithAssignedFarmers(Guid GreenhouseId)
+        {
+            var plants = await _plantRepository.GetPlantsWithAssignedFarmers(GreenhouseId);
+            if (plants == null || plants.Count == 0)
+                throw new KeyNotFoundException("There is no data");
+
+            return _mapper.Map<List<PlantWithAssignedFarmersDTO>>(plants);
+        }
+
     }
 }

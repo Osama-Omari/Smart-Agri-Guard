@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeZoneConverter;
 
 namespace InfrastructureLayer.Services
 {
@@ -46,7 +47,7 @@ namespace InfrastructureLayer.Services
             if(dto.Nitrogen.HasValue)
                 sensordata.Nitrogen = dto.Nitrogen.Value;
             sensordata.PlantId = plantId;
-            sensordata.Timestamp = DateTime.UtcNow;
+            sensordata.Timestamp = dto.Timestamp;
             await _sensorDataRepository.AddAsync(sensordata);
 
         }
@@ -61,24 +62,68 @@ namespace InfrastructureLayer.Services
 
         }
 
-        public async Task<SensorDataDTO?> GetLatestSensorData(Guid plantId)
+        public async Task<SensorDataDTO?> GetLatestSensorData(Guid plantId, string userTimeZoneId)
         {
             var sensorData = await _sensorDataRepository.GetLatestByPlantIdAsync(plantId);
             if (sensorData == null)
                 return null;
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(userTimeZoneId);
+            sensorData.Timestamp = TimeZoneInfo.ConvertTimeFromUtc(
+                        sensorData.Timestamp.UtcDateTime, tz);
             return _mapper.Map<SensorDataDTO>(sensorData);
         }
 
-        public async Task<SensorTrendResponseDTO> GetSensorTrendsAsync(SensorTrendRequestDTO dto)
+        public async Task<SensorTrendResponseDTO> GetSensorTrendsAsync(SensorTrendRequestDTO dto, string userTimeZoneId)
         {
-            var data = await _sensorDataRepository.GetByPlantIdAndDateRangeAsync(dto.PlantId,dto.StartDate,dto.EndDate);
-            if(!data.Any())
+            var data = await _sensorDataRepository
+                .GetByPlantIdAndDateRangeAsync(dto.PlantId, dto.StartDate, dto.EndDate);
+
+            if (data == null || !data.Any())
                 throw new KeyNotFoundException("No sensor data found for the specified plant in the given date range.");
+
+            var result = new List<Dictionary<string, object>>();
+
+            TimeZoneInfo tz;
+            try
+            {
+                tz = TZConvert.GetTimeZoneInfo(userTimeZoneId);
+            }
+            catch
+            {
+                tz = TimeZoneInfo.Utc;
+            }
+
+            foreach (var row in data)
+            {
+                var record = new Dictionary<string, object>();
+
+                var localTimestamp = TimeZoneInfo.ConvertTime(row.Timestamp, tz);
+
+                record["timestamp"] = localTimestamp;
+
+                foreach (var sensor in dto.Metrics)
+                {
+                    var key = sensor.Trim().ToLower();
+
+                    switch (key)
+                    {
+                        case "temperature": record["temperature"] = row.Temperature; break;
+                        case "humidity": record["humidity"] = row.Humidity; break;
+                        case "soilmoisture": record["soilMoisture"] = row.SoilMoisture; break;
+                        case "nitrogen": record["nitrogen"] = row.Nitrogen; break;
+                        case "phosphorus": record["phosphorus"] = row.Phosphorus; break;
+                        case "potassium": record["potassium"] = row.Potassium; break;
+                        case "ph": record["ph"] = row.Ph; break;
+                    }
+                }
+
+                result.Add(record);
+            }
 
             return new SensorTrendResponseDTO
             {
                 PlantId = dto.PlantId,
-                Readings = _mapper.Map<List<SensorReadingMultiDto>>(data)
+                Readings = result
             };
         }
     }

@@ -24,6 +24,8 @@ namespace DataAccessLayer.Models
 
         public Greenhouse Greenhouse { get; set; }
 
+        public string? TimeZoneId { get; set; }
+
         public List<Greenhouse>? ManagedGreenhouses { get; set; } = new List<Greenhouse>();
 
         public List<FarmerPlant> FarmerPlants { get; set; } = new List<FarmerPlant>();

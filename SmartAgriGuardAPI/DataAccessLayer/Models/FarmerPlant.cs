@@ -13,6 +13,6 @@ namespace DataAccessLayer.Models
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
 
-        public DateTime AssignedAt { get; set; }
+        public DateTimeOffset AssignedAt { get; set; }
     }
 }

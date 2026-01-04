@@ -14,6 +14,8 @@ namespace DataAccessLayer.Interfaces
         Task<Plant?> GetPlantById(Guid plantId);
         Task<List<Plant>> GetAllGreenhousePlantsAsync(Guid greenhouseId);
 
+        Task<List<Plant>> GetAllGreenhousePlantsWithMetrics(Guid greenhouseId);
+
         Task UpdateAsync(Plant plant);
 
         Task DeleteAsync(Guid plantId);
@@ -21,5 +23,7 @@ namespace DataAccessLayer.Interfaces
         Task<Plant?> GetPlantWithFarmerPlant(Guid plantId);
 
         Task<List<Plant>> GetAssignedPlantsByFarmerIdAsync(Guid farmerId);
+
+        Task<List<Plant>> GetPlantsWithAssignedFarmers(Guid GreenhouseId);
     }
 }

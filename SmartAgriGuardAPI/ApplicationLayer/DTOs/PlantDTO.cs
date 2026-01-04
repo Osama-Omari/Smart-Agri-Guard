@@ -14,6 +14,8 @@ namespace ApplicationLayer.DTOs
         public string PlantTypeName { get; set; }
 
         public string GreenhouseName { get; set; }
+
+        public string? ImagePath { get; set; }
         public string? Location { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace DataAccessLayer.Models
 
         public Plant Plant { get; set; }
 
-        public DateTime PredictionDate { get; set; }
+        public DateTimeOffset PredictionDate { get; set; }
 
         public string healthStatus { get; set; }
 

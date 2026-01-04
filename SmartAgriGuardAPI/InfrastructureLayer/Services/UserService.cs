@@ -50,10 +50,8 @@ namespace InfrastructureLayer.Services
                 if (existingToken == null)
                 {
                     user.DeviceTokens.Add(new DeviceToken { Token = loginDTO.DeviceToken, UserId = user.Id, CreatedAt = DateTime.UtcNow,
-                        DeviceType = loginDTO.DeviceType,DeviceModel = loginDTO.DeviceModel,IsActive = true, LastUpdated = DateTime.UtcNow });
+                    DeviceType = loginDTO.DeviceType,DeviceModel = loginDTO.DeviceModel,IsActive = true, LastUpdated = DateTime.UtcNow });
                     await _userRepository.UpdateUserAsync(user);
-
-
                 }
                 else
                 {
@@ -61,7 +59,15 @@ namespace InfrastructureLayer.Services
                     existingToken.LastUpdated = DateTime.UtcNow;
                     await _userRepository.UpdateUserAsync(user);
                 }
-            }    
+            }
+
+            if (!string.IsNullOrWhiteSpace(loginDTO.TimeZoneId) &&
+            !string.Equals(loginDTO.TimeZoneId, user.TimeZoneId, StringComparison.OrdinalIgnoreCase))
+            {
+                user.TimeZoneId = loginDTO.TimeZoneId;
+                await _userRepository.UpdateUserAsync(user);
+            }
+
 
             return _mapper.Map<UserDTO>(user);
         }
@@ -80,9 +86,17 @@ namespace InfrastructureLayer.Services
             await _userRepository.UpdateUserAsync(user);
         }
 
-        public async Task DeleteFarmerAsync(Guid farmerId)
+        public async Task DeleteFarmerAsync(Guid farmerId, Guid managerId)
         {
+            var manager = await _userRepository.GetManagerById(managerId);
+            if (manager == null)
+                throw new Exception("Manager not found");
             var farmer = await _userRepository.GetFarmerWithPlants(farmerId);
+            if(farmer == null)
+                throw new Exception("Farmer not found");
+
+            if(farmer.GreenhouseId != manager.ManagedGreenhouses?.FirstOrDefault()?.Id)
+                throw new Exception("Manager not authorized to delete this farmer");
             if(farmer == null)
                 throw new Exception("Farmer not found");
             if(farmer.FarmerPlants.Any())
@@ -106,21 +120,6 @@ namespace InfrastructureLayer.Services
             return _mapper.Map<List<ManagerDTO>>(managers);
         }
 
-        public async Task<FarmerDTO> GetFarmer(Guid farmerId)
-        {
-            var farmer = await _userRepository.GetFarmerWithPlants(farmerId);
-            if (farmer == null)
-                throw new Exception("Farmer not found");
-            return _mapper.Map<FarmerDTO>(farmer);
-        }
-
-        public async Task<ManagerDTO> GetManager(Guid managerId)
-        {
-            var manager = await _userRepository.GetManagerById(managerId);
-            if (manager == null)
-                throw new Exception("Manager not found");
-            return _mapper.Map<ManagerDTO>(manager);
-        }
 
         public async Task<bool> isUserNameExists(string userName)
         {

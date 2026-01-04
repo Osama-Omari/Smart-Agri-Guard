@@ -13,7 +13,7 @@ namespace ApplicationLayer.DTOs
         public string FullName { get; set; }
         public string RoleName { get; set; }
 
-        public List<Guid>? GreenhousesIds { get; set; }
+        public List<string>? Greenhouses { get; set; }
 
     }
 }

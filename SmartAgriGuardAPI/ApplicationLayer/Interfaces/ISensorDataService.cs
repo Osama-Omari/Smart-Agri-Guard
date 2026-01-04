@@ -13,8 +13,8 @@ namespace ApplicationLayer.Interfaces
 
         Task AddSensorData(Guid plantId,SensorDataRegisterDTO dto);
 
-        Task<SensorDataDTO?> GetLatestSensorData(Guid plantId);
+        Task<SensorDataDTO?> GetLatestSensorData(Guid plantId , string userTimeZoneId);
 
-        Task<SensorTrendResponseDTO> GetSensorTrendsAsync(SensorTrendRequestDTO dto);
+        Task<SensorTrendResponseDTO> GetSensorTrendsAsync(SensorTrendRequestDTO dto , string userTimeZoneId);
     }
 }

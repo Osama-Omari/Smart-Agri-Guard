@@ -17,5 +17,7 @@ namespace ApplicationLayer.DTOs
         public string DeviceType { get; set; }
 
         public string? DeviceModel { get; set; }
+
+        public string TimeZoneId { get; set; }
     }
 }

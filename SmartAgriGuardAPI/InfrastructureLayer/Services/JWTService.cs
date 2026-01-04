@@ -1,14 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ApplicationLayer.DTOs;
+using ApplicationLayer.Interfaces;
+using DataAccessLayer.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using ApplicationLayer.DTOs;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using ApplicationLayer.Interfaces;
 
 namespace InfrastructureLayer.Services
 {
@@ -28,7 +29,9 @@ namespace InfrastructureLayer.Services
                 new Claim(ClaimTypes.NameIdentifier, userDTO.Id.ToString()),
                 new Claim(ClaimTypes.Name, userDTO.Username),
                 new Claim("FullName", userDTO.FullName),
-                new Claim(ClaimTypes.Role, userDTO.RoleName)
+                new Claim(ClaimTypes.Role, userDTO.RoleName),
+                new Claim("timezone", userDTO.TimezoneId)
+
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -37,7 +40,7 @@ namespace InfrastructureLayer.Services
                 issuer: _configuration["JWT:Issuer"],
                 audience: _configuration["JWT:Audience"],
                 claims: Claims,
-                expires: DateTime.Now.AddHours(3),
+                expires: DateTime.UtcNow.AddYears(100),
                 signingCredentials: creds
                 );
 

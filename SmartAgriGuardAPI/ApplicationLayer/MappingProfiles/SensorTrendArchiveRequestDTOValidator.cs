@@ -12,25 +12,27 @@ namespace ApplicationLayer.MappingProfiles
     {
         public SensorTrendArchiveRequestDTOValidator()
         {
+            var twoMonthsAgo = DateTimeOffset.UtcNow.AddMonths(-2);
+            var oneYearAgo = DateTimeOffset.UtcNow.AddYears(-1);
+
             RuleFor(x => x.PlantId)
-            .NotEmpty().WithMessage("PlantId is required.");
+                .NotEmpty().WithMessage("PlantId is required.");
 
             RuleFor(x => x.StartDate)
-                .NotEmpty().WithMessage("Start date is required.")
-                .Must(start => start != default(DateTime))
-                .WithMessage("Start date cannot be empty or default.")
+                .NotEqual(default(DateTimeOffset))
+                .WithMessage("Start date is required.")
                 .LessThanOrEqualTo(x => x.EndDate)
                 .WithMessage("Start date must be before or equal to end date.")
-                .Must(start => start <= DateTime.UtcNow.AddMonths(-2))
-                .WithMessage("Start date must be older than 2 months.");
+                .LessThanOrEqualTo(twoMonthsAgo)
+                .WithMessage("Start date must be older than 2 months.")
+                .GreaterThanOrEqualTo(oneYearAgo)
+                .WithMessage("Start date must not be older than 1 year.");
 
             RuleFor(x => x.EndDate)
-                .NotEmpty().WithMessage("End date is required.")
-                .Must(end => end != default(DateTime))
-                .WithMessage("End date cannot be empty or default.")
-                .LessThanOrEqualTo(DateTime.UtcNow.AddMonths(-2))
+                .NotEqual(default(DateTimeOffset))
+                .WithMessage("End date is required.")
+                .LessThanOrEqualTo(twoMonthsAgo)
                 .WithMessage("End date must be older than 2 months.");
-
         }
     }
 }

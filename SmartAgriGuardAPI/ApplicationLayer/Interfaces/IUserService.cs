@@ -19,13 +19,9 @@ namespace ApplicationLayer.Interfaces
 
         Task RegisterAdmin(AdminRegisterDTO adminRegisterDTO);
 
-        Task DeleteFarmerAsync(Guid farmerId);
+        Task DeleteFarmerAsync(Guid farmerId, Guid managerId);
 
         Task DeleteManagerAsync(Guid managerId);
-
-        Task<ManagerDTO> GetManager(Guid managerId);
-
-        Task<FarmerDTO> GetFarmer(Guid farmerId);
 
         Task<UserDTO> UpdateUserAsync(UpdateUserDTO dto, Guid userId);
 

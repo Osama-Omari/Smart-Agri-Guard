@@ -86,5 +86,24 @@ namespace WebAPILayer.Controllers
             }
         }
 
+
+        [HttpDelete("Delete/{Id}")]
+        public async Task<IActionResult> DeletePlantType([FromRoute] Guid Id)
+        {
+            try
+            {
+                await _plantTypeService.DeletePlantType(Id);
+                return Ok("The plant type has been deleted successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }

@@ -13,7 +13,8 @@ namespace DataAccessLayer.Interfaces
         Task<List<Greenhouse>?> GetGreenhousesByManagerIdAsync(Guid managerId);
         Task<List<Greenhouse>> GetAllAsync();                    
         Task AddAsync(Greenhouse greenhouse);                   
-        Task UpdateAsync(Greenhouse greenhouse);                
-        Task DeleteAsync(Guid id);                               
+        Task UpdateAsync(Greenhouse greenhouse);       
+        Task DeleteAsync(Guid id);         
+        Task<List<Greenhouse>?> GetGreenhousesWithoutManagerAsync();
     }
 }

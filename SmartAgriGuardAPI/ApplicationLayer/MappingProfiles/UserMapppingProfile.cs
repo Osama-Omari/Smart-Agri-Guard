@@ -24,7 +24,8 @@ namespace ApplicationLayer.MappingProfiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.username))
                 .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.UserRole.Name))
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.TimezoneId, opt => opt.MapFrom(src => src.TimeZoneId?? "UTC"));
 
             CreateMap<FarmerRegisterDTO, User>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
@@ -35,11 +36,16 @@ namespace ApplicationLayer.MappingProfiles
                 .ForMember(dest=>dest.username,opt=>opt.MapFrom(src=>src.userName));
 
             CreateMap<User, FarmerDTO>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.username))
-                .ForMember(dest => dest.GreenhouseId, opt => opt.MapFrom(src => src.GreenhouseId));
-                //.ForMember(dest => dest.AssignedPlantsNames, opt => opt.MapFrom(src => src.FarmerPlants.Plant.Name));
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.username))
+            .ForMember(dest => dest.GreenhouseId, opt => opt.MapFrom(src => src.GreenhouseId))
+            .ForMember(dest => dest.AssignedPlantsNames,
+                opt => opt.MapFrom(src =>
+                src.FarmerPlants != null
+                ? src.FarmerPlants.Select(fp => fp.Plant.Name).ToList()
+                : new List<string>()));
+
 
 
 
@@ -48,10 +54,7 @@ namespace ApplicationLayer.MappingProfiles
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.username))
                 .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.UserRole.Name))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
-                .ForMember(dest => dest.GreenhousesIds, opt => opt.MapFrom(src => src.ManagedGreenhouses.Select(g => g.Id).ToList()));
-
-
-
+                .ForMember(dest => dest.Greenhouses, opt => opt.MapFrom(src => src.ManagedGreenhouses != null ? src.ManagedGreenhouses.Select(g => g.Name).ToList() : new List<string>()));
         }
 
     }

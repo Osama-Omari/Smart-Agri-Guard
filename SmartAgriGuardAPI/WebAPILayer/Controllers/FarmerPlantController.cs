@@ -3,6 +3,7 @@ using ApplicationLayer.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace WebAPILayer.Controllers
 {
@@ -16,13 +17,20 @@ namespace WebAPILayer.Controllers
             _farmerPlantService = farmerPlantService;
         }
 
-        [HttpGet("{farmerId}")]
-        [Authorize(Roles = "Manager,Farmer")]
-        public async Task<IActionResult> GetAssignedPlantsForFarmer([FromRoute] Guid farmerId)
+        [HttpGet("Get-Assigned-Plants")]
+        [Authorize(Roles = "Farmer")]
+        public async Task<IActionResult> GetAssignedPlantsForFarmer()
         {
             try
             {
-                var assignedPlants = await _farmerPlantService.GetAssignedPlantsForFarmer(farmerId);
+                var FarmerIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Guid.TryParse(FarmerIdString, out Guid farmerId);
+                if (farmerId == Guid.Empty)
+                {
+                    return Unauthorized("Invalid user ID.");
+                }
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+                var assignedPlants = await _farmerPlantService.GetAssignedPlantsForFarmer(farmerId,userTimeZoneId);
                 return Ok(assignedPlants);
             }
             catch (KeyNotFoundException ex)
@@ -35,25 +43,36 @@ namespace WebAPILayer.Controllers
             }
         }
 
-        [HttpPut("Update/{farmerId}")]
+        [HttpDelete("UnAssign-Farmer/{plantId}/{farmerId}")]
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> UpdateFarmerPlantAssignment([FromRoute] Guid farmerId, [FromBody] FarmerPlantDTO farmerPlantDTO)
+        public async Task<IActionResult> UnAssignFarmer(Guid plantId, Guid farmerId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             try
             {
-                await _farmerPlantService.UpdateFarmerPlantAssignment(farmerId, farmerPlantDTO);
-                return Ok("Farmer plant assignments updated successfully.");
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
+                await _farmerPlantService.UnAssignFarmerAsync(plantId, farmerId);
+                return Ok("the farmer has been unassigned successfully");
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("Assign-Farmer/{plantId}")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> AssignFarmer([FromRoute]Guid plantId , [FromBody] AssignFarmerDTO farmers)
+        {
+            try
+            {
+                await _farmerPlantService.AssignFarmers(plantId, farmers);
+                return Ok("the farmers have been assigned successfully");
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }

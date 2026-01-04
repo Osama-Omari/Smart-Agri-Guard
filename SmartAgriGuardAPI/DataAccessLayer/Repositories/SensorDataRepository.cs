@@ -88,7 +88,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<List<SensorData>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTime startDate, DateTime endDate)
+        public async Task<List<SensorData>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTimeOffset startDate, DateTimeOffset endDate)
         {
             try
             {

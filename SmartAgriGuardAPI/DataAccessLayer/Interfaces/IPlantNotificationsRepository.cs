@@ -9,12 +9,17 @@ namespace DataAccessLayer.Interfaces
 {
     public interface IPlantNotificationsRepository
     {
-        public Task AddAsync(PlantNotifications plantNotification);
+         Task AddAsync(PlantNotifications plantNotification);
 
-        public Task<List<PlantNotifications>> GetByPlantIdAsync(Guid plantId);
+         Task<List<PlantNotifications>> GetByPlantIdAsync(Guid plantId);
 
-        public Task MarkAsReadAsync(Guid notificationId);
+         Task MarkAsReadAsync(Guid notificationId);
 
-        public Task DeleteAsync(Guid notificationId);
+         Task DeleteAsync(Guid notificationId);
+
+
+        Task<List<PlantNotifications>> GetByIdsAsync(List<Guid> notificationIds);
+
+        Task UpdateAsync(PlantNotifications plantNotifications);
     }
 }

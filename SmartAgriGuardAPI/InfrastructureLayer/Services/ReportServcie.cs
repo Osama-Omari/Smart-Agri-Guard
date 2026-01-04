@@ -38,6 +38,7 @@ namespace InfrastructureLayer.Services
             if (greenhouse == null)
                 throw new ArgumentException("Invalid greenhouse ID.");
 
+
             var report = new ReportDataDTO
             {
                 GreenhouseName = greenhouse.Name,

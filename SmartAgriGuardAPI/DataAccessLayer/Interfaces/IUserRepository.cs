@@ -12,7 +12,6 @@ namespace DataAccessLayer.Interfaces
     {
         Task<User?> GetUserByUserName(string username);
         Task<User?> GetUserByIdAsync(Guid id);
-        Task<List<User>> GetAllUsersAsync();
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(Guid id);
@@ -22,6 +21,10 @@ namespace DataAccessLayer.Interfaces
         Task<User?> GetManagerById(Guid managerId);
 
         Task<List<User>> GetAllManagersAsync();
+
+        Task UpdateAsync(User user);
+
+        Task<List<User>> GetFarmersByIdsAsync(List<Guid> farmerIds);
 
 
     }

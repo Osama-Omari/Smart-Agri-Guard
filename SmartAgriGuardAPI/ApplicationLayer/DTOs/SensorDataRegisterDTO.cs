@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace ApplicationLayer.DTOs
 {
     public class SensorDataRegisterDTO
     {
+        public DateTimeOffset Timestamp { get; set; }
         public double? Temperature { get; set; }
 
         public double? Humidity { get; set; }

@@ -15,6 +15,8 @@ namespace ApplicationLayer.DTOs
         
         public string RoleName { get; set; }
 
+        public string TimezoneId { get; set; }
+
 
     }
 }

@@ -6,7 +6,7 @@ namespace WebAPILayer.RequestDTO
     {
         [Required(ErrorMessage = "Name is required")]
         [StringLength(200, ErrorMessage = "Name for the Greenhouse can't exceed 200 characters")]
-        public string Name { get; set; }
+        public string PlantName { get; set; }
 
         [Required]
         public Guid PlantTypeId { get; set; }

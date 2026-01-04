@@ -10,19 +10,20 @@ using FluentValidation.AspNetCore;
 using InfrastructureLayer.BackgroundServices;
 using InfrastructureLayer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Text;
-using WebAPILayer.Filters;
+using WebAPILayer.JsonConverter;
 namespace WebAPILayer
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
+
+            QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers()
@@ -33,11 +34,47 @@ namespace WebAPILayer
                 });
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(option =>
+            {
+                option.SwaggerDoc("v1", new OpenApiInfo { Title = "SmartAgriGuard API", Version = "v1" });
+
+                // 1. Define the Security Scheme
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+
+                // 2. Add the Security Requirement
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[]{ }
+                    }
+                });
+            });
 
 
             builder.Services.AddDbContext<SmartAgriGuardDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddControllers()
+             .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new RequestUtcDateTimeOffsetConverter());
+             });
 
 
             builder.Services.AddAuthentication(options =>
@@ -54,7 +91,7 @@ namespace WebAPILayer
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = builder.Configuration["JWT:Issuer"],
                     ValidAudience = builder.Configuration["JWT:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
                 };
             });
 
@@ -72,7 +109,7 @@ namespace WebAPILayer
             builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IGreenhouseRepository, GreenhouseRepository>();
-            builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>();
+            //builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>();
             builder.Services.AddScoped<IPredictionRepository,PredictionRepository>();
             builder.Services.AddScoped<ISensorDataRepository, SensorDataRepository>();
             builder.Services.AddScoped<ISensorDataArchiveRepository, SensorDataArchiveRepository>();
@@ -106,7 +143,11 @@ namespace WebAPILayer
             using(var scope = app.Services.CreateScope())
             {
                 var userService = scope.ServiceProvider.GetService<IUserService>();
-                DbInitializer.SeedAdmins(userService, builder.Configuration["Admin:FullName"], builder.Configuration["Admin:UserName"], builder.Configuration["Admin:Password"]).GetAwaiter().GetResult();
+                DbInitializer.SeedAdmins(userService!, builder.Configuration["Admin:FullName"]!, builder.Configuration["Admin:UserName"]!, builder.Configuration["Admin:Password"]!).GetAwaiter().GetResult();
+
+                var notificationService = scope.ServiceProvider.GetService<INotificationService>();
+                var adminId = Guid.Parse("BF5E5D61-47F8-4B08-90E6-1E83B77BCDC2");
+                await notificationService!.NotifyAdminTest(adminId);
             }
 
             // Configure the HTTP request pipeline.
@@ -116,9 +157,13 @@ namespace WebAPILayer
                 app.UseSwaggerUI();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
+
+
 
             app.UseAuthorization();
+
+            app.UseStaticFiles();
 
             app.MapControllers();
 

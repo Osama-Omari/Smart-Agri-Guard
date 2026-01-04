@@ -119,7 +119,7 @@ namespace DataAccessLayer.Repositories
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
-        public Task<List<SensorDataArchive>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTime startDate, DateTime endDate)
+        public Task<List<SensorDataArchive>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTimeOffset startDate, DateTimeOffset endDate)
         {
             try
             {

@@ -15,6 +15,7 @@ namespace ApplicationLayer.Validators
             RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required.");
             RuleFor(x => x.DeviceToken).NotEmpty().WithMessage("DeviceToken is required.");
             RuleFor(x => x.DeviceType).NotEmpty().WithMessage("DeviceType is required.");
+            RuleFor(x=> x.TimeZoneId).NotEmpty().WithMessage("TimeZoneId is required.");
            
         }
 

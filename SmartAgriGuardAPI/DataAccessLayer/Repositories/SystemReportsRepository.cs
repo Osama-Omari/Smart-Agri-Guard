@@ -57,7 +57,7 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                return await _context.SystemReports.Include(g=>g.Greenhouse).ToListAsync();
+                return await _context.SystemReports.OrderByDescending(x=> x.ReportDate).Include(g=>g.Greenhouse).ToListAsync();
 
             }
             catch (Exception ex)
@@ -72,6 +72,7 @@ namespace DataAccessLayer.Repositories
             {
                 return await _context.SystemReports
                     .Where(r => r.GreenhouseId == greenhouseId)
+                    .OrderByDescending(x => x.ReportDate)
                     .ToListAsync();
 
             }
@@ -81,6 +82,19 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task<List<SystemReports>> GetSystemReportsAsyncByIds(List<Guid> ids)
+        {
+            try
+            {
+                return await _context.SystemReports
+                    .Where(r => ids.Contains(r.Id))
+                    .ToListAsync();
+
+            }
+            catch (Exception ex) {
+                throw new Exception("An error occurred while retrieving system reports by IDs.", ex);
+            }
+        }
 
         public async Task MarkAsReadAsync(Guid reportId)
         {
@@ -99,6 +113,20 @@ namespace DataAccessLayer.Repositories
             {
                 throw new Exception("An error occurred while marking the system report as read.", ex);
             }
+        }
+
+        public async Task UpdateAsync(SystemReports systemReports)
+        {
+            try
+            {
+                _context.SystemReports.Update(systemReports);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the system report.", ex);
+            }
+
         }
     }
 }

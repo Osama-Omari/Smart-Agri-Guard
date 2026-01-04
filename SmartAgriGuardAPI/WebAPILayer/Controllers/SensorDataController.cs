@@ -45,7 +45,8 @@ namespace WebAPILayer.Controllers
         {
             try
             {
-                var sensorData = await _sensorDataService.GetLatestSensorData(plantId);
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+                var sensorData = await _sensorDataService.GetLatestSensorData(plantId, userTimeZoneId);
                 if (sensorData == null)
                     return NotFound("No sensor data found for the specified plant.");
                 return Ok(sensorData);
@@ -70,7 +71,8 @@ namespace WebAPILayer.Controllers
             }
             try
             {
-                var trends = await _sensorDataService.GetSensorTrendsAsync(dto);
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+                var trends = await _sensorDataService.GetSensorTrendsAsync(dto, userTimeZoneId);
                 if (trends == null)
                     return NotFound("No sensor trend data found for the specified criteria.");
                 return Ok(trends);
@@ -95,7 +97,9 @@ namespace WebAPILayer.Controllers
             }
             try
             {
-                var trends = await _sensorDataArchiveService.GetSensorArchiveTrendsAsync(dto);
+                var userTimeZoneId =  User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+
+                var trends = await _sensorDataArchiveService.GetSensorArchiveTrendsAsync(dto,userTimeZoneId);
                 if (trends == null)
                     return NotFound("No sensor trend data found for the specified criteria.");
                 return Ok(trends);

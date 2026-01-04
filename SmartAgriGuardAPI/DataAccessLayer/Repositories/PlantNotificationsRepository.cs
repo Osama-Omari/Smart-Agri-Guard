@@ -54,12 +54,27 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task<List<PlantNotifications>> GetByIdsAsync(List<Guid> notificationIds)
+        {
+            try
+            {
+                return await _context.PlantNotifications
+                    .Where(n => notificationIds.Contains(n.Id))
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving plant notifications by IDs.", ex);
+            }
+        }
+
         public async Task<List<PlantNotifications>> GetByPlantIdAsync(Guid plantId)
         {
             try
             {
                 return await _context.PlantNotifications
                     .Where(n => n.PlantId == plantId)
+                    .OrderByDescending(x=>x.NotificationDate)
                     .Include(n => n.Plant)
                     .ToListAsync();
 
@@ -91,6 +106,20 @@ namespace DataAccessLayer.Repositories
             {
                 throw new Exception("An error occurred while marking the notification as read.", ex);
             }
+        }
+
+        public async Task UpdateAsync(PlantNotifications plantNotifications)
+        {
+            try
+            {
+                _context.PlantNotifications.Update(plantNotifications);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the plant notification.", ex);
+            }
+
         }
     }
 }

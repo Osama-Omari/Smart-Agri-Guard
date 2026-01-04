@@ -28,28 +28,24 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception("Error Happend While Adding a farmer plant");
+                throw new Exception($"Error Happend While Adding a farmer plant: {ex.Message}");
             }
 
         }
-        public async Task<List<FarmerPlant>> GetPlantsByFarmerIdAsync(Guid farmerId)
-        {
-            return await _context.FarmerPlants
-                .Include(fp => fp.Plant)
-                .Where(fp => fp.FarmerId == farmerId)
-                .ToListAsync();
-        }
 
-        public async Task RemoveAsync(Guid farmerId, Guid plantId)
+        public async Task AddAsync(List<FarmerPlant> assignments)
         {
-            var entry = await _context.FarmerPlants
-                .FirstOrDefaultAsync(fp => fp.FarmerId == farmerId && fp.PlantId == plantId);
-
-            if (entry != null)
+            try
             {
-                _context.FarmerPlants.Remove(entry);
+                await _context.FarmerPlants.AddRangeAsync(assignments);
                 await _context.SaveChangesAsync();
             }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error Happend While Adding a farmer plant: {ex.Message}");
+            }
         }
+
+
     }
 }

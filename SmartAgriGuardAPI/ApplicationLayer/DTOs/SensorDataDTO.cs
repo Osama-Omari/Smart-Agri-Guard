@@ -23,7 +23,7 @@ namespace ApplicationLayer.DTOs
 
         public double? Nitrogen { get; set; }
 
-        public DateTime Timestamp { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
 
 
     }

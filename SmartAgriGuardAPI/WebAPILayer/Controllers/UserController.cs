@@ -18,7 +18,7 @@ namespace WebAPILayer.Controllers
             _userService = userService;
         }
 
-        [HttpDelete("DleteFarmer/{farmerId}")]
+        [HttpDelete("DeleteFarmer/{farmerId}")]
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteFarmer(Guid farmerId)
         {
@@ -30,13 +30,7 @@ namespace WebAPILayer.Controllers
                 {
                     return Unauthorized("Invalid manager ID.");
                 }
-                var manager = await _userService.GetManager(managerId);
-                var farmer = await _userService.GetFarmer(farmerId);
-                if(manager.GreenhousesIds.Contains(farmer.GreenhouseId) == false)
-                {
-                    return Forbid("You are not authorized to delete this farmer.");
-                }
-                await _userService.DeleteFarmerAsync(farmerId);
+                await _userService.DeleteFarmerAsync(farmerId,managerId);
                 return Ok("Farmer deleted successfully.");
             }
             catch (Exception ex)

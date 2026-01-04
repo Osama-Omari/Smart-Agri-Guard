@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationLayer.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,9 @@ namespace ApplicationLayer.Interfaces
 
         Task NotifyPlantNeedsWatering(Guid plantId);
         Task NotifyPlantNeedsNutrients(Guid plantId);
+
+        Task NotifyAdminTest(Guid adminId);
+
+
     }
 }

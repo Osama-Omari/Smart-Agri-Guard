@@ -61,9 +61,10 @@ namespace DataAccessLayer.Repositories
             try
             {
                 return await _context.Greenhouses
-                    .Include(x=>x.Plants)
                     .Include(x=> x.Farmers)
-                    .ThenInclude(f=> f.FarmerPlants)
+                    .Include(x=> x.Manager)
+                    .ThenInclude(x => x.FarmerPlants)
+                    .ThenInclude(x=> x.Plant)
                    . FirstOrDefaultAsync(x => x.Id == id)
                     ;
             }
@@ -86,6 +87,23 @@ namespace DataAccessLayer.Repositories
             {
                 throw new Exception($"Error while retriving greenhouse by manager id: {ex.Message}");
 
+            }
+        }
+
+        public async Task<List<Greenhouse>?> GetGreenhousesWithoutManagerAsync()
+        {
+            try
+            {
+                return await _context.Greenhouses
+                    .Where(g => g.ManagerId == null)
+                    .Include(g => g.Plants)
+                    .Include(g => g.Farmers)
+                    .ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while retriving greenhouses without manager: {ex.Message}");
             }
         }
 

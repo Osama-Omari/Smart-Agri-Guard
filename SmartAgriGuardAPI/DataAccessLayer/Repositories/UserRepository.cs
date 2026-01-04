@@ -36,6 +36,24 @@ namespace DataAccessLayer.Repositories
             }
 
         }
+
+        public async Task<List<User>> GetFarmersByIdsAsync(List<Guid> farmerIds)
+        {
+            try
+            {
+                return await _context.Users
+                    .Where(u => farmerIds.Contains(u.Id))
+                    .ToListAsync();
+            }
+            catch (Exception ex) { throw new Exception($"Error while getting farmers: {ex.Message}"); }
+        }
+
+        public async Task UpdateAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<User?> GetUserByIdAsync(Guid id)
         {
             try
@@ -46,15 +64,6 @@ namespace DataAccessLayer.Repositories
 
         }
 
-        public async Task<List<User>> GetAllUsersAsync()
-        {
-            try
-            {
-                return await _context.Users.ToListAsync();
-            }
-            catch (Exception ex) { throw new Exception($"Error while getting all users: {ex.Message}"); }
-
-        }
 
         public async Task UpdateUserAsync(User user)
         {

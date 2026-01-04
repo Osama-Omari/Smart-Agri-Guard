@@ -16,9 +16,9 @@ namespace DataAccessLayer.Models
         public string DeviceType { get; set; }
 
         public string? DeviceModel { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime? LastUpdated { get; set; }
+        public DateTimeOffset? LastUpdated { get; set; }
 
         public bool IsActive { get; set; } = true;
     }

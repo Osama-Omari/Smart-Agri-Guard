@@ -3,6 +3,7 @@ using ApplicationLayer.Interfaces;
 using AutoMapper;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,14 @@ namespace InfrastructureLayer.Services
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IFileStorageService _fileStorageService;
-        public GreenhouseService(IGreenhouseRepository greenhouseRepository, IMapper mapper, IUserRepository userRepository,IFileStorageService fileStorageService)
+        private readonly ISystemReportsRepository _systemReportsRepository;
+        public GreenhouseService(IGreenhouseRepository greenhouseRepository, IMapper mapper, IUserRepository userRepository,IFileStorageService fileStorageService, ISystemReportsRepository systemReportsRepository)
         {
             _greenhouseRepository = greenhouseRepository;
             _mapper = mapper;
             _userRepository = userRepository;
             _fileStorageService = fileStorageService;
+            _systemReportsRepository = systemReportsRepository;
         }
 
         public async Task<GreenhouseDTO> AddGreenhouse(GreenhouseRegisterDTO dto)
@@ -73,6 +76,14 @@ namespace InfrastructureLayer.Services
             await _greenhouseRepository.DeleteAsync(id);
         }
 
+        public async Task<List<SystemReportDTO>?> GetAllGreenhousesNotifications()
+        {
+            var reports = await _systemReportsRepository.GetAllAsync();
+            if (reports == null || !reports.Any())
+                return null;
+            return _mapper.Map<List<SystemReportDTO>>(reports);
+        }
+
         public async Task<List<GreenhouseDTO>> GetAllGreenhouses()
         {
             var greennhouses = await _greenhouseRepository.GetAllAsync();
@@ -82,7 +93,7 @@ namespace InfrastructureLayer.Services
             
         }
 
-        public async Task<List<FarmerDTO>> GetFarmersByGreenhouseIdAsync(Guid greenhouseId)
+        public async Task<List<FarmerDTO>?> GetFarmersByGreenhouseIdAsync(Guid greenhouseId)
         {
             var greenhouse = await _greenhouseRepository.GetGreenhouseById(greenhouseId);
             if(greenhouse == null)
@@ -101,14 +112,43 @@ namespace InfrastructureLayer.Services
             return _mapper.Map<GreenhouseDTO>(greenhouse);
         }
 
-        
+        public async Task<List<SystemReportDTO>?> GetGreenhouseNotifications(Guid greenhouseId)
+        {
+            var greenhouse = await _greenhouseRepository.GetGreenhouseById(greenhouseId);
+            if (greenhouse == null)
+                throw new KeyNotFoundException("greenhouse not found");
+            var reports = await _systemReportsRepository.GetByGreenhouseIdAsync(greenhouseId);
+            if (reports == null || !reports.Any())
+                return null;
 
-        public async Task<List<GreenhouseDTO>> GetGreenhousesByManagerIdAsync(Guid managerId)
+            return _mapper.Map<List<SystemReportDTO>>(greenhouse.SystemReports);
+
+
+        }
+
+        public async Task<List<GreenhouseDTO>?> GetGreenhousesByManagerIdAsync(Guid managerId)
         {
             var greenhouses = await _greenhouseRepository.GetGreenhousesByManagerIdAsync(managerId);
             if (greenhouses == null || !greenhouses.Any())
                 return null;
             return _mapper.Map<List<GreenhouseDTO>>(greenhouses);
+
+        }
+
+        public async Task<List<GreenhouseDTO>?> GetGreenhousesWithoutManagerAsync()
+        {
+            var greenhouses  = await  _greenhouseRepository.GetGreenhousesWithoutManagerAsync();
+            if (greenhouses == null || !greenhouses.Any())
+                return null;
+            return _mapper.Map<List<GreenhouseDTO>>(greenhouses);
+        }
+
+        public async Task<UserDTO> GetManagerByGreenhouseIdAsync(Guid greenhouseId)
+        {
+            var greenhouse = await  _greenhouseRepository.GetGreenhouseById(greenhouseId);
+            if (greenhouse == null)
+                throw new KeyNotFoundException("greenhouse not found");
+            return _mapper.Map<UserDTO>(greenhouse.Manager);
 
         }
 
@@ -144,6 +184,16 @@ namespace InfrastructureLayer.Services
                 greenhouse.ImageUrl = dto.ImagePath;
             }
             await _greenhouseRepository.UpdateAsync(greenhouse);
+        }
+
+        public async Task MarkGreenhouseNotificationAsRead(List<Guid> ids)
+        {
+            var reports = await _systemReportsRepository.GetSystemReportsAsyncByIds(ids);
+            foreach (var report in reports)
+            {
+                report.IsRead = true;
+                await _systemReportsRepository.UpdateAsync(report);
+            }
         }
     }
 }

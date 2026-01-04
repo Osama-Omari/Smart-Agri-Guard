@@ -11,6 +11,6 @@ namespace ApplicationLayer.Interfaces
     {
         Task DeleteAllByPlantIdAsync(Guid PlantId);
 
-        Task<SensorTrendResponseDTO> GetSensorArchiveTrendsAsync(SensorTrendArchiveRequestDTO dto);
+        Task<SensorTrendResponseDTO> GetSensorArchiveTrendsAsync(SensorTrendArchiveRequestDTO dto, string userTimeZoneId);
     }
 }

@@ -1,7 +1,12 @@
-﻿using ApplicationLayer.Interfaces;
+﻿using ApplicationLayer.DTOs;
+using ApplicationLayer.Interfaces;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,35 +19,28 @@ namespace InfrastructureLayer.Services
     {
         private readonly IDeviceTokenRepository _deviceTokenRepository;
         private readonly IPlantRepository _plantRepository;
-        private readonly IUserRepository _userRepository;
 
-        public FirebaseNotificationService(IDeviceTokenRepository deviceTokenRepository, IPlantRepository plantRepository, IUserRepository userRepository)
+        public FirebaseNotificationService(IDeviceTokenRepository deviceTokenRepository, IPlantRepository plantRepository, IConfiguration configuration, IWebHostEnvironment env)
         {
             _deviceTokenRepository = deviceTokenRepository;
             _plantRepository = plantRepository;
-            _userRepository = userRepository;
 
-            if(FirebaseApp.DefaultInstance == null)
-            {
-                FirebaseApp.Create(new AppOptions
-                {
-                    Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile("Config/smartagriguard-ec6f7-firebase-adminsdk-fbsvc-9538d4a6e9.json"),
-                });
-            }
+            InitializeFirebase(configuration, env);
 
         }
 
         public async Task SendToUserAsync(Guid userId, string title, string message)
         {
-            var deviceTokens = await _deviceTokenRepository.GetTokensByUserIdAsync(userId);
-            if (deviceTokens == null || !deviceTokens.Any())
+            var deviceToken = await _deviceTokenRepository.GetTokenByUserIdAsync(userId);
+            if (deviceToken == null)
             {
                 return;
             }
+
             var messaging = FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance;
             var multicastMessage = new MulticastMessage
             {
-                Tokens = deviceTokens.Select(dt => dt.Token).ToList(),
+                Tokens = new List<string> { deviceToken.Token }, // FIX: wrap token in a list
                 Notification = new Notification
                 {
                     Title = title,
@@ -57,10 +55,10 @@ namespace InfrastructureLayer.Services
             var allTokens = new List<string>();
             foreach (var userId in userIds)
             {
-                var deviceTokens = await _deviceTokenRepository.GetTokensByUserIdAsync(userId);
-                if (deviceTokens != null && deviceTokens.Any())
+                var deviceToken = await _deviceTokenRepository.GetTokenByIdAsync(userId);
+                if (deviceToken != null)
                 {
-                    allTokens.AddRange(deviceTokens.Select(dt => dt.Token));
+                    allTokens.Add(deviceToken.Token);
                 }
             }
 
@@ -97,6 +95,33 @@ namespace InfrastructureLayer.Services
             if (plant == null) return;
             var farmerIds = plant.FarmerPlants.Select(fp => fp.FarmerId).Distinct();
             await SendToUsersAsync(farmerIds, "Plant Needs Nutrients", $"The plant {plant.Name} needs nutrients.");
+        }
+
+        //test sending notification for admin
+        public async Task NotifyAdminTest(Guid adminId)
+        {
+            await SendToUserAsync(adminId, "Test Notification", "This is a test notification for admin.");
+        }
+
+
+        private void InitializeFirebase(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            if (FirebaseApp.DefaultInstance != null)
+                return;
+
+            var relativePath = configuration["Firebase:ServiceAccountPath"];
+            if (string.IsNullOrWhiteSpace(relativePath))
+                throw new InvalidOperationException("Firebase ServiceAccountPath is not configured.");
+
+            var fullPath = Path.Combine(env.ContentRootPath, relativePath);
+
+            if (!File.Exists(fullPath))
+                throw new FileNotFoundException("Firebase service account file not found.", fullPath);
+
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = GoogleCredential.FromFile(fullPath)
+            });
         }
 
 

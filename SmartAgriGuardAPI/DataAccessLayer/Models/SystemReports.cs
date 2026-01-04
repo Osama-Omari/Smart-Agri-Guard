@@ -19,7 +19,7 @@ namespace DataAccessLayer.Models
 
         public bool IsRead { get; set; }
 
-        public DateTime ReportDate { get; set; }
+        public DateTimeOffset ReportDate { get; set; }
 
     }
 }
