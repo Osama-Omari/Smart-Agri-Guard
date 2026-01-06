@@ -7,6 +7,7 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using InfrastructureLayer.BackgroundServices;
 using InfrastructureLayer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,6 +66,14 @@ namespace WebAPILayer
                     }
                 });
             });
+
+            builder.Services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddHangfireServer();
 
 
             builder.Services.AddDbContext<SmartAgriGuardDbContext>(options =>
@@ -133,7 +142,9 @@ namespace WebAPILayer
             builder.Services.AddScoped<INotificationService, FirebaseNotificationService>();
             builder.Services.AddScoped<IPlantNotificationsRepository, PlantNotificationsRepository>();
             builder.Services.AddScoped<ISystemReportsRepository, SystemReportsRepository>();
-
+            builder.Services.AddScoped<IPlantScheduleRepository, PlantScheduleRepository>();
+            builder.Services.AddScoped<IPlantNotificationJob, PlantNotificationJob>();
+            builder.Services.AddScoped<IPlantScheduleService, PlantScheduleService>();
 
 
 
@@ -159,7 +170,7 @@ namespace WebAPILayer
 
             app.UseHttpsRedirection();
 
-
+            app.UseHangfireDashboard();
 
             app.UseAuthorization();
 

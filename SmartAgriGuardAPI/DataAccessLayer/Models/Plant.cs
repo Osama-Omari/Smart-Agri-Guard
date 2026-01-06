@@ -35,5 +35,7 @@ namespace DataAccessLayer.Models
         public List<Recommendation> Recommendations { get; set; }
 
         public List<FarmerPlant> FarmerPlants { get; set; }
+
+        public List<PlantSchedule> PlantSchedules { get; set; } = new();
     }
 }

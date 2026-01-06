@@ -3,12 +3,14 @@ using ApplicationLayer.Interfaces;
 using AutoMapper;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Hangfire;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeZoneConverter;
+
 
 namespace InfrastructureLayer.Services
 {
@@ -26,9 +28,12 @@ namespace InfrastructureLayer.Services
         private readonly ISensorDataArchiveService _sensorDataArchiveService;
         private readonly IFileStorageService _fileStorageService;
         private readonly IPlantNotificationsRepository _plantNotificationsRepository;
+        private readonly IPlantScheduleRepository _plantScheduleRepository;
+        private readonly IRecurringJobManager _recurringJobManager;
 
         public PlantService(IPlantRepository plantRepository, IPlantTypeRepository plantTypeRepository, IMapper mapper, IGreenhouseRepository greenhouseRepository,
-            ISensorDataService sensorDataService, ISensorDataArchiveService sensorDataArchiveService, IFileStorageService fileStorageService, IPlantNotificationsRepository plantNotificationsRepository)
+            ISensorDataService sensorDataService, ISensorDataArchiveService sensorDataArchiveService,
+            IFileStorageService fileStorageService, IPlantNotificationsRepository plantNotificationsRepository, IPlantScheduleRepository plantScheduleRepository, IRecurringJobManager recurringJobManager)
         {
             _plantRepository = plantRepository;
             _plantTypeRepository = plantTypeRepository;
@@ -38,6 +43,8 @@ namespace InfrastructureLayer.Services
             _sensorDataArchiveService = sensorDataArchiveService;
             _fileStorageService = fileStorageService;
             _plantNotificationsRepository = plantNotificationsRepository;
+            _plantScheduleRepository = plantScheduleRepository;
+            _recurringJobManager = recurringJobManager;
         }
 
         /// <summary>

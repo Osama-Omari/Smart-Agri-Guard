@@ -17,11 +17,13 @@ namespace WebAPILayer.Controllers
     {
         private readonly IFileStorageService _fileStorageService;
         private readonly IPlantService _plantService;
-
-        public PlantController(IFileStorageService fileStorageService, IPlantService plantService)
+        private readonly IPlantScheduleService _plantScheduleService;
+        public PlantController(IFileStorageService fileStorageService, IPlantService plantService,IPlantScheduleService plantScheduleService)
         {
             _fileStorageService = fileStorageService;
             _plantService = plantService;
+            _plantScheduleService = plantScheduleService;
+
         }
 
         /// <summary>
@@ -210,6 +212,28 @@ namespace WebAPILayer.Controllers
                 };
                 await _plantService.UpdatePlantAsync(plantId, plantUpdateDto);
                 return Ok("The plant has been updated successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpPost("Add-Plant-Schedule/{PlantId}")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> AddPlantSchedule([FromRoute] Guid PlantId, [FromBody] CreateScheduleDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                await _plantScheduleService.AddPlantScheduleAsync(PlantId, dto);
+                return Ok("The schedule has been added successfully");
             }
             catch (KeyNotFoundException ex)
             {

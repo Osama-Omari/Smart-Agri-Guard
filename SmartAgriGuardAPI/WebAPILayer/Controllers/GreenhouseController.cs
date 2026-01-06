@@ -27,46 +27,6 @@ namespace WebAPILayer.Controllers
             _greenhouseService = greenhouseService;
         }
 
-        /// <summary>
-        /// Retrieves a specific greenhouse by its unique identifier.
-        /// </summary>
-        /// <param name="Id">The GUID of the greenhouse.</param>
-        [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetGreenhouseById(Guid Id)
-        {
-            try
-            {
-                var greenhouse = await _greenhouseService.GetGreenhouseById(Id);
-                if (greenhouse == null)
-                    return NotFound();
-                return Ok(greenhouse);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Returns a list of all greenhouses in the system.
-        /// </summary>
-        [HttpGet("All")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllGreenhouses()
-        {
-            try
-            {
-                var greenhouses = await _greenhouseService.GetAllGreenhouses();
-                if (greenhouses == null)
-                    return NotFound();
-                return Ok(greenhouses);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
-            }
-        }
 
         /// <summary>
         /// Creates a new greenhouse with an optional image upload.
@@ -112,6 +72,49 @@ namespace WebAPILayer.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Retrieves a specific greenhouse by its unique identifier.
+        /// </summary>
+        /// <param name="Id">The GUID of the greenhouse.</param>
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetGreenhouseById(Guid Id)
+        {
+            try
+            {
+                var greenhouse = await _greenhouseService.GetGreenhouseById(Id);
+                if (greenhouse == null)
+                    return NotFound();
+                return Ok(greenhouse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of all greenhouses in the system.
+        /// </summary>
+        [HttpGet("All")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllGreenhouses()
+        {
+            try
+            {
+                var greenhouses = await _greenhouseService.GetAllGreenhouses();
+                if (greenhouses == null)
+                    return NotFound();
+                return Ok(greenhouses);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        
 
         /// <summary>
         /// Retrieves greenhouses that currently do not have an assigned manager.

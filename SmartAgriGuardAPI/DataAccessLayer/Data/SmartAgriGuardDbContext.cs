@@ -40,6 +40,8 @@ namespace DataAccessLayer.Data
 
         public DbSet<SystemReports> SystemReports { get; set; }
 
+        public DbSet<PlantSchedule> PlantSchedules { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -61,6 +63,51 @@ namespace DataAccessLayer.Data
                     .WithOne(e => e.UserRole)
                     .HasForeignKey(e => e.UserRoleId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+            modelBuilder.Entity<PlantSchedule>(entity =>
+            {
+                entity.ToTable("PlantSchedules");
+
+                // Primary Key
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("NEWID()");
+
+                // Required fields and string lengths (Optimization)
+                entity.Property(e => e.TaskType)
+                    .IsRequired()
+                    .HasMaxLength(50); // "Watering" or "Fertilization"
+
+                entity.Property(e => e.Frequency)
+                    .IsRequired()
+                    .HasMaxLength(20); // "Daily" or "Weekly"
+
+                entity.Property(e => e.CronExpression)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                // Enforce valid ranges for time
+                entity.Property(e => e.Hour).IsRequired();
+                entity.Property(e => e.Minute).IsRequired();
+
+                // DaysOfWeek can be long if it's "Monday,Tuesday..."
+                entity.Property(e => e.DaysOfWeek)
+                    .HasMaxLength(200);
+
+                // Relationship: One Plant has Many Schedules
+                // When a Plant is deleted, delete its schedules too (Cascade)
+                entity.HasOne(d => d.Plant)
+                    .WithMany(p => p.PlantSchedules) // Make sure to add this List to your Plant model!
+                    .HasForeignKey(d => d.PlantId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_PlantSchedules_Plants");
+
+                // Indexing for performance
+                // Since we often query schedules by PlantId
+                entity.HasIndex(e => e.PlantId);
 
             });
 

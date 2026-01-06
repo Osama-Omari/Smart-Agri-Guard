@@ -45,15 +45,11 @@ namespace InfrastructureLayer.Services
         public async Task SendToUserAsync(Guid userId, string title, string message)
         {
             var deviceToken = await _deviceTokenRepository.GetTokenByUserIdAsync(userId);
-            if (deviceToken == null)
-            {
-                // Silent return if no device is registered for this user
-                return;
-            }
+            if (deviceToken == null) return;
 
-            var multicastMessage = new MulticastMessage
+            var msg = new Message()
             {
-                Tokens = new List<string> { deviceToken.Token },
+                Token = deviceToken.Token,
                 Notification = new Notification
                 {
                     Title = title,
@@ -61,7 +57,18 @@ namespace InfrastructureLayer.Services
                 }
             };
 
-            await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(multicastMessage);
+            try
+            {
+                // Capture the response string
+                string response = await FirebaseMessaging.DefaultInstance.SendAsync(msg);
+                Console.WriteLine("Successfully sent message: " + response);
+            }
+            catch (FirebaseMessagingException ex)
+            {
+                // This will tell you if the token is invalid, expired, or permissions are wrong
+                Console.WriteLine("Error sending FCM message: " + ex.MessagingErrorCode);
+                Console.WriteLine("Details: " + ex.Message);
+            }
         }
 
         /// <summary>

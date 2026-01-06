@@ -101,7 +101,7 @@ namespace WebAPILayer.Controllers
         /// <returns>The updated user profile data.</returns>
         [HttpPut("ChangeUserInfo")]
         [Authorize]
-        public async Task<IActionResult> ChangeFarmerInfo([FromBody] UpdateUserDTO dto)
+        public async Task<IActionResult> ChangeUserInfo([FromBody] UpdateUserDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

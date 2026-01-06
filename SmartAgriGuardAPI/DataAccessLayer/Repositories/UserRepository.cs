@@ -27,8 +27,15 @@ namespace DataAccessLayer.Repositories
         /// </summary>
         public async Task AddUserAsync(User user)
         {
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error happened while adding a new user: {ex.Message}");
+            }
         }
 
         /// <summary>
