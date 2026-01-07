@@ -24,7 +24,7 @@ namespace DataAccessLayer.Repositories
         }
 
         /// <summary>
-        /// Records new telemetry data. Automatically assigns a unique ID and a UTC timestamp 
+        /// Records new telemetry data.
         /// to ensure data consistency across different sensor hardware.
         /// </summary>
         /// <param name="sensorData">The telemetry object containing soil, temperature, and nutrient metrics.</param>
@@ -32,14 +32,11 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                sensorData.Id = Guid.NewGuid();
-                sensorData.Timestamp = DateTime.UtcNow;
-
                 await _context.SensorData.AddAsync(sensorData);
                 await _context.SaveChangesAsync();
                 return sensorData;
             }
-            catch (Exception ex) { throw new Exception("Error while adding sensor data."); }
+            catch (Exception ex) { throw new Exception($"Error while adding sensor data: {ex.Message}"); }
         }
 
         /// <summary>
@@ -53,7 +50,7 @@ namespace DataAccessLayer.Repositories
                     .Include(s => s.Plant)
                     .FirstOrDefaultAsync(s => s.Id == id);
             }
-            catch (Exception ex) { throw new Exception("Error while retrieving specific sensor record."); }
+            catch (Exception ex) { throw new Exception($"Error while retrieving specific sensor record: {ex.Message}"); }
         }
 
         /// <summary>
@@ -69,15 +66,23 @@ namespace DataAccessLayer.Repositories
                     .OrderByDescending(s => s.Timestamp)
                     .ToListAsync();
             }
-            catch (Exception ex) { throw new Exception("Error while retrieving plant telemetry history."); }
+            catch (Exception ex) { throw new Exception($"Error while retrieving plant telemetry history: {ex.Message}"); }
         }
 
         /// <summary>
         /// Prepares a collection of sensor records for removal (e.g., during a data archiving process).
         /// </summary>
-        public void RemoveRange(IEnumerable<SensorData> sensorData)
+        public async Task RemoveRange(IEnumerable<SensorData> sensorData)
         {
-            _context.SensorData.RemoveRange(sensorData);
+            try
+            {
+                _context.SensorData.RemoveRange(sensorData);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex) { throw new Exception(ex.Message);
+            }
+
+
         }
 
         /// <summary>
@@ -126,6 +131,21 @@ namespace DataAccessLayer.Repositories
             catch (Exception ex)
             {
                 throw new Exception($"Error while retrieving telemetry range: {ex.Message}");
+            }
+        }
+
+        public async Task<List<SensorData>> GetSensorDataOlderThan(DateTimeOffset cutoffDate)
+        {
+            try
+            {
+                return await _context.SensorData
+                    .Where(sd => sd.Timestamp < cutoffDate)
+                    .ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while retrieving old sensor data: " + ex.Message);
             }
         }
     }

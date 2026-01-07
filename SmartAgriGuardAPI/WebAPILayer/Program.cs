@@ -8,7 +8,6 @@ using DataAccessLayer.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hangfire;
-using InfrastructureLayer.BackgroundServices;
 using InfrastructureLayer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +21,12 @@ namespace WebAPILayer
     {
         public static async Task Main(string[] args)
         {
-
+            // Set the QuestPDF license for the reporting engine
             QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
             var builder = WebApplication.CreateBuilder(args);
 
+            // --- 1. CONTROLLERS & JSON CONFIGURATION ---
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -65,8 +65,14 @@ namespace WebAPILayer
                     new string[]{ }
                     }
                 });
+
+                // Includes XML comments from the code in the Swagger UI
+                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                option.IncludeXmlComments(xmlPath);
             });
 
+            // --- 3. BACKGROUND PROCESSING (HANGFIRE) ---
             builder.Services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -75,7 +81,7 @@ namespace WebAPILayer
 
             builder.Services.AddHangfireServer();
 
-
+            // --- 4. DATA PERSISTENCE (ENTITY FRAMEWORK) ---
             builder.Services.AddDbContext<SmartAgriGuardDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -85,7 +91,7 @@ namespace WebAPILayer
                 options.JsonSerializerOptions.Converters.Add(new RequestUtcDateTimeOffsetConverter());
              });
 
-
+            // --- 5. SECURITY & AUTHENTICATION (JWT) ---
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -103,15 +109,15 @@ namespace WebAPILayer
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
                 };
             });
-
-
+            // --- 6. DEPENDENCY INJECTION (SERVICES & REPOSITORIES) ---
+            // Register AutoMapper and FluentValidation
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<ManagerRegisterDTOValidation>();
             builder.Services.AddAutoMapper(builder =>
             {
                 builder.AddMaps(typeof(UserMapppingProfile).Assembly);
             });
-
+            // Core Repositories & Services
             builder.Services.Configure<PasswordSettings>(
             builder.Configuration.GetSection("PasswordSettings"));
             builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
@@ -135,7 +141,6 @@ namespace WebAPILayer
             builder.Services.AddScoped<IFarmerPlantService, FarmerPlantService>();
             builder.Services.AddScoped<ISensorDataArchiveService, SensorDataArchiveService>();
             builder.Services.AddScoped<ISensorDataService, SensorDataService>();
-            builder.Services.AddHostedService<DeviceTokenCleanupService>();
             builder.Services.AddScoped<IReportServcie, ReportServcie>();
             builder.Services.AddScoped<PdfReportStrategy>();
             builder.Services.AddScoped<ExcelReportStrategy>();
@@ -145,23 +150,49 @@ namespace WebAPILayer
             builder.Services.AddScoped<IPlantScheduleRepository, PlantScheduleRepository>();
             builder.Services.AddScoped<IPlantNotificationJob, PlantNotificationJob>();
             builder.Services.AddScoped<IPlantScheduleService, PlantScheduleService>();
+            builder.Services.AddScoped<IDataCleanupJob, DataCleanupJob>();
 
+            
 
 
 
             var app = builder.Build();
 
-            using(var scope = app.Services.CreateScope())
+            // --- 7. STARTUP TASKS & RECURRING JOBS ---
+            using (var scope = app.Services.CreateScope())
             {
+                var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
                 var userService = scope.ServiceProvider.GetService<IUserService>();
+
+                // Seed Admin User
                 DbInitializer.SeedAdmins(userService!, builder.Configuration["Admin:FullName"]!, builder.Configuration["Admin:UserName"]!, builder.Configuration["Admin:Password"]!).GetAwaiter().GetResult();
 
-                var notificationService = scope.ServiceProvider.GetService<INotificationService>();
-                var adminId = Guid.Parse("BF5E5D61-47F8-4B08-90E6-1E83B77BCDC2");
-                await notificationService!.NotifyAdminTest(adminId);
+                //var notificationService = scope.ServiceProvider.GetService<INotificationService>();
+                //var adminId = Guid.Parse("BF5E5D61-47F8-4B08-90E6-1E83B77BCDC2");
+                //await notificationService!.NotifyAdminTest(adminId);
+
+
+
+                // Register Global Maintenance Jobs
+                recurringJobManager.AddOrUpdate<IDataCleanupJob>(
+                "DataCleanupJob",
+                job => job.ClearReadNotificationsAndReports(),
+                Cron.Daily
+                );
+
+                recurringJobManager.AddOrUpdate<IDataCleanupJob>(
+                    "Weekly-Token-Cleanup",
+                    job => job.RemoveInactiveDeviceTokens(),
+                    Cron.Weekly
+                    );
+
+                recurringJobManager.AddOrUpdate<IDataCleanupJob>(
+                    "Process-SensorData-lifecycle",
+                    job => job.ProcessSensorDataLifecycle(),
+                    Cron.Daily);
             }
 
-            // Configure the HTTP request pipeline.
+            // --- 8. MIDDLEWARE PIPELINE ---
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

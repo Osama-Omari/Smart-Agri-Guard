@@ -73,8 +73,7 @@ namespace InfrastructureLayer.Services
             if (sensordata == null || !sensordata.Any())
                 return;
 
-            _sensorDataRepository.RemoveRange(sensordata);
-            await _sensorDataRepository.SaveChangesAsync();
+            await _sensorDataRepository.RemoveRange(sensordata);
         }
 
         /// <summary>

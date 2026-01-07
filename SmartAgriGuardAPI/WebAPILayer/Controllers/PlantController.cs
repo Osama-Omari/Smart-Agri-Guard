@@ -223,7 +223,14 @@ namespace WebAPILayer.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Creates a new recurring care schedule for a plant and registers it in Hangfire.
+        /// </summary>
+        /// <param name="PlantId">The unique identifier of the plant.</param>
+        /// <param name="dto">The schedule details (Frequency, Time, Task Type).</param>
+        /// <returns>A confirmation message if the schedule was created and job registered.</returns>
+        /// <response code="200">Successfully created in DB and scheduled in Hangfire.</response>
+        /// <response code="404">Plant not found.</response>
         [HttpPost("Add-Plant-Schedule/{PlantId}")]
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> AddPlantSchedule([FromRoute] Guid PlantId, [FromBody] CreateScheduleDTO dto)
@@ -234,6 +241,86 @@ namespace WebAPILayer.Controllers
             {
                 await _plantScheduleService.AddPlantScheduleAsync(PlantId, dto);
                 return Ok("The schedule has been added successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Updates an existing plant schedule and synchronizes the change with the Hangfire background worker.
+        /// </summary>
+        /// <param name="ScheduleId">The unique identifier of the schedule to modify.</param>
+        /// <param name="dto">The updated schedule data.</param>
+        /// <returns>A confirmation that the database and the background job were updated.</returns>
+        /// <response code="200">Database updated and Hangfire job rescheduled.</response>
+        /// <response code="404">Schedule not found.</response>
+        [HttpPut("Update-Plant-Schedule/{ScheduleId}")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> UpdatePlantSchedule([FromRoute] Guid ScheduleId, [FromBody] CreateScheduleDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                await _plantScheduleService.UpdatePlantScheduleAsync(ScheduleId, dto);
+                return Ok("The schedule has been updated successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Toggles the active status of a schedule. 
+        /// Disabling it removes the job from Hangfire while keeping the configuration in the database.
+        /// </summary>
+        /// <param name="ScheduleId">The unique identifier of the schedule.</param>
+        /// <returns>The new toggle state (Active/Inactive).</returns>
+        /// <response code="200">Status flipped and background job added/removed accordingly.</response>
+        [HttpPatch("Toggle-Plant-Schedule/{ScheduleId}")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> TogglePlantSchedule([FromRoute] Guid ScheduleId)
+        {
+            try
+            {
+                await _plantScheduleService.TogglePlantScheduleAsync(ScheduleId);
+                return Ok("The schedule status has been toggled successfully");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Permanently deletes a plant schedule from the database and stops all associated background tasks.
+        /// </summary>
+        /// <param name="ScheduleId">The unique identifier of the schedule to be removed.</param>
+        /// <returns>A success message indicating the schedule is fully purged.</returns>
+        /// <response code="200">Schedule record deleted and Hangfire job permanently removed.</response>
+        [HttpDelete("Delete-Plant-Schedule/{ScheduleId}")]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> DeletePlantSchedule([FromRoute] Guid ScheduleId)
+        {
+            try
+            {
+                await _plantScheduleService.DeletePlantScheduleAsync(ScheduleId);
+                return Ok("The schedule has been deleted successfully");
             }
             catch (KeyNotFoundException ex)
             {

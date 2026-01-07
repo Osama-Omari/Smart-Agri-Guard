@@ -176,5 +176,34 @@ namespace DataAccessLayer.Repositories
                 throw new Exception($"Error retrieving old tokens: {ex.Message} ");
             }
         }
+
+        public async Task<List<DeviceToken>> GetInactiveDeviceTokens()
+        {
+            try
+            {
+                return await _context.DeviceTokens
+                    .Where(dt => !dt.IsActive)
+                    .ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving inactive device tokens", ex);
+            }
+        }
+
+        public async Task DeleteRangeAsync(List<DeviceToken> deviceTokens)
+        {
+            try
+            {
+                _context.DeviceTokens.RemoveRange(deviceTokens);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error deleting range of device tokens", ex);
+            }
+        }
     }
 }

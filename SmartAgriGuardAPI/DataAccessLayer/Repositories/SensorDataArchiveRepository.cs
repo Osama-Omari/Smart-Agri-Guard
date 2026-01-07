@@ -114,11 +114,12 @@ namespace DataAccessLayer.Repositories
         /// Prepares a collection of archive records for deletion. 
         /// Note: Must call SaveChangesAsync() to commit the removal.
         /// </summary>
-        public void RemoveRange(IEnumerable<SensorDataArchive> archives)
+        public async Task  RemoveRange(IEnumerable<SensorDataArchive> archives)
         {
             try
             {
                 _context.SensorDataArchives.RemoveRange(archives);
+                _context.SaveChanges();
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
@@ -152,6 +153,39 @@ namespace DataAccessLayer.Repositories
                     .ToListAsync();
             }
             catch (Exception ex) { throw new Exception($"Error while getting archive by date range: {ex.Message}"); }
+        }
+
+        Task ISensorDataArchiveRepository.RemoveRange(IEnumerable<SensorDataArchive> archives)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddRange(IEnumerable<SensorDataArchive> archives)
+        {
+            try
+            {
+                await _context.SensorDataArchives.AddRangeAsync(archives);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while adding Sensor Archive range: {ex.Message}");
+            }
+        }
+
+        public async Task<List<SensorDataArchive>> GetSensorDataArchivesOlderThan(DateTimeOffset cutoffDate)
+        {
+            try
+            {
+                return await _context.SensorDataArchives
+                    .Where(sd => sd.Timestamp < cutoffDate)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while getting sensor data archives older than cutoff date: {ex.Message}");
+            }
         }
     }
 }

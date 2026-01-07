@@ -21,6 +21,10 @@ namespace DataAccessLayer.Interfaces
 
         Task DeleteTokensAsync(Guid[] ids);
 
+        Task<List<DeviceToken>> GetInactiveDeviceTokens();
+
+        Task DeleteRangeAsync(List<DeviceToken> deviceTokens);
+
 
     }
 }

@@ -65,6 +65,19 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task DeleteRangeAsync(List<PlantNotifications> notificationsToDelete)
+        {
+            try
+            {
+                _context.PlantNotifications.RemoveRange(notificationsToDelete);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex) {
+                throw new Exception("An error occurred while deleting plant notifications in bulk.", ex);
+            }
+        }
+
         /// <summary>
         /// Retrieves a batch of notifications based on a list of IDs.
         /// Commonly used for bulk operations like "Mark all as read".
@@ -100,6 +113,21 @@ namespace DataAccessLayer.Repositories
             catch (Exception ex)
             {
                 throw new Exception("An error occurred while retrieving plant notifications.", ex);
+            }
+        }
+
+        public async Task<List<PlantNotifications>> GetReadPlantsNotifications()
+        {
+            try
+            {
+                return await _context.PlantNotifications
+                    .Where(n => n.IsRead)
+                    .OrderByDescending(x => x.NotificationDate)
+                    .ToListAsync();
+
+            }
+            catch (Exception ex) {
+                throw new Exception("An error occurred while retrieving read plant notifications.", ex);
             }
         }
 

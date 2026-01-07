@@ -61,6 +61,18 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task DeleteSystemReports(List<SystemReports> systemReports)
+        {
+            try
+            {
+                _context.SystemReports.RemoveRange(systemReports);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex) {
+                throw new Exception("An error occurred while deleting system reports.", ex);
+            }
+        }
+
         /// <summary>
         /// Retrieves all system reports in the database, ordered by the most recent date.
         /// Eagerly loads the associated Greenhouse entity for context.
@@ -97,6 +109,21 @@ namespace DataAccessLayer.Repositories
             catch (Exception ex)
             {
                 throw new Exception("An error occurred while retrieving system reports.", ex);
+            }
+        }
+
+        public async Task<List<SystemReports>> GetReadSystemReports()
+        {
+            try
+            {
+                return await _context.SystemReports
+                    .Where(r => r.IsRead)
+                    .OrderByDescending(x => x.ReportDate)
+                    .ToListAsync();
+
+            }
+            catch (Exception ex) {
+                throw new Exception("An error occurred while retrieving read system reports.", ex);
             }
         }
 

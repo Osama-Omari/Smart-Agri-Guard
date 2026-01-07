@@ -315,10 +315,6 @@ namespace DataAccessLayer.Data
                 entity.ToTable("SensorDataArchives");
                 entity.HasKey(e => e.Id);
 
-                entity.Property(u => u.Id)
-                    .ValueGeneratedOnAdd()
-                    .HasDefaultValueSql("NEWID()");
-
 
                 entity.Property(e => e.Timestamp).IsRequired();
                 entity.HasOne(e => e.Plant)

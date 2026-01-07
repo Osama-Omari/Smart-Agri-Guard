@@ -21,5 +21,9 @@ namespace DataAccessLayer.Interfaces
         Task<List<PlantNotifications>> GetByIdsAsync(List<Guid> notificationIds);
 
         Task UpdateAsync(PlantNotifications plantNotifications);
+
+        Task<List<PlantNotifications>> GetReadPlantsNotifications();
+
+        Task DeleteRangeAsync(List<PlantNotifications> notificationsToDelete);
     }
 }

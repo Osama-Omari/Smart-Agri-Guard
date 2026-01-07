@@ -23,5 +23,8 @@ namespace DataAccessLayer.Interfaces
 
         Task UpdateAsync(SystemReports systemReports);
 
+        Task<List<SystemReports>> GetReadSystemReports();
+
+        Task DeleteSystemReports(List<SystemReports> systemReports);
     }
 }

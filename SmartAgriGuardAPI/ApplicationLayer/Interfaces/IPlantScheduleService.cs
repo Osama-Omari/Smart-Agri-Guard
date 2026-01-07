@@ -10,5 +10,11 @@ namespace ApplicationLayer.Interfaces
     public interface IPlantScheduleService
     {
         Task AddPlantScheduleAsync(Guid PlantId, CreateScheduleDTO dto);
+
+        Task UpdatePlantScheduleAsync(Guid scheduleId, CreateScheduleDTO dto);
+
+        Task TogglePlantScheduleAsync(Guid scheduleId);
+
+        Task DeletePlantScheduleAsync(Guid scheduleId);
     }
 }

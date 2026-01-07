@@ -18,10 +18,16 @@ namespace DataAccessLayer.Interfaces
 
         Task DeleteAsync(Guid id);
 
-        void RemoveRange(IEnumerable<SensorDataArchive> archives);
+        Task RemoveRange(IEnumerable<SensorDataArchive> archives);
 
         Task SaveChangesAsync();
 
         Task<List<SensorDataArchive>> GetByPlantIdAndDateRangeAsync(Guid plantId, DateTimeOffset startDate, DateTimeOffset endDate);
+
+        Task AddRange(IEnumerable<SensorDataArchive> archives);
+
+        Task<List<SensorDataArchive>> GetSensorDataArchivesOlderThan(DateTimeOffset cutoffDate);
+
+
     }
 }
