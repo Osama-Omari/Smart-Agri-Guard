@@ -32,7 +32,6 @@ namespace DataAccessLayer.Models
 
         public List<PlantNotifications> PlantNotifications { get; set; }
 
-        public List<Recommendation> Recommendations { get; set; }
 
         public List<FarmerPlant> FarmerPlants { get; set; }
 

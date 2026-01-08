@@ -32,7 +32,6 @@ namespace DataAccessLayer.Data
 
         public DbSet<Prediction> Predictions { get; set; }
 
-        public DbSet<Recommendation> Recommendations { get; set; }
 
         public DbSet<PlantType> PlantTypes { get; set; }
 
@@ -258,10 +257,6 @@ namespace DataAccessLayer.Data
                     .WithOne(e => e.Plant)
                     .HasForeignKey(e => e.PlantId)
                     .OnDelete(DeleteBehavior.Cascade);
-                entity.HasMany(e => e.Recommendations)
-                    .WithOne(e => e.Plant)
-                    .HasForeignKey(e => e.PlantId)
-                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasMany(e => e.FarmerPlants)
                     .WithOne(e => e.Plant)
                     .HasForeignKey(e => e.PlantId)
@@ -373,26 +368,7 @@ namespace DataAccessLayer.Data
 
             });
 
-            modelBuilder.Entity<Recommendation>(entity =>
-            {
-                entity.ToTable("Recommendations");
-                entity.HasKey(e => e.Id);
-
-                entity.Property(u => u.Id)
-                    .ValueGeneratedOnAdd()
-                    .HasDefaultValueSql("NEWID()");
-
-
-                entity.Property(e => e.RecommendationDate).IsRequired();
-                entity.Property(e => e.advice)
-                    .IsRequired()
-                    .HasMaxLength(1000);
-                entity.HasOne(e => e.Plant)
-                    .WithMany(e => e.Recommendations)
-                    .HasForeignKey(e => e.PlantId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.Property(e=>e.isCritical).IsRequired();
-            });
+           
 
             modelBuilder.Entity<PlantType>(entity =>
             {

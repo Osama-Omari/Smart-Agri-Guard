@@ -124,7 +124,6 @@ namespace WebAPILayer
             builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IGreenhouseRepository, GreenhouseRepository>();
-            //builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>();
             builder.Services.AddScoped<IPredictionRepository,PredictionRepository>();
             builder.Services.AddScoped<ISensorDataRepository, SensorDataRepository>();
             builder.Services.AddScoped<ISensorDataArchiveRepository, SensorDataArchiveRepository>();
