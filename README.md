@@ -69,6 +69,4 @@ strategy is recommended for the Archive table:
 - Set a unique 'GlobalSalt' in the PasswordSettings section.
 - Run 'dotnet ef database update' to initialize the schema.
 
-========================================================================
-Generated on: 2026-01-04
-========================================================================
+
