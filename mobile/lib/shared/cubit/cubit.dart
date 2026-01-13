@@ -111,7 +111,6 @@ class AppCubit extends Cubit<AppStates>{
           globalUserName = loginResponse!.user!.username!;
           globalFullName = loginResponse!.user!.fullName!;
           globalRoleName = loginResponse!.user!.roleName!;
-          print("Faqar Token is: ${loginResponse!.token}");
           if(loginResponse!.user!.roleName == 'Farmer'){
             showToast(message: 'Welcome Farmer', state: ToastStates.SUCCESS);
             navigateTo(context, AssignedPlantsScreen(farmerName: loginResponse!.user!.fullName!));
