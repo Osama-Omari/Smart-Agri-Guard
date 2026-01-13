@@ -181,5 +181,20 @@ namespace DataAccessLayer.Repositories
                 throw new Exception($"Error while getting all managers : {ex.Message}");
             }
         }
+
+        public async Task<List<User>> GetAdmins()
+        {
+            try
+            {
+                return await _context.Users
+                    .Where(u => u.UserRole.Name == "Admin")
+                    .ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while getting all admins: {ex.Message}");
+            }
+        }
     }
 }

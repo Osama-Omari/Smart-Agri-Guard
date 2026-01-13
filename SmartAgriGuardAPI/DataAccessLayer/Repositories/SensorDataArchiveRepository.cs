@@ -155,10 +155,7 @@ namespace DataAccessLayer.Repositories
             catch (Exception ex) { throw new Exception($"Error while getting archive by date range: {ex.Message}"); }
         }
 
-        Task ISensorDataArchiveRepository.RemoveRange(IEnumerable<SensorDataArchive> archives)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public async Task AddRange(IEnumerable<SensorDataArchive> archives)
         {

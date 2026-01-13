@@ -48,6 +48,7 @@ namespace DataAccessLayer.Repositories
             {
                 return await _context.Plants
                     .Include(p => p.Greenhouse)
+                    .ThenInclude(p=>p.Manager)
                     .Include(p => p.PlantType)
                     .Include(p => p.FarmerPlants)
                     .FirstOrDefaultAsync(p => p.Id == plantId);

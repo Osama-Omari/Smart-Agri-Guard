@@ -331,5 +331,21 @@ namespace WebAPILayer.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("Get-Plant-Schedules/{PlantId}")]
+        public async Task<IActionResult> GetPlantSchedules([FromRoute] Guid PlantId)
+        {
+            try
+            {
+                var schedules = await _plantScheduleService.GetPlantSchedulesAsync(PlantId);
+                if(schedules == null || !schedules.Any())
+                    return NotFound("No schedules found for the specified plant.");
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

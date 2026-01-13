@@ -4,6 +4,7 @@ namespace WebAPILayer.RequestDTO
 {
     public class CreateGreenhouseRequestDTO
     {
+        
         [Required(ErrorMessage = "Name is required")]
         [StringLength(200, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 200 characters.")]
 

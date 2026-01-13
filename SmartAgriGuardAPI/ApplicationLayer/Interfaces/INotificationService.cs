@@ -17,6 +17,8 @@ namespace ApplicationLayer.Interfaces
 
         Task NotifyAdminTest(Guid adminId);
 
+        Task SendToAdmin(string title, string message);
+
 
     }
 }

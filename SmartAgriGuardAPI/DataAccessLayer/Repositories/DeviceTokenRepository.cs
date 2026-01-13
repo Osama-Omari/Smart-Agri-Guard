@@ -205,5 +205,18 @@ namespace DataAccessLayer.Repositories
                 throw new Exception("Error deleting range of device tokens", ex);
             }
         }
+
+        public async Task DeactivateTokenAsync(string token)
+        {
+            var deviceToken = await _context.DeviceTokens
+                .FirstOrDefaultAsync(dt => dt.Token == token);
+            if (deviceToken != null)
+            {
+                deviceToken.IsActive = false;
+                deviceToken.LastUpdated = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+
+        }
     }
 }

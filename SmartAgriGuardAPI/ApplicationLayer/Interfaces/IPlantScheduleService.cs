@@ -16,5 +16,7 @@ namespace ApplicationLayer.Interfaces
         Task TogglePlantScheduleAsync(Guid scheduleId);
 
         Task DeletePlantScheduleAsync(Guid scheduleId);
+
+        Task<List<PlantScheduleDTO>?> GetPlantSchedulesAsync(Guid plantId);
     }
 }

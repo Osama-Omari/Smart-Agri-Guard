@@ -26,6 +26,8 @@ namespace DataAccessLayer.Interfaces
 
         Task<List<User>> GetFarmersByIdsAsync(List<Guid> farmerIds);
 
+        Task<List<User>> GetAdmins();
+
 
     }
 }

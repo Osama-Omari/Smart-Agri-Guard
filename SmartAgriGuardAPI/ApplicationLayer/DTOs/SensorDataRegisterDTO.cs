@@ -14,6 +14,8 @@ namespace ApplicationLayer.DTOs
 
         public double? Humidity { get; set; }
 
+        public string AirSensorStatus { get; set; } // "OK" or "Faulty"
+
         public double? SoilMoisture { get; set; }
 
         public double? PH { get; set; }
@@ -23,5 +25,7 @@ namespace ApplicationLayer.DTOs
         public double? Phosphorus { get; set; }
 
         public double? Nitrogen { get; set; }
+
+        public string SoilSensorStatus { get; set; } // "OK" or "Faulty"
     }
 }

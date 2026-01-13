@@ -3,6 +3,7 @@ using ApplicationLayer.Interfaces;
 using AutoMapper;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using DataAccessLayer.Repositories;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
@@ -22,46 +23,134 @@ namespace InfrastructureLayer.Services
         private readonly ISensorDataRepository _sensorDataRepository;
         private readonly IPlantRepository _plantRepository;
         private readonly IMapper _mapper;
+        private readonly ISystemReportsRepository _systemReportRepository;
+        private readonly INotificationService _notificationService;
+        private readonly IPlantHealthService _plantHealthService;
 
-        public SensorDataService(ISensorDataRepository sensorDataRepository, IPlantRepository plantRepository, IMapper mapper)
+        public SensorDataService(ISensorDataRepository sensorDataRepository, IPlantRepository plantRepository,
+            IMapper mapper, ISystemReportsRepository systemReportRepository,
+            INotificationService notificationService, IPlantHealthService plantHealthService)
         {
             _sensorDataRepository = sensorDataRepository;
             _plantRepository = plantRepository;
             _mapper = mapper;
+            _systemReportRepository = systemReportRepository;
+            _notificationService = notificationService;
+            _plantHealthService = plantHealthService;
         }
 
         /// <summary>
-        /// Persists a new reading from a physical sensor to the database.
+        /// Orchestrates the ingestion of telemetry data, hardware health monitoring, and automated alerting.
         /// </summary>
         /// <remarks>
-        /// This method performs null-checks on each metric to allow partial data uploads 
-        /// from sensors that might only support specific readings (e.g., only temperature).
+        /// This method processes raw sensor data by:
+        /// 1. Validating the existence of the physical plant entity.
+        /// 2. Mapping telemetry metrics (supporting partial nulls for modular sensor arrays).
+        /// 3. Detecting hardware-specific failures (DHT22 or Modbus) based on explicit status flags or data absence.
+        /// 4. Triggering a multi-channel notification workflow if hardware faults are identified.
         /// </remarks>
-        /// <param name="plantId">The GUID of the plant being monitored.</param>
-        /// <param name="dto">The telemetry packet containing optional environmental values.</param>
-        /// <exception cref="KeyNotFoundException">Thrown if the specified plant does not exist.</exception>
+        /// <param name="plantId">The unique identifier for the targeted plant.</param>
+        /// <param name="dto">The telemetry data transfer object containing environmental metrics and sensor status flags.</param>
+        /// <exception cref="KeyNotFoundException">Thrown if the plantId does not correspond to an existing database record.</exception>
         public async Task AddSensorData(Guid plantId, SensorDataRegisterDTO dto)
         {
             var plant = await _plantRepository.GetPlantById(plantId);
             if (plant == null)
                 throw new KeyNotFoundException("Plant not found.");
 
-            var sensordata = new SensorData();
+            // Map incoming telemetry to the persistence entity
+            // Nullable types are used to preserve 'null' states for inactive or broken hardware modules
+            var sensordata = new SensorData
+            {
+                PlantId = plantId,
+                Timestamp = dto.Timestamp,
+                Temperature = dto.Temperature,
+                Humidity = dto.Humidity,
+                SoilMoisture = dto.SoilMoisture,
+                Ph = dto.PH,
+                Phosphorus = dto.Phosphorus,
+                Potassium = dto.Potassium,
+                Nitrogen = dto.Nitrogen
+            };
+            
+            // Evaluate atmospheric sensor (DHT22) health
+            // Failure is defined by an explicit 'Faulty' status or the total absence of air-related metrics
+            if (dto.AirSensorStatus == "Faulty" || (dto.Temperature == null && dto.Humidity == null))
+            {
+                await CreateSystemReportAndNotify(plant, $"{plant.Greenhouse.Name} : (DHT22) Failure Detected for Plant: {plant.Name}");
+            }
 
-            // Conditional mapping to handle sensors that might not send all metrics simultaneously
-            if (dto.Temperature.HasValue) sensordata.Temperature = dto.Temperature.Value;
-            if (dto.Humidity.HasValue) sensordata.Humidity = dto.Humidity.Value;
-            if (dto.SoilMoisture.HasValue) sensordata.SoilMoisture = dto.SoilMoisture.Value;
-            if (dto.PH.HasValue) sensordata.Ph = dto.PH.Value;
-            if (dto.Phosphorus.HasValue) sensordata.Phosphorus = dto.Phosphorus.Value;
-            if (dto.Potassium.HasValue) sensordata.Potassium = dto.Potassium.Value;
-            if (dto.Nitrogen.HasValue) sensordata.Nitrogen = dto.Nitrogen.Value;
+            // Evaluate soil-subsystem (Modbus/RS485) health
+            // We now check all metrics (Moisture, pH, N, P, K) to ensure the entire probe is functional
+            if (dto.SoilSensorStatus == "Faulty" ||
+               (dto.SoilMoisture == null && dto.PH == null && dto.Nitrogen == null && dto.Phosphorus == null && dto.Potassium == null))
+            {
+                await CreateSystemReportAndNotify(plant, $"{plant.Greenhouse.Name} : Soil Sensor Array (Modbus/NPK) Failure Detected for Plant: {plant.Name}");
+            }
 
-            sensordata.PlantId = plantId;
-            sensordata.Timestamp = dto.Timestamp;
-
+            // Persist validated telemetry to the historical archive
             await _sensorDataRepository.AddAsync(sensordata);
+
+            //check if all necessary data is present to evaluate plant health
+            if (dto.Temperature == null || dto.Humidity == null || dto.SoilMoisture == null ||
+                dto.Nitrogen == null || dto.Phosphorus == null || dto.Potassium == null || dto.PH == null)
+            {
+                //insufficient data to evaluate plant health
+                return;
+            }
+
+            //call the plant health service to generate the plant health status
+            var input = new TomatoHealthInput
+            {
+
+                Temperature = (float)dto.Temperature,
+                Humidity = (float)dto.Humidity,
+                SoilMoisture = (float)dto.SoilMoisture,
+                Nitrogen = (float)dto.Nitrogen,
+                Phosphorus = (float)dto.Phosphorus,
+                Potassium = (float)dto.Potassium,
+                Ph = (float)dto.PH
+            };
+
+            await _plantHealthService.GeneratePlantHealth(plantId, input);
         }
+
+        /// <summary>
+        /// Internal workflow to log hardware incidents and dispatch real-time alerts to responsible personnel.
+        /// </summary>
+        /// <param name="plant">The plant entity where the failure occurred.</param>
+        /// <param name="errorMessage">Detailed diagnostic message describing the failure type.</param>
+        private async Task CreateSystemReportAndNotify(Plant plant, string errorMessage)
+        {
+            // Log the event in SystemReports for administrative auditing and dashboard visualization
+            var report = new SystemReports
+            {
+                GreenhouseId = plant.GreenhouseId,
+                ErrorType = "HardwareFailure",
+                Message = $"Plant '{plant.Name}': {errorMessage}",
+                ReportDate = DateTime.UtcNow,
+                IsRead = false
+            };
+
+            await _systemReportRepository.AddAsync(report);
+
+            // 1. Dispatch push notification to the specific Greenhouse Manager via FCM
+            if (plant.Greenhouse?.ManagerId != null)
+            {
+                await _notificationService.SendToUserAsync(
+                    plant.Greenhouse.ManagerId.Value,
+                    "Hardware Alert",
+                    errorMessage
+                );
+            }
+
+            // 2. Dispatch a global broadcast notification to all Administrators
+            await _notificationService.SendToAdmin(
+                "Hardware Alert",
+                errorMessage
+            );
+        }
+
 
         /// <summary>
         /// Purges all historical sensor data associated with a specific plant.

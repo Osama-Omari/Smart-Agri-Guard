@@ -8,6 +8,8 @@ using DataAccessLayer.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hangfire;
+using InfrastructureLayer.AI.Interfaces;
+using InfrastructureLayer.AI.Services;
 using InfrastructureLayer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -150,8 +152,10 @@ namespace WebAPILayer
             builder.Services.AddScoped<IPlantNotificationJob, PlantNotificationJob>();
             builder.Services.AddScoped<IPlantScheduleService, PlantScheduleService>();
             builder.Services.AddScoped<IDataCleanupJob, DataCleanupJob>();
+            builder.Services.AddSingleton<IPlantHealthModel, TomatoHealthModel>();
+            builder.Services.AddScoped<IPlantHealthService,PlantHealthService>();
 
-            
+
 
 
 
@@ -198,7 +202,7 @@ namespace WebAPILayer
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseHangfireDashboard();
 

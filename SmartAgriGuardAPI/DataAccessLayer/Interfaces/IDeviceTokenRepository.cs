@@ -17,6 +17,8 @@ namespace DataAccessLayer.Interfaces
         Task DeactivateTokenAsync(Guid id);
         Task DeleteTokenAsync(Guid id);
 
+        Task DeactivateTokenAsync(string token);
+
         Task<List<Guid>> GetOldTokenIdsAsync(DateTime cutoffDate);
 
         Task DeleteTokensAsync(Guid[] ids);

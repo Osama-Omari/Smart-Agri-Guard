@@ -96,9 +96,9 @@ namespace DataAccessLayer.Repositories
             {
                 return await _context.Greenhouses
                     .Include(x => x.Farmers)
+                    .ThenInclude(x=>x.FarmerPlants)
+                    .ThenInclude(fp => fp.Plant)
                     .Include(x => x.Manager)
-                        .ThenInclude(m => m.FarmerPlants)
-                            .ThenInclude(fp => fp.Plant)
                     .FirstOrDefaultAsync(x => x.Id == id);
             }
             catch (Exception ex)

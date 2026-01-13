@@ -37,7 +37,7 @@ namespace WebAPILayer.Controllers
         /// <response code="401">Invalid or missing API Key.</response>
         /// <response code="404">Plant ID not found.</response>
         [HttpPost("Add/{plantId}")]
-        [ApiKeyAuth]
+        //[ApiKeyAuth]
         public async Task<IActionResult> AddSensorData(Guid plantId, [FromBody] SensorDataRegisterDTO dto)
         {
             try

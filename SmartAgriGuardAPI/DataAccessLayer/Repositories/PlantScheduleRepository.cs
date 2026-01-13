@@ -84,6 +84,22 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task<List<PlantSchedule>?> GetSchedulesByPlantIdAsync(Guid PlantId)
+        {
+            try
+            {
+                return await _context.PlantSchedules
+                    .Where(ps => ps.PlantId == PlantId)
+                    .ToListAsync();
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving plant schedules by plant ID", ex);
+            }
+        }
+
         public async Task UpdatePlantScheduleAsync(PlantSchedule plantSchedule)
         {
             try

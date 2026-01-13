@@ -12,6 +12,8 @@ namespace DataAccessLayer.Interfaces
         Task<IEnumerable<PlantSchedule>> GetAllPlantSchedulesAsync();
         Task<PlantSchedule?> GetPlantScheduleByIdAsync(Guid id);
 
+        Task<List<PlantSchedule>?> GetSchedulesByPlantIdAsync(Guid PlantId);
+
         Task<IEnumerable<PlantSchedule>> GetPlantSchedulesByPlantIdAsync(Guid plantId);
         Task AddPlantScheduleAsync(PlantSchedule plantSchedule);
         Task UpdatePlantScheduleAsync(PlantSchedule plantSchedule);

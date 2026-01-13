@@ -26,14 +26,16 @@ namespace InfrastructureLayer.Services
     {
         private readonly IDeviceTokenRepository _deviceTokenRepository;
         private readonly IPlantRepository _plantRepository;
+        private readonly IUserRepository _userRepository;
 
-        public FirebaseNotificationService(IDeviceTokenRepository deviceTokenRepository, IPlantRepository plantRepository, IConfiguration configuration, IWebHostEnvironment env)
+        public FirebaseNotificationService(IDeviceTokenRepository deviceTokenRepository, IPlantRepository plantRepository, IConfiguration configuration, IWebHostEnvironment env, IUserRepository userRepository)
         {
             _deviceTokenRepository = deviceTokenRepository;
             _plantRepository = plantRepository;
 
             // Ensures Firebase is initialized once at the start of the service lifecycle
             InitializeFirebase(configuration, env);
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -82,18 +84,15 @@ namespace InfrastructureLayer.Services
             var allTokens = new List<string>();
             foreach (var userId in userIds)
             {
-                
                 var deviceToken = await _deviceTokenRepository.GetTokenByUserIdAsync(userId);
-                if (deviceToken != null)
+                // Only add active tokens
+                if (deviceToken != null && deviceToken.IsActive)
                 {
                     allTokens.Add(deviceToken.Token);
                 }
             }
 
-            if (!allTokens.Any())
-            {
-                return;
-            }
+            if (!allTokens.Any()) return;
 
             var multicast = new MulticastMessage
             {
@@ -102,10 +101,25 @@ namespace InfrastructureLayer.Services
                 {
                     Title = title,
                     Body = message
-                }
+                },
             };
 
-            await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(multicast);
+            var response = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(multicast);
+
+            // CRITICAL: Handle invalid tokens
+            if (response.FailureCount > 0)
+            {
+                for (var i = 0; i < response.Responses.Count; i++)
+                {
+                    if (!response.Responses[i].IsSuccess)
+                    {
+                        // If the error is 'Unregistered' or 'InvalidRegistration', 
+                        // you should delete/deactivate this token in your DB
+                        var failedToken = allTokens[i];
+                        await _deviceTokenRepository.DeactivateTokenAsync(failedToken);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -168,6 +182,15 @@ namespace InfrastructureLayer.Services
             {
                 Credential = GoogleCredential.FromFile(fullPath)
             });
+        }
+
+        public async Task SendToAdmin(string title, string message)
+        {
+            var admins = await _userRepository.GetAdmins();
+            var adminIds = admins.Select(a => a.Id);
+            await SendToUsersAsync(adminIds, title, message);
+
+
         }
     }
 }

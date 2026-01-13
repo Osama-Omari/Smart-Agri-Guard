@@ -61,9 +61,29 @@ namespace ApplicationLayer.MappingProfiles
                 .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
                 .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => src.IsRead));
 
-
+            CreateMap<PlantSchedule, PlantScheduleDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.TaskType, opt => opt.MapFrom(src => src.TaskType))
+                .ForMember(dest => dest.Frequency, opt => opt.MapFrom(src => src.Frequency))
+                .ForMember(dest => dest.Days,opt => opt.MapFrom(src => ParseDays(src.DaysOfWeek)))
+                .ForMember(dest => dest.Hour, opt => opt.MapFrom(src => src.Hour))
+                .ForMember(dest => dest.Minute, opt => opt.MapFrom(src => src.Minute))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
 
 
         }
+        private static List<DayOfWeek> ParseDays(string? days)
+        {
+            if (string.IsNullOrWhiteSpace(days))
+                return new List<DayOfWeek>();
+
+            return days
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(d => Enum.Parse<DayOfWeek>(d.Trim()))
+                .ToList();
+        }
+
+
     }
 }

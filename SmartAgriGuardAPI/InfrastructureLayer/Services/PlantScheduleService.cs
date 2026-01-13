@@ -1,5 +1,6 @@
 ﻿using ApplicationLayer.DTOs;
 using ApplicationLayer.Interfaces;
+using AutoMapper;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Hangfire;
@@ -20,15 +21,18 @@ namespace InfrastructureLayer.Services
         private readonly IRecurringJobManager _recurringJobManager;
         private readonly IPlantRepository _plantRepository;
         private readonly IPlantScheduleRepository _plantScheduleRepository;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Initializes the service with required repositories and the Hangfire job manager.
         /// </summary>
-        public PlantScheduleService(IRecurringJobManager recurringJobManager, IPlantRepository plantRepository, IPlantScheduleRepository plantScheduleRepository)
+        public PlantScheduleService(IRecurringJobManager recurringJobManager, 
+            IPlantRepository plantRepository, IPlantScheduleRepository plantScheduleRepository,IMapper mapper)
         {
             _recurringJobManager = recurringJobManager;
             _plantRepository = plantRepository;
             _plantScheduleRepository = plantScheduleRepository;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -165,5 +169,13 @@ namespace InfrastructureLayer.Services
             "SATURDAY" => "6",
             _ => throw new ArgumentException($"Invalid day name: {day}")
         };
+
+        public async Task<List<PlantScheduleDTO>?> GetPlantSchedulesAsync(Guid plantId)
+        {
+            var schedules = await _plantScheduleRepository.GetSchedulesByPlantIdAsync(plantId);
+            
+            return _mapper.Map<List<PlantScheduleDTO>>(schedules);
+
+        }
     }
 }
