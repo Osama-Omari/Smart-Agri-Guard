@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "280716392257",
+    "project_id": "smartagriguard-ec6f7",
+    "storage_bucket": "smartagriguard-ec6f7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280716392257:android:b5b41d6df73d37551093c0",
+        "android_client_info": {
+          "package_name": "com.smartagriguard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUDoc8nTLKMr8RJoS6b24Vub7OMFoNCq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

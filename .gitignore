@@ -1,0 +1,38 @@
+
+# =======================
+# OS / IDE
+# =======================
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+
+# =======================
+# Flutter
+# =======================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+coverage/
+
+# =======================
+# ASP.NET
+# =======================
+
+# Visual Studio / .NET build artifacts
+.vs/
+bin/
+obj/
+*.user
+*.suo
+
+# Environment & secrets
+*.env
+*.key
+firebase-adminsdk-*.json
+
+# Explicit secret file (extra safety)
+smartagriguard-ec6f7-firebase-adminsdk-fbsvc-9538d4a6e9.json
+**/Config/smartagriguard-ec6f7-firebase-adminsdk-fbsvc-9538d4a6e9.json

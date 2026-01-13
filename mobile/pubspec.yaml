@@ -1,0 +1,41 @@
+name: smart_agri_guard
+description: A smart agriculture system for monitoring and improving plant health
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.17.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  fl_chart: 1.1.1
+  image_picker: ^1.2.0
+  bloc: ^9.0.0
+  flutter_bloc: ^9.0.0
+  dio: ^5.3.3
+  flutter_secure_storage: ^9.0.0
+  firebase_messaging: ^14.7.1
+  firebase_core: ^2.32.0
+  device_info_plus: ^10.0.1
+  fluttertoast: ^9.0.0
+  flutter_timezone: ^5.0.1
+  open_file: ^3.5.10
+  permission_handler: ^12.0.1
+  external_path: ^2.2.0
+  path: ^1.9.1
+  intl: ^0.20.2
+  flutter_launcher_icons: ^0.14.4
+  change_app_package_name: ^1.4.0
+  connectivity_plus: ^7.0.0
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

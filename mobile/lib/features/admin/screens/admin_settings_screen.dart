@@ -1,0 +1,157 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_agri_guard/core/constants/colors.dart';
+import 'package:smart_agri_guard/core/widgets/custom_app_header.dart';
+import 'package:smart_agri_guard/features/shared/screens/update_user_info_screen.dart';
+import 'package:smart_agri_guard/features/shared/widgets/header_card.dart';
+import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/link_tile.dart';
+import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/logout_tile.dart';
+import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/profile_card.dart';
+import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/section_header.dart';
+import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/toggle_tile.dart';
+import 'package:smart_agri_guard/shared/cubit/cubit.dart';
+
+import '../../../core/widgets/global_functions.dart';
+
+class AdminSettingsScreen extends StatefulWidget {
+  const AdminSettingsScreen({super.key});
+
+  @override
+  State<AdminSettingsScreen> createState() => _AdminSettingsScreenState();
+}
+
+class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
+  bool _notifications = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isWide = size.width > size.height;
+
+    return Scaffold(
+      backgroundColor: AppColors.primaryBackground,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // 🌿 Header
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: isWide ? size.width * 0.15 : 20,
+                vertical: 20,
+              ),
+              child: Column(
+                children: [
+                  CustomAppHeader(
+                    showBack: true,
+                    subtitle: 'Admin Settings',
+                    onBack: () => Navigator.of(context).maybePop(),
+                  ),
+                  const SizedBox(height: 20),
+                  const HeaderCard(
+                    icon: Icons.admin_panel_settings_rounded,
+                    title: 'System Preferences',
+                    subtitle: 'Manage profile, preferences & access',
+                  ),
+                ],
+              ),
+            ),
+
+            // 🌾 Draggable Section
+            _buildDraggableSheet(size, isWide),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDraggableSheet(Size size, bool isWide) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.65,
+      minChildSize: 0.55,
+      maxChildSize: 0.96,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFFE9F5C6),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.15),
+                blurRadius: 10,
+                offset: const Offset(0, -3),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isWide ? size.width * 0.15 : 24,
+              vertical: 24,
+            ),
+            child: ListView(
+              controller: scrollController,
+              physics: const BouncingScrollPhysics(),
+              children: [
+                // Handle bar
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withValues(alpha: 0.4),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+
+                // 👤 Profile Section
+                const SectionHeader(icon: Icons.person, title: 'Profile'),
+                const SizedBox(height: 16),
+                ProfileCard(
+                  context,
+                  globalFullName,
+                  () {
+                    navigateAndRefresh(
+                      context: context,
+                      screen: UpdateUserInfoScreen(),
+                      onRefresh: () {
+                        setState(() {}); // rebuild parent widget
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 32),
+                // ⚙️ Preferences
+                const SectionHeader(
+                  icon: Icons.settings_rounded,
+                  title: 'Preferences',
+                ),
+                const SizedBox(height: 16),
+                ToggleTile(
+                  icon: Icons.notifications_active_outlined,
+                  label: 'Notifications',
+                  value: _notifications,
+                  onChanged: (v) => setState(() => _notifications = v),
+                ),
+                const SizedBox(height: 8),
+                const LinkTile(icon: Icons.language, label: 'Language'),
+                const LinkTile(
+                    icon: Icons.lock_outline, label: 'Change Password'),
+
+                const SizedBox(height: 32),
+
+                // 🚪 Account
+                const SectionHeader(
+                    icon: Icons.logout_rounded, title: 'Account'),
+                const SizedBox(height: 12),
+                const LogoutTile(),
+
+                const SizedBox(height: 40),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

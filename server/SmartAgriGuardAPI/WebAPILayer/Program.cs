@@ -5,8 +5,10 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
+using FirebaseAdmin;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Google.Apis.Auth.OAuth2;
 using Hangfire;
 using InfrastructureLayer.AI.Interfaces;
 using InfrastructureLayer.AI.Services;
@@ -73,6 +75,27 @@ namespace WebAPILayer
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 option.IncludeXmlComments(xmlPath);
             });
+
+            var firebaseKeyPath = Environment.GetEnvironmentVariable("FIREBASE_KEY_PATH");
+
+            if (string.IsNullOrWhiteSpace(firebaseKeyPath))
+            {
+                throw new InvalidOperationException("FIREBASE_KEY_PATH environment variable is not set.");
+            }
+
+            if (!File.Exists(firebaseKeyPath))
+            {
+                throw new FileNotFoundException("Firebase service account file not found.", firebaseKeyPath);
+            }
+
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                FirebaseApp.Create(new AppOptions
+                {
+                    Credential = GoogleCredential.FromFile(firebaseKeyPath)
+                });
+            }
+
 
             // --- 3. BACKGROUND PROCESSING (HANGFIRE) ---
             builder.Services.AddHangfire(configuration => configuration
@@ -170,9 +193,9 @@ namespace WebAPILayer
                 // Seed Admin User
                 DbInitializer.SeedAdmins(userService!, builder.Configuration["Admin:FullName"]!, builder.Configuration["Admin:UserName"]!, builder.Configuration["Admin:Password"]!).GetAwaiter().GetResult();
 
-                //var notificationService = scope.ServiceProvider.GetService<INotificationService>();
-                //var adminId = Guid.Parse("BF5E5D61-47F8-4B08-90E6-1E83B77BCDC2");
-                //await notificationService!.NotifyAdminTest(adminId);
+                var notificationService = scope.ServiceProvider.GetService<INotificationService>();
+                var adminId = Guid.Parse("BF5E5D61-47F8-4B08-90E6-1E83B77BCDC2");
+                await notificationService!.NotifyAdminTest(adminId);
 
 
 

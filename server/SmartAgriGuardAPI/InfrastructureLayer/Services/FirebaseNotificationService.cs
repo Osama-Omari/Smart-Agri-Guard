@@ -28,13 +28,10 @@ namespace InfrastructureLayer.Services
         private readonly IPlantRepository _plantRepository;
         private readonly IUserRepository _userRepository;
 
-        public FirebaseNotificationService(IDeviceTokenRepository deviceTokenRepository, IPlantRepository plantRepository, IConfiguration configuration,IUserRepository userRepository)
+        public FirebaseNotificationService(IDeviceTokenRepository deviceTokenRepository, IPlantRepository plantRepository,IUserRepository userRepository)
         {
             _deviceTokenRepository = deviceTokenRepository;
             _plantRepository = plantRepository;
-
-            // Ensures Firebase is initialized once at the start of the service lifecycle
-            InitializeFirebase(configuration);
             _userRepository = userRepository;
         }
 
@@ -155,32 +152,6 @@ namespace InfrastructureLayer.Services
         public async Task NotifyAdminTest(Guid adminId)
         {
             await SendToUserAsync(adminId, "Test Notification", "This is a test notification for admin.");
-        }
-
-        /// <summary>
-        /// Configures the Firebase Admin SDK using a service account JSON file.
-        /// </summary>
-        /// <param name="configuration">Application configuration to read the file path.</param>
-        /// <param name="env">Hosting environment to resolve the physical path.</param>
-        /// <exception cref="InvalidOperationException">Thrown if configuration path is missing.</exception>
-        /// <exception cref="FileNotFoundException">Thrown if the service account file does not exist.</exception>
-        private void InitializeFirebase(IConfiguration configuration)
-        {
-            if (FirebaseApp.DefaultInstance != null)
-                return;
-
-            var keyPath = Environment.GetEnvironmentVariable("FIREBASE_KEY_PATH");
-
-            if (string.IsNullOrWhiteSpace(keyPath))
-                throw new InvalidOperationException("FIREBASE_KEY_PATH environment variable is not set.");
-
-            if (!File.Exists(keyPath))
-                throw new FileNotFoundException("Firebase service account file not found.", keyPath);
-
-            FirebaseApp.Create(new AppOptions
-            {
-                Credential = GoogleCredential.FromFile(keyPath)
-            });
         }
 
         public async Task SendToAdmin(string title, string message)
