@@ -1,4 +1,5 @@
 ﻿using ApplicationLayer.DTOs;
+using DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,7 @@ namespace ApplicationLayer.Interfaces
     public interface IPlantHealthService
     {
         Task GeneratePlantHealth(Guid PlantId,TomatoHealthInput input);
+
+        Task EvaluateAndAlertPlantHealth(Plant plant,SensorData latestData);
     }
 }

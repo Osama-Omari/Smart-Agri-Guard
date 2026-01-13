@@ -162,5 +162,14 @@ namespace InfrastructureLayer.Services
 
 
         }
+
+        public async Task SendPlantAlertAsync(Guid plantId, string message)
+        {
+            var plant =  await _plantRepository.GetPlantWithFarmerPlant(plantId);
+            if (plant == null) return;
+            var farmerIds = plant.FarmerPlants.Select(fp => fp.FarmerId).Distinct();
+            await SendToUsersAsync(farmerIds, $"Alert for Plant: {plant.Name}", message);
+
+        }
     }
 }

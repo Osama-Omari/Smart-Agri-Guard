@@ -19,6 +19,8 @@ namespace ApplicationLayer.Interfaces
 
         Task SendToAdmin(string title, string message);
 
+        Task SendPlantAlertAsync(Guid plantId,string message);
+
 
     }
 }

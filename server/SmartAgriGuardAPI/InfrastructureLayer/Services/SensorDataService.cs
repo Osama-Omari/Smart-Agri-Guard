@@ -113,6 +113,10 @@ namespace InfrastructureLayer.Services
             };
 
             await _plantHealthService.GeneratePlantHealth(plantId, input);
+
+
+            //check if the sensor data indicates any abnormal conditions that require alerting
+            await _plantHealthService.EvaluateAndAlertPlantHealth(plant, sensordata);
         }
 
         /// <summary>
