@@ -28,13 +28,13 @@ namespace InfrastructureLayer.Services
         private readonly IPlantRepository _plantRepository;
         private readonly IUserRepository _userRepository;
 
-        public FirebaseNotificationService(IDeviceTokenRepository deviceTokenRepository, IPlantRepository plantRepository, IConfiguration configuration, IWebHostEnvironment env, IUserRepository userRepository)
+        public FirebaseNotificationService(IDeviceTokenRepository deviceTokenRepository, IPlantRepository plantRepository, IConfiguration configuration,IUserRepository userRepository)
         {
             _deviceTokenRepository = deviceTokenRepository;
             _plantRepository = plantRepository;
 
             // Ensures Firebase is initialized once at the start of the service lifecycle
-            InitializeFirebase(configuration, env);
+            InitializeFirebase(configuration);
             _userRepository = userRepository;
         }
 
@@ -164,23 +164,22 @@ namespace InfrastructureLayer.Services
         /// <param name="env">Hosting environment to resolve the physical path.</param>
         /// <exception cref="InvalidOperationException">Thrown if configuration path is missing.</exception>
         /// <exception cref="FileNotFoundException">Thrown if the service account file does not exist.</exception>
-        private void InitializeFirebase(IConfiguration configuration, IWebHostEnvironment env)
+        private void InitializeFirebase(IConfiguration configuration)
         {
             if (FirebaseApp.DefaultInstance != null)
                 return;
 
-            var relativePath = configuration["Firebase:ServiceAccountPath"];
-            if (string.IsNullOrWhiteSpace(relativePath))
-                throw new InvalidOperationException("Firebase ServiceAccountPath is not configured.");
+            var keyPath = Environment.GetEnvironmentVariable("FIREBASE_KEY_PATH");
 
-            var fullPath = Path.Combine(env.ContentRootPath, relativePath);
+            if (string.IsNullOrWhiteSpace(keyPath))
+                throw new InvalidOperationException("FIREBASE_KEY_PATH environment variable is not set.");
 
-            if (!File.Exists(fullPath))
-                throw new FileNotFoundException("Firebase service account file not found.", fullPath);
+            if (!File.Exists(keyPath))
+                throw new FileNotFoundException("Firebase service account file not found.", keyPath);
 
             FirebaseApp.Create(new AppOptions
             {
-                Credential = GoogleCredential.FromFile(fullPath)
+                Credential = GoogleCredential.FromFile(keyPath)
             });
         }
 

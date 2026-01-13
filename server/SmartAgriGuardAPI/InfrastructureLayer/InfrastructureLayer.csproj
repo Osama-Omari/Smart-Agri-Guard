@@ -7,13 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Config\smartagriguard-ec6f7-firebase-adminsdk-fbsvc-b1a7544328.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Config\smartagriguard-ec6f7-firebase-adminsdk-fbsvc-b1a7544328.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Compile Remove="Config\**" />
+    <EmbeddedResource Remove="Config\**" />
+    <None Remove="Config\**" />
   </ItemGroup>
 
   <ItemGroup>
