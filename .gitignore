@@ -6,7 +6,8 @@
 .idea/
 .vscode/
 *.iml
-
+.pio
+esp32/Smart-Agri-Guard-Esp32/src/credentials.h
 
 # =======================
 # Flutter
