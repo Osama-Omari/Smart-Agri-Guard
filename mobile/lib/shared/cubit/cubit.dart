@@ -562,7 +562,7 @@ class AppCubit extends Cubit<AppStates>{
     try {
       final value = await DioHelper.getData(url: FarmerPlantEndPoints.getFarmerPlants);
       final List data = value!.data;
-
+      print(value);
       // 1. Map the JSON to your model list
       plantsWithMetrics = data.map((e) => PlantsWithMetricsModel.fromJson(e as Map<String, dynamic>)).toList();
 
@@ -599,6 +599,7 @@ class AppCubit extends Cubit<AppStates>{
     timeAxis.clear();
     await DioHelper.getDataWithBody(url: SensorDataEndPoints.getTrendSensorData, data: body,).then((value){
       // ✅ RESPONSE IS A SINGLE OBJECT
+      print(value);
       final model = SensorDataModel.fromJson(
         value!.data as Map<String, dynamic>,
       );

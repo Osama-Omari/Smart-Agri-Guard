@@ -51,6 +51,7 @@ bool sendToServer(String payload) {
     http.addHeader("Content-Type", "application/json");
     http.addHeader("X-API-KEY", apiKey);
     http.addHeader("ngrok-skip-browser-warning", "true");
+    Serial.println("Sending data to server: " + payload);
 
     int httpResponseCode = http.POST(payload);
     bool success = (httpResponseCode >= 200 && httpResponseCode < 300);
@@ -187,7 +188,7 @@ void loop() {
     bool modbusError = (result != node.ku8MBSuccess);
 
     if (!modbusError) {
-      soilMoist = node.getResponseBuffer(1) / 10.0;
+      soilMoist = node.getResponseBuffer(1);
       soilPH = node.getResponseBuffer(3) / 100.0;
       soilN = (float)node.getResponseBuffer(4);
       soilP = (float)node.getResponseBuffer(5);
