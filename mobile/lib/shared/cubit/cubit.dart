@@ -95,9 +95,8 @@ class AppCubit extends Cubit<AppStates>{
       'TimeZoneId': timeZone
     };
     print('Device Token Is: $deviceToken');
-    DioHelper.postDataWithoutData(url: AuthEndPoints.login, data: data)
+    await DioHelper.postDataWithoutData(url: AuthEndPoints.login, data: data)
         .then((value) async {
-        print('was ${await storage.read(key: "token")}');
       emit(LoginSuccessState());
           loginResponse = LoginModel.fromJson(value!.data);
           await storage.write(key: "token", value: loginResponse!.token);
@@ -106,7 +105,8 @@ class AppCubit extends Cubit<AppStates>{
           await storage.write(key: "fullName", value: loginResponse!.user!.fullName);
           await storage.write(key: "roleName", value: loginResponse!.user!.roleName);
           await storage.write(key: "deviceToken", value: deviceToken);
-        print('Then ${await storage.read(key: "token")}');
+
+          print(value);
 
           globalUserName = loginResponse!.user!.username!;
           globalFullName = loginResponse!.user!.fullName!;
@@ -137,9 +137,9 @@ class AppCubit extends Cubit<AppStates>{
     };
     await DioHelper.postData(url: AuthEndPoints.logout, data: data).then((value) async {
       emit(LogoutSuccessState());
-      print('was ${await storage.read(key: "token")}');
+      print('was token: ${await storage.read(key: "token")}\n username: ${await storage.read(key: "username")}');
       await storage.deleteAll();
-      print('Then ${await storage.read(key: "token")}');
+      print('Then token: ${await storage.read(key: "token")}\n username: ${await storage.read(key: "username")}');
       navigateTo(context, LoginScreen());
       showToast(message: 'You Have Been Logged Out Successfully', state: ToastStates.SUCCESS);
     }).catchError((error) {
@@ -924,6 +924,7 @@ class AppCubit extends Cubit<AppStates>{
     await DioHelper.getData(url: NotificationEndPoints.getPlantNotifications(plantID)).then((value){
       emit(GetPlantNotificationsSuccessState());
       List data = value!.data;
+      print(value);
       allPlantNotifications = data.map((e) => PlantNotifications.fromJson(e)).toList();
       print("Loaded ${allPlantNotifications.length} Notifications");
     }).catchError((error){
@@ -1018,6 +1019,34 @@ class AppCubit extends Cubit<AppStates>{
     }
   }
 
+  Future<void> updatePlantSchedule({
+    required String plantId,
+    required String scheduleId,
+    required CreatePlantScheduleModel request,
+  }) async {
+    emit(UpdatePlantScheduleLoadingState());
+
+    try {
+      // Include schedule ID in the request body for update
+      final updateData = request.toJson();
+      await DioHelper.putData(
+        url: PlantEndPoints.UpdatePlantSchedule(scheduleId),
+        data: updateData,
+      );
+
+      showToast(
+        message: "Care schedule updated!",
+        state: ToastStates.SUCCESS,
+      );
+
+      await getPlantSchedules(plantId); // Refresh schedules
+
+      emit(UpdatePlantScheduleSuccessState());
+    } catch (error) {
+      printRequest(error);
+      emit(UpdatePlantScheduleErrorState());
+    }
+  }
 
   Future<void> deleteSchedule(String scheduleId, String plantId) async {
     emit(DeletePlantScheduleLoadingState());

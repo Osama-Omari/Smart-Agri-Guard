@@ -136,6 +136,17 @@ String timeStampFormat(timeStamp) {
 }
 
 String formatDate(String isoDate) {
-  final dateTime = DateTime.parse(isoDate);
-  return DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+  try {
+    // 1. Parse the string
+    DateTime dateTime = DateTime.parse(isoDate);
+
+    // 2. Use .toLocal() to ensure it matches the device's timezone
+    // or keep it as is if the string already represents what you want.
+    final localTime = dateTime.toLocal();
+
+    // 3. Format to: Jan 16, 2026 12:17 PM
+    return DateFormat('MMM d, y h:mm a').format(localTime);
+  } catch (e) {
+    return isoDate;
+  }
 }

@@ -147,13 +147,38 @@ namespace InfrastructureLayer.Services
         /// <summary>
         /// Retrieves specific system notifications for a single greenhouse.
         /// </summary>
-        public async Task<List<SystemReportDTO>?> GetGreenhouseNotifications(Guid greenhouseId)
+        public async Task<List<SystemReportDTO>?> GetGreenhouseNotifications(Guid greenhouseId,string? userTimeZoneId)
         {
             var greenhouse = await _greenhouseRepository.GetGreenhouseById(greenhouseId);
             if (greenhouse == null)
                 throw new KeyNotFoundException("Greenhouse not found");
 
             var reports = await _systemReportsRepository.GetByGreenhouseIdAsync(greenhouseId);
+
+            //convert timezone to local time
+
+            if (!string.IsNullOrEmpty(userTimeZoneId) && reports != null)
+            {
+                TimeZoneInfo userTimeZone;
+                try
+                {
+                    userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(userTimeZoneId);
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                    userTimeZone = TimeZoneInfo.Utc; // Fallback to UTC if timezone not found
+                }
+                catch (InvalidTimeZoneException)
+                {
+                    userTimeZone = TimeZoneInfo.Utc; // Fallback to UTC if timezone is invalid
+                }
+                foreach (var report in reports)
+                {
+                    report.ReportDate = TimeZoneInfo.ConvertTime(report.ReportDate, userTimeZone);
+                }
+            }
+
+
             return (reports == null || !reports.Any()) ? null : _mapper.Map<List<SystemReportDTO>>(reports);
         }
 

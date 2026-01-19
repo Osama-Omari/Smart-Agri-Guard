@@ -27,6 +27,6 @@ namespace ApplicationLayer.Interfaces
 
         Task MarkPlantNotificationsAsRead(List<Guid> notificationsIds);
 
-        Task<List<PlantNotificationDTO>> GetPlantNotificationDTOs(Guid PlantId);
+        Task<List<PlantNotificationDTO>> GetPlantNotificationDTOs(Guid PlantId , string? userTimeZoneId);
     }
 }

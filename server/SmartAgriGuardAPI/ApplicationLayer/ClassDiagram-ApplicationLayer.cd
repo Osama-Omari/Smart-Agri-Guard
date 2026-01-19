@@ -1,100 +1,121 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Interface Name="ApplicationLayer.Interfaces.IDateService">
-    <Position X="5" Y="2.75" Width="1.5" />
+  <Interface Name="ApplicationLayer.Interfaces.IDataCleanupJob">
+    <Position X="4.25" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
-      <FileName>Interfaces\IDateService.cs</FileName>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAkAAA=</HashCode>
+      <FileName>Interfaces\IDataCleanupJob.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IFarmerPlantService">
-    <Position X="14.25" Y="2.75" Width="1.5" />
+    <Position X="6" Y="2.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAAAEAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IFarmerPlantService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IFileStorageService">
-    <Position X="10.5" Y="2.75" Width="1.75" />
+    <Position X="12" Y="2.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAgAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IFileStorageService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IGreenhouseService">
-    <Position X="8.75" Y="4.5" Width="1.5" />
+    <Position X="6" Y="4.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>IgAAgAAAAAAQAAACCAgAAAAAAAABQAAAhAAAAAAAFgA=</HashCode>
       <FileName>Interfaces\IGreenhouseService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IJWTService">
-    <Position X="6.75" Y="2.75" Width="1.5" />
+    <Position X="13.75" Y="6" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IJWTService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.INotificationService">
-    <Position X="14.25" Y="6.5" Width="1.5" />
+    <Position X="2.25" Y="4.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>QAAAAAABAAAAAAAAAAAAAAACAAAAAQAAAAAQAAAAAAA=</HashCode>
+      <HashCode>QAAAAAABAAAAAAEAAAAAAAACAAAAAQAAAAgQAAAAAAA=</HashCode>
       <FileName>Interfaces\INotificationService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IPasswordHasherService">
-    <Position X="12.5" Y="2.75" Width="1.5" />
+    <Position X="8" Y="2.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAIAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IPasswordHasherService.cs</FileName>
     </TypeIdentifier>
   </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IPlantHealthService">
+    <Position X="13.75" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IPlantHealthService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IPlantNotificationJob">
+    <Position X="9.75" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IPlantNotificationJob.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApplicationLayer.Interfaces.IPlantScheduleService">
+    <Position X="11.75" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAgCAQAAAAAAAgACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IPlantScheduleService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IPlantService">
-    <Position X="10.5" Y="4.5" Width="1.5" />
+    <Position X="4.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAAAEAAAAAAAACAgABAAAAgAIABAAAAAAAAQAAAAAA=</HashCode>
       <FileName>Interfaces\IPlantService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IPlantTypeService">
-    <Position X="12.25" Y="6.5" Width="1.5" />
+    <Position X="10.25" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAAAAIAAAAAIAAAAAAAAAAAAAAAAAAAIQA=</HashCode>
       <FileName>Interfaces\IPlantTypeService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IReportServcie">
-    <Position X="8.75" Y="2.75" Width="1.25" />
+    <Position X="14" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IReportServcie.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IReportStrategy">
-    <Position X="12.25" Y="4.5" Width="1.5" />
+    <Position X="9.75" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEQAAAAAAA=</HashCode>
       <FileName>Interfaces\IReportStrategy.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.ISensorDataArchiveService">
-    <Position X="14.25" Y="4.75" Width="1.5" />
+    <Position X="11.5" Y="6.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\ISensorDataArchiveService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.ISensorDataService">
-    <Position X="5" Y="4.5" Width="1.5" />
+    <Position X="2.25" Y="2.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAIAAAgAAAAAAgAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\ISensorDataService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ApplicationLayer.Interfaces.IUserService">
-    <Position X="6.75" Y="4.5" Width="1.5" />
+    <Position X="8" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAEAACAAwBAABAAAAAIACAABIAAQAAAQAAAAAAA=</HashCode>
+      <HashCode>AAAAAAEAAAAAwBAABAAAAAIACAABIAAQAAAQAAAAAAA=</HashCode>
       <FileName>Interfaces\IUserService.cs</FileName>
     </TypeIdentifier>
   </Interface>

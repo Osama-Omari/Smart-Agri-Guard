@@ -30,7 +30,7 @@ namespace ApplicationLayer.Interfaces
 
         Task<List<GreenhouseDTO>?> GetGreenhousesWithoutManagerAsync();
 
-        Task<List<SystemReportDTO>?> GetGreenhouseNotifications(Guid greenhouseId);
+        Task<List<SystemReportDTO>?> GetGreenhouseNotifications(Guid greenhouseId,string? userTimeZoneId);
 
         Task<List<SystemReportDTO>?> GetAllGreenhousesNotifications();
 

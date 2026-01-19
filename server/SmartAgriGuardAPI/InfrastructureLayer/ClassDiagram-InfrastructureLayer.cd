@@ -1,15 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="InfrastructureLayer.Services.DateService" BaseTypeListCollapsed="true">
-    <Position X="2.25" Y="2" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
-      <FileName>Services\DateService.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
   <Class Name="InfrastructureLayer.Services.ExcelReportStrategy" BaseTypeListCollapsed="true">
-    <Position X="4.75" Y="1.25" Width="2.25" />
+    <Position X="18.75" Y="7.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>QAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAEQAAAAAAg=</HashCode>
       <FileName>Services\ExcelReportStrategy.cs</FileName>
@@ -17,15 +9,15 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.FarmerPlantService" BaseTypeListCollapsed="true">
-    <Position X="12.75" Y="6.75" Width="2.5" />
+    <Position X="18" Y="2" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQoAAAAECAAAAEBAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAQgAAAAECAAAAEBAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>Services\FarmerPlantService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.FileStorageService" BaseTypeListCollapsed="true">
-    <Position X="7.5" Y="1.25" Width="1.75" />
+    <Position X="2.5" Y="2" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAgAAAAAAAAAAAAAEAA=</HashCode>
       <FileName>Services\FileStorageService.cs</FileName>
@@ -33,15 +25,15 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.FirebaseNotificationService" BaseTypeListCollapsed="true">
-    <Position X="2" Y="3.75" Width="2.25" />
+    <Position X="3" Y="5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>QAAAAAABAAAAACAAAAAAAAACAAAAAQAAAAAQAABAgAA=</HashCode>
+      <HashCode>QAAAAAAhAAAAACEAAAAAAAACAAAAAQAAAAgQAABAAAA=</HashCode>
       <FileName>Services\FirebaseNotificationService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.GreenhouseService" BaseTypeListCollapsed="true">
-    <Position X="9.75" Y="3.75" Width="2.75" />
+    <Position X="15.75" Y="5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>IgAAiAAgAAAQAAgCCAgBAAAAAAARQAAAhAAAAAAAFgA=</HashCode>
       <FileName>Services\GreenhouseService.cs</FileName>
@@ -49,7 +41,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.JWTService" BaseTypeListCollapsed="true">
-    <Position X="11.75" Y="1.25" Width="1.5" />
+    <Position X="6.75" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Services\JWTService.cs</FileName>
@@ -57,7 +49,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.PasswordHasherService" BaseTypeListCollapsed="true">
-    <Position X="13.5" Y="1.25" Width="2" />
+    <Position X="18.75" Y="5.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAIAAAAAAAAAAAEIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\PasswordHasherService.cs</FileName>
@@ -65,23 +57,47 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.PdfReportStrategy" BaseTypeListCollapsed="true">
-    <Position X="9.75" Y="1" Width="1.75" />
+    <Position X="0.5" Y="2" Width="1.75" />
     <TypeIdentifier>
       <HashCode>wAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAEQAAAAAAg=</HashCode>
       <FileName>Services\PdfReportStrategy.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="InfrastructureLayer.Services.PlantService" BaseTypeListCollapsed="true">
-    <Position X="4.5" Y="3.75" Width="2.75" />
+  <Class Name="InfrastructureLayer.Services.PlantHealthService" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AQAACEAEAAAAACiAgABBAEAgAIABAAAAAAAASAAAAAA=</HashCode>
+      <HashCode>ABAAAAAEEBAAACAAEAQAACAAAEAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\PlantHealthService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="InfrastructureLayer.Services.PlantNotificationJob" BaseTypeListCollapsed="true">
+    <Position X="11" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEEAQAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\PlantNotificationJob.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="InfrastructureLayer.Services.PlantScheduleService" BaseTypeListCollapsed="true">
+    <Position X="13.25" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgCAwABBAAAAiACAAABEAAAAAABAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Services\PlantScheduleService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="InfrastructureLayer.Services.PlantService" BaseTypeListCollapsed="true">
+    <Position X="5.5" Y="5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AQAACEAEBAAAACiAgABBAEAgAIABAAAAAAAASAAAAAA=</HashCode>
       <FileName>Services\PlantService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.PlantTypeService" BaseTypeListCollapsed="true">
-    <Position X="15.75" Y="1" Width="1.75" />
+    <Position X="16" Y="2" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAAAAIAAAABIAAAAAAAAAAAAAAACAAAIQA=</HashCode>
       <FileName>Services\PlantTypeService.cs</FileName>
@@ -89,14 +105,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.ReportGeneratorContext">
-    <Position X="17.75" Y="4.25" Width="2" />
+    <Position X="4.5" Y="2" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAACAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAQAAA=</HashCode>
       <FileName>Services\ReportGeneratorContext.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="InfrastructureLayer.Services.ReportServcie" BaseTypeListCollapsed="true">
-    <Position X="17.75" Y="1.25" Width="1.5" />
+    <Position X="8.5" Y="2" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAABCBAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\ReportServcie.cs</FileName>
@@ -104,28 +120,43 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.SensorDataArchiveService" BaseTypeListCollapsed="true">
-    <Position X="12.75" Y="4" Width="2.25" />
+    <Position X="13.5" Y="2" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIIAAAAAgAAAABAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAIAAAAAgAAAABAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\SensorDataArchiveService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.SensorDataService" BaseTypeListCollapsed="true">
-    <Position X="7.5" Y="3.75" Width="2" />
+    <Position X="8.5" Y="5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAIAAAoAAAAAChAAAABAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>CAAIAAAgEAAAAChEAAABAAAAAAAADAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\SensorDataService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfrastructureLayer.Services.UserService" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="4.25" Width="2" />
+    <Position X="11" Y="5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAADAEgACAAwDQABAEBAAIACAABIAAQAAAQAABQAAA=</HashCode>
+      <HashCode>AAAACAEgAAAAwDQABAEBAAIACAABIAAQAAAQAABQAAA=</HashCode>
       <FileName>Services\UserService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="InfrastructureLayer.AI.Services.TomatoHealthModel">
+    <Position X="21" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAACAEAAAAAAAQAAAAAAAAAAAAAAAAAAAAAIAAAAgA=</HashCode>
+      <FileName>AI\Services\TomatoHealthModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="InfrastructureLayer.AI.Interfaces.IPlantHealthModel">
+    <Position X="20.5" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>AI\Interfaces\IPlantHealthModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -74,7 +74,8 @@ namespace WebAPILayer.Controllers
         {
             try
             {
-                var notifications = await _plantService.GetPlantNotificationDTOs(plantId);
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+                var notifications = await _plantService.GetPlantNotificationDTOs(plantId, userTimeZoneId);
                 return Ok(notifications);
             }
             catch (Exception ex)
@@ -109,7 +110,8 @@ namespace WebAPILayer.Controllers
         {
             try
             {
-                var notifications = await _greenhouseService.GetGreenhouseNotifications(greenhouseId);
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+                var notifications = await _greenhouseService.GetGreenhouseNotifications(greenhouseId,userTimeZoneId);
                 if (notifications == null)
                     return BadRequest("There is no notifications for this greenhouse");
                 return Ok(notifications);

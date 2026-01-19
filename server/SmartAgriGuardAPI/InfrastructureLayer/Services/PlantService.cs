@@ -167,13 +167,29 @@ namespace InfrastructureLayer.Services
         /// <summary>
         /// Gets all historical notifications for a specific plant.
         /// </summary>
-        public async Task<List<PlantNotificationDTO>> GetPlantNotificationDTOs(Guid PlantId)
+        public async Task<List<PlantNotificationDTO>> GetPlantNotificationDTOs(Guid PlantId, string? userTimeZoneId)
         {
             var plant = await _plantRepository.GetPlantById(PlantId);
             if (plant == null)
                 throw new KeyNotFoundException("plant not found");
 
             var notifications = await _plantNotificationsRepository.GetByPlantIdAsync(PlantId);
+
+            //convert timestamp to user timezone
+            TimeZoneInfo tz;
+            try
+            {
+                tz = TZConvert.GetTimeZoneInfo(userTimeZoneId);
+            }
+            catch
+            {
+                tz = TimeZoneInfo.Utc;
+            }
+            foreach (var notification in notifications)
+            {
+                notification.NotificationDate = TimeZoneInfo.ConvertTime(notification.NotificationDate, tz);
+            }
+
             return _mapper.Map<List<PlantNotificationDTO>>(notifications);
         }
 

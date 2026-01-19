@@ -1,179 +1,214 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="DataAccessLayer.Data.SmartAgriGuardDbContext">
+    <Position X="15.75" Y="4" Width="2.25" />
+    <InheritanceLine Type="Microsoft.EntityFrameworkCore.DbContext" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="16.75" Y="3.562" />
+        <Point X="16.75" Y="4.126" />
+        <Point X="16.75" Y="4.126" />
+        <Point X="16.75" Y="4" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>QiAQACgAAAAAQAAAAAAEQAAAEAEAAAgBAAAAAAIAAAA=</HashCode>
+      <FileName>Data\SmartAgriGuardDbContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Microsoft.EntityFrameworkCore.DbContext" Collapsed="true">
+    <Position X="16" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
   <Class Name="DataAccessLayer.Models.DeviceToken">
-    <Position X="1" Y="1" Width="1.5" />
+    <Position X="0.5" Y="17.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAADAAAAAAAAAAAAECAAAAkAAAAAAAAAAAAAAAEBAAA=</HashCode>
       <FileName>Models\DeviceToken.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.FarmerPlant">
-    <Position X="2.75" Y="1" Width="1.5" />
+    <Position X="0.5" Y="14.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAASABACAAAAA=</HashCode>
       <FileName>Models\FarmerPlant.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.Greenhouse">
-    <Position X="4.5" Y="1" Width="1.5" />
+    <Position X="11" Y="17.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAASQAAAAAAAQABAAAIIAAQAAAAABAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Greenhouse.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.Plant">
-    <Position X="6.25" Y="0.5" Width="1.75" />
+    <Position X="2.25" Y="17.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QiACQAAAAAAAAAAAQAIAYAQAAAAAAAAAAAEAAAIAAQA=</HashCode>
+      <HashCode>QiACQAAAAAAAAAAAQAIAYAQAAAEAAAAAAAEAAAIAAAA=</HashCode>
       <FileName>Models\Plant.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.PlantNotifications">
-    <Position X="1" Y="4" Width="1.5" />
+    <Position X="2.25" Y="14.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>gAASAAAAAAAAAAAAAAAAEAABAAAAAAAAAAABIAAAAAA=</HashCode>
       <FileName>Models\PlantNotifications.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="DataAccessLayer.Models.PlantSchedule">
+    <Position X="9.25" Y="17.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAyAAAAAAAAAAAAEAAAAAAQAIAAACIAAAABAAAACAA=</HashCode>
+      <FileName>Models\PlantSchedule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="DataAccessLayer.Models.PlantType">
-    <Position X="2.75" Y="4" Width="1.5" />
+    <Position X="9.25" Y="14.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAASAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\PlantType.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.Prediction">
-    <Position X="4.5" Y="4" Width="1.5" />
+    <Position X="4" Y="14.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAASAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAABAAAgAAA=</HashCode>
       <FileName>Models\Prediction.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.SensorData">
-    <Position X="2.75" Y="6.5" Width="1.75" />
+    <Position X="7.5" Y="17.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAASAAAAAAIgAAAAAAACAAAAAAAAAAAgAABBEAAEAAA=</HashCode>
       <FileName>Models\SensorData.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.SensorDataArchive">
-    <Position X="1" Y="6.5" Width="1.5" />
+    <Position X="5.75" Y="17.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAASAAAAAAIgAAAAAAACAAAAAAAAAAAgAABBEAIEAAA=</HashCode>
       <FileName>Models\SensorDataArchive.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.SystemReports">
-    <Position X="6.5" Y="4.25" Width="1.5" />
+    <Position X="7.5" Y="14.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAQAAAAAAAAAAQAIAEAAAAAACAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Models\SystemReports.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.User">
-    <Position X="4.75" Y="6.5" Width="1.5" />
+    <Position X="4" Y="17.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACCCAAgAAAAAAIAAQAIAAAEAAAAIAAgAAAAAAAAEAgA=</HashCode>
       <FileName>Models\User.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataAccessLayer.Models.UserRole">
-    <Position X="6.5" Y="6.75" Width="1.5" />
+    <Position X="5.75" Y="14.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACACAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\UserRole.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataAccessLayer.Repositories.DeviceTokenRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="1.5" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.DeviceTokenRepository" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAAAABACACAgAAAAAAIAAAABAAAAAIAAACAA=</HashCode>
+      <HashCode>AAAAAgAABAAABACACAgAAAAAAIAAAABgAAAAIAAACAA=</HashCode>
       <FileName>Repositories\DeviceTokenRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.FarmerPlantRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="4.5" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.FarmerPlantRepository" BaseTypeListCollapsed="true">
+    <Position X="12.5" Y="13.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABAAAAAgIAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Repositories\FarmerPlantRepository.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.242" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.GreenhouseRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="7.5" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.GreenhouseRepository" BaseTypeListCollapsed="true">
+    <Position X="6" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAEAAAAAAAAQBAAAAAAAAAEAAAAAQAgAAAAAAAAAAIA=</HashCode>
       <FileName>Repositories\GreenhouseRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.PlantNotificationsRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="17.5" Y="4.25" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.PlantNotificationsRepository" BaseTypeListCollapsed="true">
+    <Position X="13" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAACAAAAJAAAAAAAAAEAAAAAAAgAAAAAEAAAAIA=</HashCode>
+      <HashCode>AAAAAAACBAAAJAAAAAAAAAEAAAAAAAgAAAAAEAAAAIQ=</HashCode>
       <FileName>Repositories\PlantNotificationsRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.PlantRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="2.5" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.PlantRepository" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="13.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAACEEIAAAAABAAAAAABAAEAAAABAAgAAAAAAAAAAIA=</HashCode>
+      <HashCode>BAACEEAAAAAABAAAAAABAAEAAAABAAgAAAAAAAAAAIA=</HashCode>
       <FileName>Repositories\PlantRepository.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.174" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.PlantTypeRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="5.5" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.PlantScheduleRepository" BaseTypeListCollapsed="true">
+    <Position X="11.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAQAAAAAABgAAAAAAAAAAgAEEAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Repositories\PlantScheduleRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.PlantTypeRepository" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAABAAAAAAAAAEAAAAAAAgAAAAAAAAAJIA=</HashCode>
       <FileName>Repositories\PlantTypeRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.PredictionRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="8.5" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.PredictionRepository" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAABAAAAAAAAAEAAAAAAAgAAAAAAAAAIIA=</HashCode>
       <FileName>Repositories\PredictionRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.SensorDataArchiveRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="17.5" Y="5.25" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.SensorDataArchiveRepository" BaseTypeListCollapsed="true">
+    <Position X="14.75" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAABBEAAAAAAAAEAAAAAAAgAAAAAEIAQIIA=</HashCode>
+      <HashCode>AAEAAQAAAAABBEAAAAAAAAEAAAAAAAgAAAAAEIAEIIA=</HashCode>
       <FileName>Repositories\SensorDataArchiveRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.SensorDataRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="3.5" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.SensorDataRepository" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAABBEAAAAAAAAEAACAAAAAAAAAAEIAAIAA=</HashCode>
+      <HashCode>AAAAAAAAAAABBEAAAAAAAAEAACAAAAAAQAAAEIAAIAA=</HashCode>
       <FileName>Repositories\SensorDataRepository.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.158" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.SystemReportsRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="6.5" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.SystemReportsRepository" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="13.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAACBAAABAAAAAAAAEEAAAAAAAgAAAAAAAAAAIA=</HashCode>
+      <HashCode>AAEAAAACBAAABAAAAAAAAEEAAAAAAAgAAABAAAAAAIA=</HashCode>
       <FileName>Repositories\SystemReportsRepository.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.304" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.UserRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="9.5" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.UserRepository" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAAAAABUAAAAAAAAAACAABAAgAGAAAAAQAAAA=</HashCode>
+      <HashCode>AAAgABAAAAAABUAAAAAAAAAACAABAAgAGAAAAAQAAAA=</HashCode>
       <FileName>Repositories\UserRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataAccessLayer.Repositories.UserRoleRepository" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="17.5" Y="6.25" Width="1.5" />
+  <Class Name="DataAccessLayer.Repositories.UserRoleRepository" BaseTypeListCollapsed="true">
+    <Position X="2.5" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAABAAAAIIAABAAAABAAAAAEAAAAAQAAAAAAAAAAAAA=</HashCode>
       <FileName>Repositories\UserRoleRepository.cs</FileName>
@@ -181,84 +216,91 @@
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="DataAccessLayer.Interfaces.IDeviceTokenRepository">
-    <Position X="8.25" Y="1.25" Width="1.5" />
+    <Position X="0.75" Y="5.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAAAAAACACAgAAAAAAIAAAABAAAAAIAAACAA=</HashCode>
+      <HashCode>AAAAAgAABAAAAACACAgAAAAAAIAAAABgAAAAIAAACAA=</HashCode>
       <FileName>Interfaces\IDeviceTokenRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.IFarmerPlantRepository">
-    <Position X="10" Y="1.25" Width="1.5" />
+    <Position X="2.75" Y="3" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAgIAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IFarmerPlantRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.IGreenhouseRepository">
-    <Position X="11.75" Y="1.25" Width="1.5" />
+    <Position X="5" Y="3" Width="2" />
     <TypeIdentifier>
       <HashCode>IAEAAAAAAAAQAAAAAAAAAAEAAAAAQAgAAAAAAAAAAIA=</HashCode>
       <FileName>Interfaces\IGreenhouseRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.IPlantNotificationsRepository">
-    <Position X="13.5" Y="1.25" Width="1.5" />
+    <Position X="3" Y="5.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAACAAAAIAAAAAAAAAEAAAAAAAgAAAAAEAAAAIA=</HashCode>
+      <HashCode>AAAAAAACBAAAIAAAAAAAAAEAAAAAAAgAAAAAEAAAAIQ=</HashCode>
       <FileName>Interfaces\IPlantNotificationsRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.IPlantRepository">
-    <Position X="8.25" Y="4" Width="1.5" />
+    <Position X="7.75" Y="5.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>BAACEEIAAAAAAAAAAAABAAEAAAABAAgAAAAAAAAAAIA=</HashCode>
+      <HashCode>BAACEEAAAAAAAAAAAAABAAEAAAABAAgAAAAAAAAAAIA=</HashCode>
       <FileName>Interfaces\IPlantRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
+  <Interface Name="DataAccessLayer.Interfaces.IPlantScheduleRepository">
+    <Position X="11.5" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAgAAQAAAAAAAgAAAAAAAAAAgAEEAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Interfaces\IPlantScheduleRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Interface Name="DataAccessLayer.Interfaces.IPlantTypeRepository">
-    <Position X="10" Y="4" Width="1.5" />
+    <Position X="13.75" Y="3" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAAAAAAAAAAAAEAAAAAAAgAAAAAAAAAJIA=</HashCode>
       <FileName>Interfaces\IPlantTypeRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.IPredictionRepository">
-    <Position X="11.75" Y="4" Width="1.5" />
+    <Position X="7.25" Y="3" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAAAAAAAAAAAAEAAAAAAAgAAAAAAAAAIIA=</HashCode>
       <FileName>Interfaces\IPredictionRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.ISensorDataArchiveRepository">
-    <Position X="8.25" Y="7.25" Width="1.5" />
+    <Position X="10.25" Y="5.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAABAEAAAAAAAAEAAAAAAAgAAAAAEIAQIIA=</HashCode>
+      <HashCode>AAEAAQAAAAABAEAAAAAAAAEAAAAAAAgAAAAAEIAEIIA=</HashCode>
       <FileName>Interfaces\ISensorDataArchiveRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.ISensorDataRepository">
-    <Position X="10" Y="7.25" Width="1.5" />
+    <Position X="9.25" Y="3" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAABAEAAAAAAAAEAACAAAAAAAAAAEIAAIAA=</HashCode>
+      <HashCode>AAAAAAAAAAABAEAAAAAAAAEAACAAAAAAQAAAEIAAIAA=</HashCode>
       <FileName>Interfaces\ISensorDataRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.ISystemReportsRepository">
-    <Position X="11.75" Y="7.25" Width="1.5" />
+    <Position X="5.5" Y="5.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAEAAAACBAAAAAAAAAAAAEEAAAAAAAgAAAAAAAAAAIA=</HashCode>
+      <HashCode>AAEAAAACBAAAAAAAAAAAAEEAAAAAAAgAAABAAAAAAIA=</HashCode>
       <FileName>Interfaces\ISystemReportsRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.IUserRepository">
-    <Position X="13.5" Y="7" Width="1.5" />
+    <Position X="12.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAAAAAAUAAAAAAAAAACAABAAgAGAAAAAQAAAA=</HashCode>
+      <HashCode>AAAgABAAAAAAAUAAAAAAAAAACAABAAgAGAAAAAQAAAA=</HashCode>
       <FileName>Interfaces\IUserRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="DataAccessLayer.Interfaces.IUserRoleRepository">
-    <Position X="13.5" Y="4" Width="1.5" />
+    <Position X="0.75" Y="3" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAABAAAAIIAAAAAAABAAAAAEAAAAAQAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IUserRoleRepository.cs</FileName>

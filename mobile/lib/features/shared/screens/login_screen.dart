@@ -307,35 +307,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 12),
 
-                        // Forgot Password
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text(
-                                      'Contact administrator for password reset'),
-                                  behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  backgroundColor: const Color(0xFF7CB342),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              'Forgot Password?',
-                              style: TextStyle(
-                                color: Color(0xFF7CB342),
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-
                         // Login Button
                         SizedBox(
                           width: double.infinity,
@@ -364,7 +335,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   )
                                 : const Text(
-                                    'Sign In',
+                                    'Log in',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,

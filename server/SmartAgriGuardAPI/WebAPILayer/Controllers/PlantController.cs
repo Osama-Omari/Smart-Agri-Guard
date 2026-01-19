@@ -239,7 +239,8 @@ namespace WebAPILayer.Controllers
                 return BadRequest(ModelState);
             try
             {
-                await _plantScheduleService.AddPlantScheduleAsync(PlantId, dto);
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+                await _plantScheduleService.AddPlantScheduleAsync(PlantId, dto, userTimeZoneId);
                 return Ok("The schedule has been added successfully");
             }
             catch (KeyNotFoundException ex)
@@ -268,7 +269,8 @@ namespace WebAPILayer.Controllers
                 return BadRequest(ModelState);
             try
             {
-                await _plantScheduleService.UpdatePlantScheduleAsync(ScheduleId, dto);
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+                await _plantScheduleService.UpdatePlantScheduleAsync(ScheduleId, dto, userTimeZoneId);
                 return Ok("The schedule has been updated successfully");
             }
             catch (KeyNotFoundException ex)
@@ -337,7 +339,8 @@ namespace WebAPILayer.Controllers
         {
             try
             {
-                var schedules = await _plantScheduleService.GetPlantSchedulesAsync(PlantId);
+                var userTimeZoneId = User.Claims.FirstOrDefault(c => c.Type == "timezone")?.Value!;
+                var schedules = await _plantScheduleService.GetPlantSchedulesAsync(PlantId,userTimeZoneId);
                 if(schedules == null || !schedules.Any())
                     return NotFound("No schedules found for the specified plant.");
                 return Ok(schedules);

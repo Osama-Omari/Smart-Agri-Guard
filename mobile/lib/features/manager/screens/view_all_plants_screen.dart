@@ -157,11 +157,18 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
 
     String taskType = schedule?.taskType ?? "Watering";
     String frequency = schedule?.frequency ?? "Weekly";
-    List<DayOfWeek> selectedDays = schedule?.days ?? [];
-    TimeOfDay selectedTime = TimeOfDay(
-      hour: schedule?.hour ?? 8,
-      minute: schedule?.minute ?? 0,
-    );
+    List<DayOfWeek> selectedDays = schedule?.days != null 
+        ? List<DayOfWeek>.from(schedule!.days!) 
+        : [];
+    
+    // Server already sends time in user's local timezone, so use it directly
+    TimeOfDay selectedTime;
+    if (schedule != null && schedule!.hour != null && schedule!.minute != null) {
+      // Use the time directly since server already converted it to local timezone
+      selectedTime = TimeOfDay(hour: schedule!.hour!, minute: schedule!.minute!);
+    } else {
+      selectedTime = const TimeOfDay(hour: 8, minute: 0);
+    }
 
     showModalBottomSheet(
       context: context,
@@ -190,7 +197,7 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
               const SizedBox(height: 16),
 
               DropdownButtonFormField<String>(
-                value: taskType,
+                initialValue: taskType,
                 items: ["Watering", "Fertilizing"]
                     .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                     .toList(),
@@ -238,29 +245,32 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  final now = DateTime.now();
-                  final local = DateTime(
-                    now.year,
-                    now.month,
-                    now.day,
-                    selectedTime.hour,
-                    selectedTime.minute,
-                  );
-
-                  final utc = local.toUtc();
-
+                  // Server expects local time for both add and update (since it sends local time back)
                   final request = CreatePlantScheduleModel(
                     taskType: taskType,
                     frequency: frequency,
                     days: selectedDays.map((d) => d.name).toList(),
-                    hour: utc.hour,
-                    minute: utc.minute,
+                    hour: selectedTime.hour,  // Send local time directly
+                    minute: selectedTime.minute,  // Send local time directly
                   );
 
-                  AppCubit.get(context).addPlantSchedule(
-                    plantId: plantId,
-                    request: request,
-                  );
+                  final cubit = AppCubit.get(context);
+                  
+                  // Check if we're editing an existing schedule or adding a new one
+                  if (schedule != null && schedule!.id != null) {
+                    // Update existing schedule
+                    cubit.updatePlantSchedule(
+                      plantId: plantId,
+                      scheduleId: schedule!.id!,
+                      request: request,
+                    );
+                  } else {
+                    // Add new schedule
+                    cubit.addPlantSchedule(
+                      plantId: plantId,
+                      request: request,
+                    );
+                  }
 
                   Navigator.pop(context);
                 },

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeZoneConverter;
 
 namespace InfrastructureLayer.Services
 {
@@ -40,13 +41,26 @@ namespace InfrastructureLayer.Services
         /// </summary>
         /// <param name="PlantId">The unique identifier of the plant.</param>
         /// <param name="dto">Schedule details including frequency (Daily/Weekly), time, and task type.</param>
-        public async Task AddPlantScheduleAsync(Guid PlantId, CreateScheduleDTO dto)
+        public async Task AddPlantScheduleAsync(Guid PlantId, CreateScheduleDTO dto, string? userTimeZoneId)
         {
             var plant = await _plantRepository.GetPlantById(PlantId);
             if (plant == null)
                 throw new KeyNotFoundException("The plant was not found.");
 
-            string cronExp = GenerateCronExpression(dto);
+            // Convert the hour and minute to UTC time based on user timezone if provided
+            var (utcHour, utcMinute) = ConvertLocalTimeToUtc(dto.Hour, dto.Minute, userTimeZoneId);
+
+            // Create a modified DTO with UTC values for cron expression generation
+            var utcDto = new CreateScheduleDTO
+            {
+                TaskType = dto.TaskType,
+                Frequency = dto.Frequency,
+                Days = dto.Days,
+                Hour = utcHour,
+                Minute = utcMinute
+            };
+
+            string cronExp = GenerateCronExpression(utcDto);
 
             var schedule = new PlantSchedule
             {
@@ -54,8 +68,8 @@ namespace InfrastructureLayer.Services
                 TaskType = dto.TaskType,
                 Frequency = dto.Frequency,
                 DaysOfWeek = dto.Days != null ? string.Join(",", dto.Days) : null,
-                Hour = dto.Hour,
-                Minute = dto.Minute,
+                Hour = utcHour,
+                Minute = utcMinute,
                 CronExpression = cronExp,
                 IsActive = true
             };
@@ -75,19 +89,32 @@ namespace InfrastructureLayer.Services
         /// <summary>
         /// Updates an existing schedule and refreshes the associated Hangfire background job.
         /// </summary>
-        public async Task UpdatePlantScheduleAsync(Guid scheduleId, CreateScheduleDTO dto)
+        public async Task UpdatePlantScheduleAsync(Guid scheduleId, CreateScheduleDTO dto, string? userTimeZoneId)
         {
             var existingSchedule = await _plantScheduleRepository.GetPlantScheduleByIdAsync(scheduleId);
             if (existingSchedule == null)
                 throw new KeyNotFoundException("Schedule not found");
 
-            string newCronExp = GenerateCronExpression(dto);
+            // Convert the hour and minute to UTC time based on user timezone if provided
+            var (utcHour, utcMinute) = ConvertLocalTimeToUtc(dto.Hour, dto.Minute, userTimeZoneId);
+
+            // Create a modified DTO with UTC values for cron expression generation
+            var utcDto = new CreateScheduleDTO
+            {
+                TaskType = dto.TaskType,
+                Frequency = dto.Frequency,
+                Days = dto.Days,
+                Hour = utcHour,
+                Minute = utcMinute
+            };
+
+            string newCronExp = GenerateCronExpression(utcDto);
 
             // Sync Database record
             existingSchedule.TaskType = dto.TaskType;
             existingSchedule.Frequency = dto.Frequency;
-            existingSchedule.Hour = dto.Hour;
-            existingSchedule.Minute = dto.Minute;
+            existingSchedule.Hour = utcHour;
+            existingSchedule.Minute = utcMinute;
             existingSchedule.DaysOfWeek = dto.Days != null ? string.Join(",", dto.Days) : null;
             existingSchedule.CronExpression = newCronExp;
             await _plantScheduleRepository.UpdatePlantScheduleAsync(existingSchedule);
@@ -145,6 +172,40 @@ namespace InfrastructureLayer.Services
 
         // --- Helper Methods ---
 
+        /// <summary>
+        /// Converts local hour and minute to UTC based on the user's timezone.
+        /// If timezone is not provided or invalid, returns the original hour and minute (assumes UTC).
+        /// </summary>
+        private (int utcHour, int utcMinute) ConvertLocalTimeToUtc(int localHour, int localMinute, string? userTimeZoneId)
+        {
+            // If no timezone provided, assume the time is already in UTC
+            if (string.IsNullOrWhiteSpace(userTimeZoneId))
+            {
+                return (localHour, localMinute);
+            }
+
+            try
+            {
+                // Resolve the user's timezone
+                TimeZoneInfo userTimeZone = TZConvert.GetTimeZoneInfo(userTimeZoneId);
+
+                // Create a DateTime in the user's local timezone with today's date
+                // Using a fixed date (today) to avoid DST issues - the time offset will be calculated correctly
+                var today = DateTime.Today;
+                var localDateTime = new DateTime(today.Year, today.Month, today.Day, localHour, localMinute, 0);
+
+                // Convert to UTC
+                var utcDateTime = TimeZoneInfo.ConvertTimeToUtc(localDateTime, userTimeZone);
+
+                return (utcDateTime.Hour, utcDateTime.Minute);
+            }
+            catch
+            {
+                // If timezone conversion fails, assume the time is already in UTC
+                return (localHour, localMinute);
+            }
+        }
+
         private string GetJobId(string taskType, Guid plantId) => $"{taskType}-Plant-{plantId}";
 
         private string GenerateCronExpression(CreateScheduleDTO dto)
@@ -170,10 +231,30 @@ namespace InfrastructureLayer.Services
             _ => throw new ArgumentException($"Invalid day name: {day}")
         };
 
-        public async Task<List<PlantScheduleDTO>?> GetPlantSchedulesAsync(Guid plantId)
+        public async Task<List<PlantScheduleDTO>?> GetPlantSchedulesAsync(Guid plantId,string? userTimeZoneId)
         {
             var schedules = await _plantScheduleRepository.GetSchedulesByPlantIdAsync(plantId);
-            
+            if(schedules == null || !schedules.Any())
+                throw new KeyNotFoundException("No schedules found for the specified plant.");
+            // convert the hour and minute to user local time
+            TimeZoneInfo userTimeZone;
+            if (userTimeZoneId == null)
+                return _mapper.Map<List<PlantScheduleDTO>>(schedules);
+            userTimeZone = TZConvert.GetTimeZoneInfo(userTimeZoneId);
+                
+
+            foreach (var schedule in schedules)
+            {
+                // Create a DateTime in UTC with today's date
+                var today = DateTime.Today;
+                var utcDateTime = new DateTime(today.Year, today.Month, today.Day, schedule.Hour, schedule.Minute, 0, DateTimeKind.Utc);
+                // Convert to user's local time
+                var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, userTimeZone);
+                schedule.Hour = localDateTime.Hour;
+                schedule.Minute = localDateTime.Minute;
+            }
+
+
             return _mapper.Map<List<PlantScheduleDTO>>(schedules);
 
         }
