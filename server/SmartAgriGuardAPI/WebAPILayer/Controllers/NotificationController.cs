@@ -23,47 +23,6 @@ namespace WebAPILayer.Controllers
             _plantService = plantService;
             _greenhouseService = greenhouseService;
         }
-
-        /// <summary>
-        /// Manually triggers a watering notification for a specific plant.
-        /// </summary>
-        /// <param name="plantId">The unique ID of the plant needing water.</param>
-        /// <response code="200">Notification sent successfully.</response>
-        /// <response code="403">Forbidden if the user is not an Admin.</response>
-        [Authorize(Roles = "Admin")]
-        [HttpPost("plant/{plantId}/watering")]
-        public async Task<IActionResult> NotifyPlantNeedsWatering(Guid plantId)
-        {
-            try
-            {
-                await _notificationService.NotifyPlantNeedsWatering(plantId);
-                return Ok(new { Message = "Notification sent for plant needing watering." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "An error occurred while sending the notification.", Details = ex.Message });
-            }
-        }
-
-        /// <summary>
-        /// Manually triggers a nutrient/fertilizer notification for a specific plant.
-        /// </summary>
-        /// <param name="plantId">The unique ID of the plant needing nutrients.</param>
-        [Authorize(Roles = "Admin")]
-        [HttpPost("plant/{plantId}/nutrients")]
-        public async Task<IActionResult> NotifyPlantNeedsNutrients(Guid plantId)
-        {
-            try
-            {
-                await _notificationService.NotifyPlantNeedsNutrients(plantId);
-                return Ok(new { Message = "Notification sent for plant needing nutrients." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "An error occurred while sending the notification.", Details = ex.Message });
-            }
-        }
-
         /// <summary>
         /// Retrieves all notifications associated with a specific plant.
         /// Accessible by any authenticated user (Admin, Manager, or Farmer).

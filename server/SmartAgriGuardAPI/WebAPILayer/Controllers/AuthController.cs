@@ -87,32 +87,6 @@ namespace WebAPILayer.Controllers
         }
 
         /// <summary>
-        /// Registers a new administrative user. Restricted to existing Admins.
-        /// </summary>
-        /// <param name="dto">The admin registration details.</param>
-        /// <response code="200">Admin created successfully.</response>
-        [HttpPost("Register-Admin")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] AdminRegisterDTO dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
-            {
-                if (await _userService.isUserNameExists(dto.userName))
-                {
-                    return BadRequest("UserName Already Exist");
-                }
-                await _userService.RegisterAdmin(dto);
-                return Ok("the admin registered successfully");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        /// <summary>
         /// Authenticates a user and generates a JWT Bearer token.
         /// </summary>
         /// <param name="dto">User login credentials (username and password).</param>
