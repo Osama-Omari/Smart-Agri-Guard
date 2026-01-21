@@ -8,12 +8,12 @@ import 'package:smart_agri_guard/features/shared/screens/plant_detail_screen.dar
 import 'package:smart_agri_guard/features/shared/screens/shared_settings_screen.dart';
 import 'package:smart_agri_guard/features/shared/widgets/header_card.dart';
 import 'package:smart_agri_guard/shared/cubit/cubit.dart';
-import 'package:smart_agri_guard/shared/cubit/states.dart' show AppStates, GetPlantsWithMetricsLoadingState;
+import 'package:smart_agri_guard/shared/cubit/states.dart'
+    show AppStates, GetPlantsWithMetricsLoadingState;
 import '../../../shared/cubit/states.dart' show AppStates;
 import '../../shared/widgets/plants_wdigets/plant_card.dart';
 
 class AssignedPlantsScreen extends StatefulWidget {
-
   final String farmerName;
 
   const AssignedPlantsScreen({super.key, required this.farmerName});
@@ -23,8 +23,7 @@ class AssignedPlantsScreen extends StatefulWidget {
 }
 
 class _AssignedPlantsScreen extends State<AssignedPlantsScreen> {
-
-  void _loadData(){
+  void _loadData() {
     AppCubit.get(context).getPlantsWithMetrics(context);
   }
 
@@ -37,7 +36,8 @@ class _AssignedPlantsScreen extends State<AssignedPlantsScreen> {
   // 🌿 Dynamic plant data (can later come from backend)
 
   // 🌿 Open plant details
-  void _openPlantDetail(BuildContext context, timeStamp, id, name, image, temp, humidity, soilMoisture, ph, n, p, k) {
+  void _openPlantDetail(BuildContext context, timeStamp, id, name, image, temp,
+      humidity, soilMoisture, ph, n, p, k, status) {
     navigateTo(
         context,
         PlantDetailScreen(
@@ -52,29 +52,28 @@ class _AssignedPlantsScreen extends State<AssignedPlantsScreen> {
           n: n,
           p: p,
           k: k,
-          status: 'Well Done',
-          isHealthy: true,
-        )
-    );
+          status: status,
+          isHealthy: status.toLowerCase() == 'healthy',
+        ));
   }
 
   // 🌿 Open alerts
   void _openAlerts(BuildContext context, String plantID) {
-    navigateTo(context, AlertScreen(plantID: plantID,));
+    navigateTo(
+        context,
+        AlertScreen(
+          plantID: plantID,
+        ));
   }
 
   List<Map<String, double>> _assignedPlants = [];
   @override
   Widget build(BuildContext context) {
     final bg = AppColors.primaryBackground;
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     final isWide = size.width > 600;
 
-    return BlocBuilder<AppCubit, AppStates>(
-        builder: (context, state)
-    {
+    return BlocBuilder<AppCubit, AppStates>(builder: (context, state) {
       var cubit = AppCubit.get(context);
 
       // Convert Cubit model list → widget-friendly map list
@@ -93,7 +92,6 @@ class _AssignedPlantsScreen extends State<AssignedPlantsScreen> {
         };
       }).toList();
 
-
       return Scaffold(
         backgroundColor: bg,
         body: SafeArea(
@@ -110,15 +108,13 @@ class _AssignedPlantsScreen extends State<AssignedPlantsScreen> {
                     CustomAppHeader(
                       showBack: false,
                       subtitle: '${widget.farmerName} – Assigned Plants',
-
-                      onSettings: () =>
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
+                      onSettings: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
                               const SharedSettingsScreen(role: "Farmer"),
-                            ),
-                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     const HeaderCard(
@@ -160,88 +156,92 @@ class _AssignedPlantsScreen extends State<AssignedPlantsScreen> {
                 initialChildSize: 0.70,
                 minChildSize: 0.55,
                 maxChildSize: 0.96,
-                builder: (context, scrollController) =>
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFE9F5C6),
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(32)),
-                      ),
-                      child: (state is GetPlantsWithMetricsLoadingState)
-                          ? const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 40),
-                          child: CircularProgressIndicator(
-                            color: Color(0xFF50623A),
-                          ),
-                        ),
-                      )
-                          : ListView.builder(
-                        controller: scrollController,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isWide ? size.width * 0.15 : 18,
-                          vertical: 24,
-                        ),
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: _assignedPlants.length + 1,
-                        // +1 for drag handle
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            // 🌿 Drag handle indicator
-                            return Center(
-                              child: Container(
-                                width: 50,
-                                height: 5,
-                                margin: const EdgeInsets.only(bottom: 24),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[400],
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            );
-                          }
-
-                          final plant = cubit.plantsWithMetrics[index - 1];
-                          final metrics = _assignedPlants[index - 1];
-
-                          return PlantCard(
-                            timeStamp: plant.latestMetrics?.timestamp != null ? timeStampFormat(plant.latestMetrics!.timestamp!) : "-",
-                            image: plant.image ?? '',
-                            name: plant.plantName ?? '',
-                            temp: metrics['temp']!,
-                            humidity: metrics['humidity']!,
-                            moisture: metrics['moisture']!,
-                            ph: metrics['ph']!,
-                            n: metrics['n']!,
-                            p: metrics['p']!,
-                            k: metrics['k']!,
-                            onTap: () => _openPlantDetail(
-                                context,
-                                plant.latestMetrics?.timestamp != null ? timeStampFormat(plant.latestMetrics!.timestamp!) : "-",
-                                plant.id,
-                                plant.plantName,
-                                plant.image,
-                                metrics['temp'],
-                                metrics['humidity'],
-                                metrics['moisture'],
-                                metrics['ph'],
-                                metrics['n'],
-                                metrics['p'],
-                                metrics['k']
+                builder: (context, scrollController) => Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFE9F5C6),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(32)),
+                  ),
+                  child: (state is GetPlantsWithMetricsLoadingState)
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 40),
+                            child: CircularProgressIndicator(
+                              color: Color(0xFF50623A),
                             ),
-                            onAlerts: () =>
-                                _openAlerts(context, plant.id ?? ''),
-                          );
-                        },
-                      ),
-                    ),
+                          ),
+                        )
+                      : ListView.builder(
+                          controller: scrollController,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isWide ? size.width * 0.15 : 18,
+                            vertical: 24,
+                          ),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: _assignedPlants.length + 1,
+                          // +1 for drag handle
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              // 🌿 Drag handle indicator
+                              return Center(
+                                child: Container(
+                                  width: 50,
+                                  height: 5,
+                                  margin: const EdgeInsets.only(bottom: 24),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[400],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              );
+                            }
+
+                            final plant = cubit.plantsWithMetrics[index - 1];
+                            final metrics = _assignedPlants[index - 1];
+
+                            return PlantCard(
+                              timeStamp: plant.latestMetrics?.timestamp != null
+                                  ? timeStampFormat(
+                                      plant.latestMetrics!.timestamp!)
+                                  : "-",
+                              image: plant.image ?? '',
+                              name: plant.plantName ?? '',
+                              temp: metrics['temp']!,
+                              humidity: metrics['humidity']!,
+                              moisture: metrics['moisture']!,
+                              ph: metrics['ph']!,
+                              n: metrics['n']!,
+                              p: metrics['p']!,
+                              k: metrics['k']!,
+                              status: plant.healthStatus ?? 'No Status',
+                              onTap: () => _openPlantDetail(
+                                  context,
+                                  plant.latestMetrics?.timestamp != null
+                                      ? timeStampFormat(
+                                          plant.latestMetrics!.timestamp!)
+                                      : "-",
+                                  plant.id,
+                                  plant.plantName,
+                                  plant.image,
+                                  metrics['temp'],
+                                  metrics['humidity'],
+                                  metrics['moisture'],
+                                  metrics['ph'],
+                                  metrics['n'],
+                                  metrics['p'],
+                                  metrics['k'],
+                                  plant.healthStatus ?? 'No Status'),
+                              onAlerts: () =>
+                                  _openAlerts(context, plant.id ?? ''),
+                            );
+                          },
+                        ),
+                ),
               ),
             ],
           ),
         ),
       );
-    }
-    );
+    });
   }
 }
-

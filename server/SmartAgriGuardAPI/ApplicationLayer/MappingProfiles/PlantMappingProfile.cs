@@ -1,23 +1,24 @@
-﻿using ApplicationLayer.DTOs;
-using AutoMapper;
-using DataAccessLayer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ApplicationLayer.DTOs;
+using AutoMapper;
+using DataAccessLayer.Models;
 
 namespace ApplicationLayer.MappingProfiles
 {
-    public class PlantMappingProfile :Profile
+    public class PlantMappingProfile : Profile
     {
-        public PlantMappingProfile() {
+        public PlantMappingProfile()
+        {
 
             CreateMap<Plant, PlantDTO>()
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.PlantTypeName, opt => opt.MapFrom(src => src.PlantType.Name))
-                .ForMember(dest=> dest.GreenhouseName, opt=> opt.MapFrom(src=>src.Greenhouse.Name)) 
+                .ForMember(dest => dest.GreenhouseName, opt => opt.MapFrom(src => src.Greenhouse.Name))
                 .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Location != null ? src.Location : ""))
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.ImageUrl));
 
@@ -29,7 +30,11 @@ namespace ApplicationLayer.MappingProfiles
                 .ForMember(dest => dest.LatestMetrics, opt => opt.MapFrom(src =>
                 src.SensorData != null
                 ? src.SensorData.OrderByDescending(x => x.Timestamp).FirstOrDefault()
-                : null));
+                : null))
+                .ForMember(dest => dest.HealthStatus, opt => opt.MapFrom(src =>
+                    src.Predictions != null
+                    ? src.Predictions.OrderByDescending(p => p.PredictionDate).Select(p => p.healthStatus).FirstOrDefault()
+                    : null));
 
 
             CreateMap<Plant, PlantWithAssignedFarmersDTO>()
@@ -53,8 +58,8 @@ namespace ApplicationLayer.MappingProfiles
 
 
             CreateMap<PlantNotifications, PlantNotificationDTO>()
-                .ForMember(dest=> dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.PlantName , opt=> opt.MapFrom(src => src.Plant.Name))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.Plant.Name))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.NotificationDate, opt => opt.MapFrom(src => src.NotificationDate))
                 .ForMember(dest => dest.TriggerType, opt => opt.MapFrom(src => src.TriggerType))
@@ -66,7 +71,7 @@ namespace ApplicationLayer.MappingProfiles
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.TaskType, opt => opt.MapFrom(src => src.TaskType))
                 .ForMember(dest => dest.Frequency, opt => opt.MapFrom(src => src.Frequency))
-                .ForMember(dest => dest.Days,opt => opt.MapFrom(src => ParseDays(src.DaysOfWeek)))
+                .ForMember(dest => dest.Days, opt => opt.MapFrom(src => ParseDays(src.DaysOfWeek)))
                 .ForMember(dest => dest.Hour, opt => opt.MapFrom(src => src.Hour))
                 .ForMember(dest => dest.Minute, opt => opt.MapFrom(src => src.Minute))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));

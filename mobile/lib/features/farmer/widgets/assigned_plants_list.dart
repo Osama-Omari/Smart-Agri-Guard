@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smart_agri_guard/features/shared/widgets/plants_wdigets/plant_card.dart';
 
 class AssignedPlantsList extends StatelessWidget {
-  final List<Map<String, String>> plants;
-  final void Function(Map<String, String>) onPlantTap;
+  final List<Map<String, dynamic>> plants;
+  final void Function(Map<String, dynamic>) onPlantTap;
   final void Function(String) onAlerts;
 
   const AssignedPlantsList({
@@ -46,18 +46,19 @@ class AssignedPlantsList extends StatelessWidget {
       itemBuilder: (context, index) {
         final plant = plants[index];
         return PlantCard(
-          timeStamp: "",
-          image: plant['image']!,
-          name: plant['name']!,
-          temp: plant['temp'] as double,
-          humidity: plant['humidity'] as double,
-          moisture: plant['moisture'] as double,
-          ph: plant['ph'] as double,
-          n: plant['nitrogen'] as double,
-          p: plant['phosphorus'] as double,
-          k: plant['potassium'] as double,
+          timeStamp: plant['timeStamp']?.toString() ?? "-",
+          image: plant['image']?.toString() ?? "",
+          name: plant['name']?.toString() ?? "",
+          temp: (plant['temp'] as num?)?.toDouble() ?? 0.0,
+          humidity: (plant['humidity'] as num?)?.toDouble() ?? 0.0,
+          moisture: (plant['moisture'] as num?)?.toDouble() ?? 0.0,
+          ph: (plant['ph'] as num?)?.toDouble() ?? 0.0,
+          n: (plant['nitrogen'] as num?)?.toDouble() ?? 0.0,
+          p: (plant['phosphorus'] as num?)?.toDouble() ?? 0.0,
+          k: (plant['potassium'] as num?)?.toDouble() ?? 0.0,
+          status: plant['status']?.toString() ?? 'No Status',
           onTap: () => onPlantTap(plant),
-          onAlerts: () => onAlerts(plant['name']!),
+          onAlerts: () => onAlerts(plant['name']?.toString() ?? ""),
         );
       },
     );

@@ -1,12 +1,12 @@
-﻿using DataAccessLayer.Data;
-using DataAccessLayer.Interfaces;
-using DataAccessLayer.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataAccessLayer.Data;
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repositories
 {
@@ -48,7 +48,7 @@ namespace DataAccessLayer.Repositories
             {
                 return await _context.Plants
                     .Include(p => p.Greenhouse)
-                    .ThenInclude(p=>p.Manager)
+                    .ThenInclude(p => p.Manager)
                     .Include(p => p.PlantType)
                     .Include(p => p.FarmerPlants)
                     .FirstOrDefaultAsync(p => p.Id == plantId);
@@ -87,7 +87,8 @@ namespace DataAccessLayer.Repositories
                     .Include(p => p.Greenhouse)
                     .Include(p => p.PlantType)
                     .Include(p => p.FarmerPlants)
-                    .Include(p => p.SensorData) // Loads historical telemetry
+                    .Include(p => p.SensorData.OrderByDescending(sd => sd.Timestamp).Take(1)) // Loads only the latest telemetry
+                    .Include(p => p.Predictions.OrderByDescending(p => p.PredictionDate).Take(1))
                     .Where(p => p.GreenhouseId == greenhouseId)
                     .ToListAsync();
             }
@@ -152,7 +153,8 @@ namespace DataAccessLayer.Repositories
                     .Include(p => p.PlantType)
                     .Include(p => p.Greenhouse)
                     .Include(p => p.FarmerPlants)
-                    .Include(p => p.SensorData)
+                    .Include(p => p.SensorData.OrderByDescending(sd => sd.Timestamp).Take(1))
+                    .Include(p => p.Predictions.OrderByDescending(p => p.PredictionDate).Take(1))
                     .Where(p => p.FarmerPlants.Any(fp => fp.FarmerId == farmerId))
                     .ToListAsync();
             }

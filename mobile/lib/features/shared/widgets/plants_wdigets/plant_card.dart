@@ -14,6 +14,7 @@ class PlantCard extends StatelessWidget {
   final double n;
   final double p;
   final double k;
+  final String status;
   final VoidCallback onTap;
   final VoidCallback onAlerts;
 
@@ -29,6 +30,7 @@ class PlantCard extends StatelessWidget {
     required this.n,
     required this.p,
     required this.k,
+    required this.status,
     required this.onTap,
     required this.onAlerts,
   });
@@ -71,7 +73,7 @@ class PlantCard extends StatelessWidget {
                         const BorderRadius.vertical(top: Radius.circular(24)),
                     child: hasImage
                         ? Image.network(
-                            baseURL+image,
+                            baseURL + image,
                             width: double.infinity,
                             height: 200,
                             fit: BoxFit.cover,
@@ -126,16 +128,22 @@ class PlantCard extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF7CB342),
+                        color: status.toLowerCase() == 'healthy'
+                            ? const Color(0xFF7CB342)
+                            : (status.toLowerCase() == 'warning'
+                                ? Colors.orange
+                                : (status.toLowerCase() == 'unhealthy'
+                                    ? Colors.red
+                                    : Colors.grey)),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.circle, size: 8, color: Colors.white),
                           SizedBox(width: 6),
                           Text(
-                            'Healthy',
+                            status,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12,

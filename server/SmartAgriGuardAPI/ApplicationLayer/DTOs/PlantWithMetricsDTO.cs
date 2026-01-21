@@ -10,12 +10,14 @@ namespace ApplicationLayer.DTOs
     {
         public Guid Id { get; set; }
 
-        public string PlantName { get; set; }
+        public required string PlantName { get; set; }
 
         public string? Location { get; set; }
 
         public string? Image { get; set; }
 
-        public SensorMetricDTO LatestMetrics { get; set; }
+        public SensorMetricDTO? LatestMetrics { get; set; }
+
+        public string? HealthStatus { get; set; }
     }
 }

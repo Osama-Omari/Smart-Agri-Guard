@@ -4,9 +4,15 @@ class PlantsWithMetricsModel {
   String? location;
   String? image;
   LatestMetrics? latestMetrics;
+  String? healthStatus;
 
   PlantsWithMetricsModel(
-      {this.id, this.plantName, this.location, this.image, this.latestMetrics});
+      {this.id,
+      this.plantName,
+      this.location,
+      this.image,
+      this.latestMetrics,
+      this.healthStatus});
 
   PlantsWithMetricsModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -16,6 +22,7 @@ class PlantsWithMetricsModel {
     latestMetrics = json['LatestMetrics'] != null
         ? new LatestMetrics.fromJson(json['LatestMetrics'])
         : null;
+    healthStatus = json['HealthStatus'];
   }
 
   Map<String, dynamic> toJson() {
@@ -27,6 +34,7 @@ class PlantsWithMetricsModel {
     if (this.latestMetrics != null) {
       data['LatestMetrics'] = this.latestMetrics!.toJson();
     }
+    data['HealthStatus'] = this.healthStatus;
     return data;
   }
 }
@@ -44,25 +52,25 @@ class LatestMetrics {
 
   LatestMetrics(
       {this.id,
-        this.timestamp,
-        this.temperature,
-        this.humidity,
-        this.soilMoisture,
-        this.ph,
-        this.potassium,
-        this.nitrogen,
-        this.phosphorus});
+      this.timestamp,
+      this.temperature,
+      this.humidity,
+      this.soilMoisture,
+      this.ph,
+      this.potassium,
+      this.nitrogen,
+      this.phosphorus});
 
   LatestMetrics.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
     timestamp = json['Timestamp'];
     temperature = (json['Temperature'] as num?)?.toDouble() ?? 0.0;
-    humidity    = (json['Humidity'] as num?)?.toDouble() ?? 0.0;
+    humidity = (json['Humidity'] as num?)?.toDouble() ?? 0.0;
     soilMoisture = (json['SoilMoisture'] as num?)?.toDouble() ?? 0.0;
-    ph          = (json['PH'] as num?)?.toDouble() ?? 0.0;
-    nitrogen    = (json['Nitrogen'] as num?)?.toDouble() ?? 0.0;
-    phosphorus  = (json['Phosphorus'] as num?)?.toDouble() ?? 0.0;
-    potassium   = (json['Potassium'] as num?)?.toDouble() ?? 0.0;
+    ph = (json['PH'] as num?)?.toDouble() ?? 0.0;
+    nitrogen = (json['Nitrogen'] as num?)?.toDouble() ?? 0.0;
+    phosphorus = (json['Phosphorus'] as num?)?.toDouble() ?? 0.0;
+    potassium = (json['Potassium'] as num?)?.toDouble() ?? 0.0;
   }
 
   Map<String, dynamic> toJson() {

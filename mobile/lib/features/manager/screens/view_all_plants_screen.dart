@@ -20,19 +20,21 @@ class ViewAllPlantsScreen extends StatefulWidget {
   final String greenhouseName;
   final String greenhouseID;
 
-  const ViewAllPlantsScreen({super.key, required this.greenhouseName, required this.greenhouseID});
+  const ViewAllPlantsScreen(
+      {super.key, required this.greenhouseName, required this.greenhouseID});
 
   @override
   State<ViewAllPlantsScreen> createState() => _ViewAllPlantsScreenState();
 }
 
 class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
-  void _loadData(){
-    AppCubit.get(context).getGreenhousePlantsWithMetrics(context,widget.greenhouseID);
+  void _loadData() {
+    AppCubit.get(context)
+        .getGreenhousePlantsWithMetrics(context, widget.greenhouseID);
   }
+
   @override
   void initState() {
-
     super.initState();
     _loadData();
   }
@@ -62,14 +64,14 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-
                   // Header
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         "Plant Care Schedules",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       IconButton(
                         icon: const Icon(Icons.add_circle, size: 30),
@@ -103,13 +105,15 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                           child: ListTile(
                             title: Text(
                               "${s.taskType} • ${s.formattedTime}",
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(
                               s.days != null
                                   ? s.days!
-                                  .map((d) => dayEnumToString(d).substring(0, 3))
-                                  .join(", ")
+                                      .map((d) =>
+                                          dayEnumToString(d).substring(0, 3))
+                                      .join(", ")
                                   : "No days selected",
                             ),
 
@@ -148,24 +152,25 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
     return day.name; // Dart 2.17+
   }
 
-
   void _openAddEditScheduleForm(
-      String plantId, {
-        PlantScheduleModel? schedule,
-      }) {
+    String plantId, {
+    PlantScheduleModel? schedule,
+  }) {
     final availableDays = DayOfWeek.values;
 
     String taskType = schedule?.taskType ?? "Watering";
     String frequency = schedule?.frequency ?? "Weekly";
-    List<DayOfWeek> selectedDays = schedule?.days != null 
-        ? List<DayOfWeek>.from(schedule!.days!) 
-        : [];
-    
+    List<DayOfWeek> selectedDays =
+        schedule?.days != null ? List<DayOfWeek>.from(schedule!.days!) : [];
+
     // Server already sends time in user's local timezone, so use it directly
     TimeOfDay selectedTime;
-    if (schedule != null && schedule!.hour != null && schedule!.minute != null) {
+    if (schedule != null &&
+        schedule!.hour != null &&
+        schedule!.minute != null) {
       // Use the time directly since server already converted it to local timezone
-      selectedTime = TimeOfDay(hour: schedule!.hour!, minute: schedule!.minute!);
+      selectedTime =
+          TimeOfDay(hour: schedule!.hour!, minute: schedule!.minute!);
     } else {
       selectedTime = const TimeOfDay(hour: 8, minute: 0);
     }
@@ -188,14 +193,12 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
               Text(
                 schedule == null ? "Add Schedule" : "Edit Schedule",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-
               const SizedBox(height: 16),
-
               DropdownButtonFormField<String>(
                 initialValue: taskType,
                 items: ["Watering", "Fertilizing"]
@@ -204,9 +207,7 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                 onChanged: (v) => setState(() => taskType = v!),
                 decoration: const InputDecoration(labelText: "Task Type"),
               ),
-
               const SizedBox(height: 16),
-
               ListTile(
                 title: Text("Time: ${selectedTime.format(context)}"),
                 trailing: const Icon(Icons.access_time),
@@ -218,9 +219,7 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                   if (t != null) setState(() => selectedTime = t);
                 },
               ),
-
               const SizedBox(height: 12),
-
               Wrap(
                 spacing: 8,
                 children: availableDays.map((day) {
@@ -236,9 +235,7 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                   );
                 }).toList(),
               ),
-
               const SizedBox(height: 24),
-
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF50623A),
@@ -250,12 +247,12 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                     taskType: taskType,
                     frequency: frequency,
                     days: selectedDays.map((d) => d.name).toList(),
-                    hour: selectedTime.hour,  // Send local time directly
-                    minute: selectedTime.minute,  // Send local time directly
+                    hour: selectedTime.hour, // Send local time directly
+                    minute: selectedTime.minute, // Send local time directly
                   );
 
                   final cubit = AppCubit.get(context);
-                  
+
                   // Check if we're editing an existing schedule or adding a new one
                   if (schedule != null && schedule!.id != null) {
                     // Update existing schedule
@@ -283,9 +280,8 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
     );
   }
 
-
-
-  void _openPlantDetail(BuildContext context, timeStamp, id, name, image, temp, humidity, soilMoisture, ph, n, p, k) {
+  void _openPlantDetail(BuildContext context, timeStamp, id, name, image, temp,
+      humidity, soilMoisture, ph, n, p, k, status) {
     navigateTo(
         context,
         PlantDetailScreen(
@@ -300,15 +296,18 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
           n: n,
           p: p,
           k: k,
-          status: 'Well Done',
-          isHealthy: true,
-        )
-    );
+          status: status,
+          isHealthy: status.toLowerCase() == 'healthy',
+        ));
   }
 
   // 🌿 Open alerts
   void _openAlerts(BuildContext context, String plantID) {
-    navigateTo(context, AlertScreen(plantID: plantID,));
+    navigateTo(
+        context,
+        AlertScreen(
+          plantID: plantID,
+        ));
   }
 
   List<Map<String, double>> _assignedPlants = [];
@@ -318,9 +317,7 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
     final size = MediaQuery.of(context).size;
     final isWide = size.width > 600;
 
-    return BlocBuilder<AppCubit, AppStates>(
-        builder: (context, state)
-    {
+    return BlocBuilder<AppCubit, AppStates>(builder: (context, state) {
       var cubit = AppCubit.get(context);
       _assignedPlants.clear();
       // Convert Cubit model list → widget-friendly map list
@@ -337,7 +334,6 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
           'k': (m?.potassium ?? 0).toDouble(),
         };
       }).toList();
-
 
       return Scaffold(
         backgroundColor: bg,
@@ -356,14 +352,13 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                       showBack: true,
                       subtitle: '${widget.greenhouseName} – All Plants',
                       onBack: () => Navigator.of(context).maybePop(),
-                      onSettings: () =>
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  SharedSettingsScreen(role: "Manager"),
-                            ),
-                          ),
+                      onSettings: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SharedSettingsScreen(role: "Manager"),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     const HeaderCard(
@@ -371,7 +366,6 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                       title: 'Plant Overview',
                       subtitle: 'Monitor your greenhouse plants',
                     ),
-
                     const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
@@ -406,90 +400,90 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                 initialChildSize: 0.70,
                 minChildSize: 0.55,
                 maxChildSize: 0.96,
-                builder: (context, scrollController) =>
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFE9F5C6),
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(32)),
-                      ),
-                      child: (state is GetGreenhousePlantsWithMetricsLoadingState)
-                          ? const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 40),
-                          child: CircularProgressIndicator(
-                            color: Color(0xFF50623A),
+                builder: (context, scrollController) => Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFE9F5C6),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(32)),
+                  ),
+                  child: (state is GetGreenhousePlantsWithMetricsLoadingState)
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 40),
+                            child: CircularProgressIndicator(
+                              color: Color(0xFF50623A),
+                            ),
                           ),
-                        ),
-                      )
-                          : ListView.builder(
-                        controller: scrollController,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isWide ? size.width * 0.15 : 18,
-                          vertical: 24,
-                        ),
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: _assignedPlants.length + 1,
-                        // +1 for drag handle
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            // 🌿 Drag handle indicator
-                            return Center(
-                              child: Container(
-                                width: 50,
-                                height: 5,
-                                margin: const EdgeInsets.only(bottom: 24),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[400],
-                                  borderRadius: BorderRadius.circular(12),
+                        )
+                      : ListView.builder(
+                          controller: scrollController,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isWide ? size.width * 0.15 : 18,
+                            vertical: 24,
+                          ),
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: _assignedPlants.length + 1,
+                          // +1 for drag handle
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              // 🌿 Drag handle indicator
+                              return Center(
+                                child: Container(
+                                  width: 50,
+                                  height: 5,
+                                  margin: const EdgeInsets.only(bottom: 24),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[400],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
-                              ),
+                              );
+                            }
+
+                            final plant =
+                                cubit.greenhousePlantsWithMetrics[index - 1];
+                            final metrics = _assignedPlants[index - 1];
+
+                            return PlantCardForManager(
+                              timeStamp: plant.latestMetrics?.timestamp != null
+                                  ? timeStampFormat(
+                                      plant.latestMetrics!.timestamp!)
+                                  : "-",
+                              image: plant.image ?? '',
+                              name: plant.plantName ?? '',
+                              temp: metrics['temp']!,
+                              humidity: metrics['humidity']!,
+                              moisture: metrics['moisture']!,
+                              ph: metrics['ph']!,
+                              n: metrics['n']!,
+                              p: metrics['p']!,
+                              k: metrics['k']!,
+                              status: plant.healthStatus ?? 'Unknown',
+                              onTap: () => _openPlantDetail(
+                                  context,
+                                  plant.latestMetrics?.timestamp != null
+                                      ? timeStampFormat(
+                                          plant.latestMetrics!.timestamp!)
+                                      : "-",
+                                  plant.id,
+                                  plant.plantName,
+                                  plant.image,
+                                  metrics['temp'],
+                                  metrics['humidity'],
+                                  metrics['moisture'],
+                                  metrics['ph'],
+                                  metrics['n'],
+                                  metrics['p'],
+                                  metrics['k'],
+                                  plant.healthStatus ?? 'Unknown'),
+                              onSchedule: () =>
+                                  _openScheduleSheet(plant.id ?? ''),
+                              onAlerts: () =>
+                                  _openAlerts(context, plant.id ?? ''),
                             );
-                          }
-
-                          final plant = cubit.greenhousePlantsWithMetrics[index - 1];
-                          final metrics = _assignedPlants[index - 1];
-
-                          return PlantCardForManager(
-                            timeStamp: plant.latestMetrics?.timestamp != null
-                                ? timeStampFormat(
-                                plant.latestMetrics!.timestamp!)
-                                : "-",
-                            image: plant.image ?? '',
-                            name: plant.plantName ?? '',
-                            temp: metrics['temp']!,
-                            humidity: metrics['humidity']!,
-                            moisture: metrics['moisture']!,
-                            ph: metrics['ph']!,
-                            n: metrics['n']!,
-                            p: metrics['p']!,
-                            k: metrics['k']!,
-                            onTap: () =>
-                                _openPlantDetail(
-                                    context,
-                                    plant.latestMetrics?.timestamp != null
-                                        ? timeStampFormat(
-                                        plant.latestMetrics!.timestamp!)
-                                        : "-",
-                                    plant.id,
-                                    plant.plantName,
-                                    plant.image,
-                                    metrics['temp'],
-                                    metrics['humidity'],
-                                    metrics['moisture'],
-                                    metrics['ph'],
-                                    metrics['n'],
-                                    metrics['p'],
-                                    metrics['k']
-                                ),
-                            onSchedule: ()=> _openScheduleSheet(plant.id ?? ''),
-                            onAlerts: () =>
-                                _openAlerts(context, plant.id ?? ''),
-                          );
-
-                        },
-                      ),
-                    ),
+                          },
+                        ),
+                ),
               ),
             ],
           ),

@@ -3,7 +3,6 @@ import '../../../../core/widgets/global_functions.dart';
 import '../../shared/widgets/plants_wdigets/image_placeholder.dart';
 import '../../shared/widgets/plants_wdigets/stat_chip.dart';
 
-
 class PlantCardForManager extends StatelessWidget {
   final String timeStamp;
   final String image;
@@ -15,26 +14,27 @@ class PlantCardForManager extends StatelessWidget {
   final double n;
   final double p;
   final double k;
+  final String status;
   final VoidCallback onTap;
   final VoidCallback onAlerts;
   final VoidCallback onSchedule;
 
-  const PlantCardForManager({
-    super.key,
-    required this.timeStamp,
-    required this.image,
-    required this.name,
-    required this.temp,
-    required this.humidity,
-    required this.moisture,
-    required this.ph,
-    required this.n,
-    required this.p,
-    required this.k,
-    required this.onTap,
-    required this.onAlerts,
-    required this.onSchedule
-  });
+  const PlantCardForManager(
+      {super.key,
+      required this.timeStamp,
+      required this.image,
+      required this.name,
+      required this.temp,
+      required this.humidity,
+      required this.moisture,
+      required this.ph,
+      required this.n,
+      required this.p,
+      required this.k,
+      required this.status,
+      required this.onTap,
+      required this.onAlerts,
+      required this.onSchedule});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class PlantCardForManager extends StatelessWidget {
                         const BorderRadius.vertical(top: Radius.circular(24)),
                     child: hasImage
                         ? Image.network(
-                            baseURL+image,
+                            baseURL + image,
                             width: double.infinity,
                             height: 200,
                             fit: BoxFit.cover,
@@ -121,7 +121,8 @@ class PlantCardForManager extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    top: 72, // 16 (top padding) + 46 (approx height of alert box) + 10 (spacing)
+                    top:
+                        72, // 16 (top padding) + 46 (approx height of alert box) + 10 (spacing)
                     right: 16,
                     child: InkWell(
                       onTap: onSchedule,
@@ -141,7 +142,8 @@ class PlantCardForManager extends StatelessWidget {
                         ),
                         child: const Icon(
                           Icons.event_note_rounded, // or Icons.schedule_rounded
-                          color: Color(0xFF118AB2), // Blue color to differentiate from green alerts
+                          color: Color(
+                              0xFF118AB2), // Blue color to differentiate from green alerts
                           size: 22,
                         ),
                       ),
@@ -156,16 +158,22 @@ class PlantCardForManager extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF7CB342),
+                        color: status.toLowerCase() == 'healthy'
+                            ? const Color(0xFF7CB342)
+                            : (status.toLowerCase() == 'warning'
+                                ? Colors.orange
+                                : (status.toLowerCase() == 'unhealthy'
+                                    ? Colors.red
+                                    : Colors.grey)),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.circle, size: 8, color: Colors.white),
                           SizedBox(width: 6),
                           Text(
-                            'Healthy',
+                            status,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12,
