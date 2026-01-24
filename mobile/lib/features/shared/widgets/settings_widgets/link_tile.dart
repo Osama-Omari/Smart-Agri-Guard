@@ -4,7 +4,9 @@ import 'package:smart_agri_guard/core/constants/colors.dart';
 class LinkTile extends StatelessWidget {
   final IconData icon;
   final String label;
-  const LinkTile({super.key, required this.icon, required this.label});
+  final VoidCallback? onTap;
+  const LinkTile(
+      {super.key, required this.icon, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +21,14 @@ class LinkTile extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 fontSize: 16)),
         trailing: const Icon(Icons.chevron_right_rounded, color: Colors.grey),
-        onTap: () {
-          if (label == 'Change Password') {
-            Navigator.pushNamed(context, '/change_password');
-          } else if (label == 'Contact Us') {
-            Navigator.pushNamed(context, '/contact_us');
-          }
-        },
+        onTap: onTap ??
+            () {
+              if (label == 'Change Password') {
+                Navigator.pushNamed(context, '/change_password');
+              } else if (label == 'Contact Us') {
+                Navigator.pushNamed(context, '/contact_us');
+              }
+            },
       ),
     );
   }

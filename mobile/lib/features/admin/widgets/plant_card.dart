@@ -20,7 +20,6 @@ class PlantCard2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const accentColor = Color(0xFF7CB342);
-    final hasImage = imagePath.isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(

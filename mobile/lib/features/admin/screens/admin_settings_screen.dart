@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_agri_guard/core/constants/colors.dart';
 import 'package:smart_agri_guard/core/widgets/custom_app_header.dart';
 import 'package:smart_agri_guard/features/shared/screens/update_user_info_screen.dart';
@@ -9,7 +8,7 @@ import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/logout
 import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/profile_card.dart';
 import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/section_header.dart';
 import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/toggle_tile.dart';
-import 'package:smart_agri_guard/shared/cubit/cubit.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/widgets/global_functions.dart';
 
@@ -20,8 +19,54 @@ class AdminSettingsScreen extends StatefulWidget {
   State<AdminSettingsScreen> createState() => _AdminSettingsScreenState();
 }
 
-class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
-  bool _notifications = true;
+class _AdminSettingsScreenState extends State<AdminSettingsScreen>
+    with WidgetsBindingObserver {
+  bool _notifications = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkNotificationStatus();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkNotificationStatus();
+    }
+  }
+
+  Future<void> _checkNotificationStatus() async {
+    final status = await Permission.notification.status;
+    if (mounted) {
+      setState(() {
+        _notifications = status.isGranted;
+      });
+    }
+  }
+
+  Future<void> _handleNotificationToggle(bool value) async {
+    if (value) {
+      // User trying to enable
+      final status = await Permission.notification.request();
+      if (status.isGranted) {
+        setState(() => _notifications = true);
+      } else if (status.isPermanentlyDenied) {
+        openAppSettings();
+      }
+    } else {
+      // User trying to disable - must go to settings
+      await openAppSettings();
+    }
+    // We check status again after potential settings change when app resumes
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +176,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                   icon: Icons.notifications_active_outlined,
                   label: 'Notifications',
                   value: _notifications,
-                  onChanged: (v) => setState(() => _notifications = v),
+                  onChanged: _handleNotificationToggle,
                 ),
                 const SizedBox(height: 8),
                 const LinkTile(icon: Icons.language, label: 'Language'),

@@ -32,9 +32,12 @@ class ScrollableChart extends StatelessWidget {
     final totalPoints = series.values.isNotEmpty
         ? series.values.map((e) => e.length).reduce(max)
         : 50;
-    
+
     const double spacing = 4;
-    final chartWidth = max( MediaQuery.of(context).size.width - 88, totalPoints * spacing * 14, );
+    final chartWidth = max(
+      MediaQuery.of(context).size.width - 88,
+      totalPoints * spacing * 14,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,6 +91,15 @@ class ScrollableChart extends StatelessWidget {
               width: chartWidth,
               child: LineChart(
                 LineChartData(
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      fitInsideVertically: true,
+                      fitInsideHorizontally: true,
+                      maxContentWidth:
+                          200, // Optional: prevent extremely wide tooltips
+                      getTooltipColor: (touchedSpot) => Colors.blueGrey,
+                    ),
+                  ),
                   gridData: FlGridData(show: true),
                   borderData: FlBorderData(show: true),
                   titlesData: FlTitlesData(

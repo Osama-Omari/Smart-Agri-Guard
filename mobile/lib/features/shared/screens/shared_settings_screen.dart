@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:smart_agri_guard/core/constants/colors.dart';
 import 'package:smart_agri_guard/core/widgets/custom_app_header.dart';
 import 'package:smart_agri_guard/core/widgets/global_functions.dart';
@@ -9,6 +10,7 @@ import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/logout
 import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/profile_card.dart';
 import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/section_header.dart';
 import 'package:smart_agri_guard/features/shared/widgets/settings_widgets/toggle_tile.dart';
+import 'package:smart_agri_guard/features/shared/screens/contact_us_screen.dart';
 
 class SharedSettingsScreen extends StatefulWidget {
   final String role; // "Farmer" or "Manager"
@@ -18,8 +20,54 @@ class SharedSettingsScreen extends StatefulWidget {
   State<SharedSettingsScreen> createState() => _SharedSettingsScreenState();
 }
 
-class _SharedSettingsScreenState extends State<SharedSettingsScreen> {
-  bool _notifications = true;
+class _SharedSettingsScreenState extends State<SharedSettingsScreen>
+    with WidgetsBindingObserver {
+  bool _notifications = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkNotificationStatus();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkNotificationStatus();
+    }
+  }
+
+  Future<void> _checkNotificationStatus() async {
+    final status = await Permission.notification.status;
+    if (mounted) {
+      setState(() {
+        _notifications = status.isGranted;
+      });
+    }
+  }
+
+  Future<void> _handleNotificationToggle(bool value) async {
+    if (value) {
+      // User trying to enable
+      final status = await Permission.notification.request();
+      if (status.isGranted) {
+        setState(() => _notifications = true);
+      } else if (status.isPermanentlyDenied) {
+        openAppSettings();
+      }
+    } else {
+      // User trying to disable - must go to settings
+      await openAppSettings();
+    }
+    // We check status again after potential settings change when app resumes
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +155,7 @@ class _SharedSettingsScreenState extends State<SharedSettingsScreen> {
                 ProfileCard(
                   context,
                   globalFullName,
-                      () {
+                  () {
                     navigateAndRefresh(
                       context: context,
                       screen: UpdateUserInfoScreen(),
@@ -126,11 +174,19 @@ class _SharedSettingsScreenState extends State<SharedSettingsScreen> {
                   icon: Icons.notifications_active_outlined,
                   label: 'Notifications',
                   value: _notifications,
-                  onChanged: (v) => setState(() => _notifications = v),
+                  onChanged: _handleNotificationToggle,
                 ),
                 const SizedBox(height: 8),
-                const LinkTile(icon: Icons.email_outlined, label: 'Contact Us'),
-                const LinkTile(icon: Icons.language, label: 'Language'),
+                LinkTile(
+                  icon: Icons.email_outlined,
+                  label: 'Contact Us',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ContactUsScreen(),
+                    ),
+                  ),
+                ),
                 const LinkTile(
                     icon: Icons.lock_outline, label: 'Change Password'),
 
