@@ -91,7 +91,7 @@ namespace WebAPILayer.Controllers
         /// <param name="dto">Filters including StartDate, EndDate, and PlantId.</param>
         [HttpGet("Trend")]
         [Authorize(Roles = "Manager,Farmer")]
-        public async Task<IActionResult> GetTrends([FromBody] SensorTrendRequestDTO dto)
+        public async Task<IActionResult> GetTrends([FromQuery] SensorTrendRequestDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -123,7 +123,7 @@ namespace WebAPILayer.Controllers
         /// <param name="dto">Archive query parameters.</param>
         [HttpGet("Archive-Trend")]
         [Authorize(Roles = "Manager")]
-        public async Task<IActionResult> GetArchiveTrends([FromBody] SensorTrendArchiveRequestDTO dto)
+        public async Task<IActionResult> GetArchiveTrends([FromQuery] SensorTrendArchiveRequestDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -1,0 +1,14 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  DataAccessLayer -> C:\Users\ORZOm\Desktop\Projects\Smart-Agri-Guard\server\SmartAgriGuardAPI\DataAccessLayer\bin\Debug\net8.0\DataAccessLayer.dll
+  ApplicationLayer -> C:\Users\ORZOm\Desktop\Projects\Smart-Agri-Guard\server\SmartAgriGuardAPI\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.dll
+  InfrastructureLayer -> C:\Users\ORZOm\Desktop\Projects\Smart-Agri-Guard\server\SmartAgriGuardAPI\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+  WebAPILayer -> C:\Users\ORZOm\Desktop\Projects\Smart-Agri-Guard\server\SmartAgriGuardAPI\WebAPILayer\bin\Debug\net8.0\WebAPILayer.dll
+  SmartAgriGuardAPI.Tests -> C:\Users\ORZOm\Desktop\Projects\Smart-Agri-Guard\server\SmartAgriGuardAPI\Tests\SmartAgriGuardAPI.Tests\bin\Debug\net9.0\SmartAgriGuardAPI.Tests.dll
+Test run for C:\Users\ORZOm\Desktop\Projects\Smart-Agri-Guard\server\SmartAgriGuardAPI\Tests\SmartAgriGuardAPI.Tests\bin\Debug\net9.0\SmartAgriGuardAPI.Tests.dll (.NETCoreApp,Version=v9.0)
+VSTest version 18.0.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    32, Skipped:     0, Total:    32, Duration: 83 ms - SmartAgriGuardAPI.Tests.dll (net9.0)

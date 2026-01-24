@@ -225,7 +225,7 @@ namespace WebAPILayer
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseHangfireDashboard();
 
