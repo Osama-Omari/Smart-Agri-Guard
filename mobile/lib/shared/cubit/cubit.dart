@@ -386,7 +386,7 @@ class AppCubit extends Cubit<AppStates> {
   Future<void> deletePlant(plantID) async {
     emit(DeletePlantLoadingState());
 
-    DioHelper.deleteData(url: PlantEndPoints.deletePlant(plantID))
+    await DioHelper.deleteData(url: PlantEndPoints.deletePlant(plantID))
         .then((value) {
       emit(DeletePlantSuccessState());
       showToast(
@@ -517,7 +517,6 @@ class AppCubit extends Cubit<AppStates> {
           data.map((e) => GreenhouseModel.fromJson(e)).toList();
     }).catchError((error) {
       emit(GetGreenhousesWithoutManagerErrorState());
-      printRequest(error);
     });
   }
 
@@ -735,24 +734,33 @@ class AppCubit extends Cubit<AppStates> {
     }
   }
 
+
+  bool farmersLoaded = false;
   List<FarmerModel> allFarmers = [];
-  Future<void> getAllFarmers(greenhouseID) async {
+  Future<void> getAllFarmers(String greenhouseID) async {
+    farmersLoaded = false;
+    allFarmers = [];
     emit(GetAllFarmersLoadingState());
-    allFarmers.clear();
-    await DioHelper.getData(
-            url: GreenhouseEndPoints.getGreenhouseFarmers(greenhouseID))
-        .then((value) {
+    try {
+      final value = await DioHelper.getData(
+        url: GreenhouseEndPoints.getGreenhouseFarmers(greenhouseID),
+      );
       final List data = value!.data as List;
       allFarmers = data
-          .map((e) => FarmerModel.fromJson(e as Map<String, dynamic>))
+          .map(
+            (e) => FarmerModel.fromJson(e as Map<String, dynamic>),
+      )
           .toList();
-      print(value!.data);
+      farmersLoaded = true;
       emit(GetAllFarmersSuccessState());
-    }).catchError((error) {
+    } catch (error) {
+      allFarmers = [];
+      farmersLoaded = true;
       emit(GetAllFarmersErrorState());
       printRequest(error);
-    });
+    }
   }
+
 
   Future<void> deleteFarmer(farmerID) async {
     emit(DeleteFarmerLoadingState());
@@ -969,22 +977,34 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   List<PlantWithAssignedFarmersModel> plantWithAssignedFarmers = [];
-  Future<void> getPlantsWithAssignedFarmers(greenhouseID) async {
+  bool plantsLoaded = false;
+  Future<void> getPlantsWithAssignedFarmers(String greenhouseID) async {
+    plantsLoaded = false;
+    plantWithAssignedFarmers = [];
+
     emit(GetPlantsWithAssignedFarmersLoadingState());
-    plantWithAssignedFarmers.clear();
-    await DioHelper.getData(
-            url: PlantEndPoints.getPlantsWithAssignedFarmers(greenhouseID))
-        .then((value) {
+
+    try {
+      final value = await DioHelper.getData(
+        url: PlantEndPoints.getPlantsWithAssignedFarmers(greenhouseID),
+      );
+
       final List data = value!.data as List;
+
       plantWithAssignedFarmers = data
-          .map((e) =>
-              PlantWithAssignedFarmersModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => PlantWithAssignedFarmersModel.fromJson(
+                e as Map<String, dynamic>,
+              ))
           .toList();
+
+      plantsLoaded = true;
       emit(GetPlantsWithAssignedFarmersSuccessState());
-    }).catchError((error) {
+    } catch (error) {
+      plantWithAssignedFarmers = [];
+      plantsLoaded = true;
       emit(GetPlantsWithAssignedFarmersErrorState());
       printRequest(error);
-    });
+    }
   }
 
   Future<void> unAssignFarmer(plantID, farmerID) async {

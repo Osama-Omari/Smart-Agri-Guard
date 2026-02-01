@@ -107,7 +107,7 @@ String toApiDateTime(DateTime date, {required bool isStart}) {
       ? DateTime(date.year, date.month, date.day, 0, 0, 0)
       // ✅ END
       : isSameDay
-          // ✅ If end date is today → current time
+          // ✅ If end date is today → current time - 2 mins buffer
           ? DateTime(
               date.year,
               date.month,
@@ -115,7 +115,7 @@ String toApiDateTime(DateTime date, {required bool isStart}) {
               now.hour,
               now.minute,
               now.second,
-            )
+            ).subtract(const Duration(minutes: 2))
           // ✅ If NOT today → 23:59:59
           : DateTime(date.year, date.month, date.day, 23, 59, 59);
 

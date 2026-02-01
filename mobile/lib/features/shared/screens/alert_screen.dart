@@ -140,14 +140,34 @@ class _AlertScreenState extends State<AlertScreen> {
                           else if (AppCubit.get(context)
                               .allPlantNotifications
                               .isEmpty)
-                            const Center(
-                              child: Text(
-                                'No alerts available',
-                                style: TextStyle(
-                                  color: Color(0xFF50623A),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.notifications_active_outlined,
+                                    size: 64,
+                                    color: const Color(0xFF50623A)
+                                        .withValues(alpha: 0.5),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'No active alerts',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF50623A),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'Your plants are doing well!',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF50623A),
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                           else

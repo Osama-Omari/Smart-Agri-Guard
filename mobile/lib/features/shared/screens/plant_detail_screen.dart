@@ -226,11 +226,11 @@ class PlantDetailScreen extends StatelessWidget {
                         PlantStatCard(
                           icon: Icons.access_time,
                           label: 'TimeStamp',
-                          value: timeStamp.toString(),
-                          color: const Color(0xFFFF6B6B),
+                          value: timeStamp,
+                          color: const Color(0xFF78909C), // Blue Grey
                           gradient: [
-                            const Color(0xFFFF6B6B).withValues(alpha: 0.1),
-                            const Color(0xFFFF6B6B).withValues(alpha: 0.05),
+                            const Color(0xFF78909C).withValues(alpha: 0.1),
+                            const Color(0xFF78909C).withValues(alpha: 0.05),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -238,10 +238,10 @@ class PlantDetailScreen extends StatelessWidget {
                           icon: Icons.thermostat_rounded,
                           label: 'Temperature',
                           value: temp.toString(),
-                          color: const Color(0xFFFF6B6B),
+                          color: const Color(0xFFFF7043), // Deep Orange
                           gradient: [
-                            const Color(0xFFFF6B6B).withValues(alpha: 0.1),
-                            const Color(0xFFFF6B6B).withValues(alpha: 0.05),
+                            const Color(0xFFFF7043).withValues(alpha: 0.1),
+                            const Color(0xFFFF7043).withValues(alpha: 0.05),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -249,10 +249,10 @@ class PlantDetailScreen extends StatelessWidget {
                           icon: Icons.water_drop_rounded,
                           label: 'Humidity',
                           value: humidity.toString(),
-                          color: const Color(0xFF4ECDC4),
+                          color: const Color(0xFF42A5F5), // Blue
                           gradient: [
-                            const Color(0xFF4ECDC4).withValues(alpha: 0.1),
-                            const Color(0xFF4ECDC4).withValues(alpha: 0.05),
+                            const Color(0xFF42A5F5).withValues(alpha: 0.1),
+                            const Color(0xFF42A5F5).withValues(alpha: 0.05),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -260,10 +260,10 @@ class PlantDetailScreen extends StatelessWidget {
                           icon: Icons.grass_rounded,
                           label: 'Soil Moisture',
                           value: soilMoisture.toString(),
-                          color: const Color(0xFF95E1D3),
+                          color: const Color(0xFF8D6E63), // Brown
                           gradient: [
-                            const Color(0xFF95E1D3).withValues(alpha: 0.1),
-                            const Color(0xFF95E1D3).withValues(alpha: 0.05),
+                            const Color(0xFF8D6E63).withValues(alpha: 0.1),
+                            const Color(0xFF8D6E63).withValues(alpha: 0.05),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -274,11 +274,11 @@ class PlantDetailScreen extends StatelessWidget {
                                 icon: Icons.science_rounded,
                                 label: 'pH Level',
                                 value: ph.toString(),
-                                color: const Color(0xFFFFA07A),
+                                color: const Color(0xFFEC407A), // Pink
                                 gradient: [
-                                  const Color(0xFFFFA07A)
+                                  const Color(0xFFEC407A)
                                       .withValues(alpha: 0.1),
-                                  const Color(0xFFFFA07A)
+                                  const Color(0xFFEC407A)
                                       .withValues(alpha: 0.05),
                                 ],
                                 compact: true,
@@ -291,11 +291,11 @@ class PlantDetailScreen extends StatelessWidget {
                                 label: 'NPK Ratio ',
                                 value:
                                     '${n.toString()}, ${p.toString()}, ${k.toString()}',
-                                color: const Color(0xFF9B59B6),
+                                color: const Color(0xFFAB47BC), // Purple
                                 gradient: [
-                                  const Color(0xFF9B59B6)
+                                  const Color(0xFFAB47BC)
                                       .withValues(alpha: 0.1),
-                                  const Color(0xFF9B59B6)
+                                  const Color(0xFFAB47BC)
                                       .withValues(alpha: 0.05),
                                 ],
                                 compact: true,

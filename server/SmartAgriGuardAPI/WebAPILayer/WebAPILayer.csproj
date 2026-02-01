@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\uploads\greenhouses\" />
+    <Folder Include="wwwroot\uploads\plants\" />
   </ItemGroup>
 
 </Project>

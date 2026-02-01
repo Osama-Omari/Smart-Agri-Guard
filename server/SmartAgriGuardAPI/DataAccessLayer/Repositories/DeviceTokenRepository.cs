@@ -63,25 +63,12 @@ namespace DataAccessLayer.Repositories
         /// <param name="userId">The GUID of the user.</param>
         /// <returns>The active DeviceToken record.</returns>
         /// <exception cref="Exception">Thrown if no active token is found for the user.</exception>
-        public async Task<DeviceToken> GetTokenByUserIdAsync(Guid userId)
+        public async Task<DeviceToken?> GetTokenByUserIdAsync(Guid userId)
         {
-            try
-            {
-                var token = await _context.DeviceTokens
-                    .OrderByDescending(dt => dt.LastUpdated)
-                    .Where(dt => dt.UserId == userId && dt.IsActive)
-                    .FirstOrDefaultAsync();
-
-                if (token == null)
-                {
-                    throw new Exception("Token not found for the specified user ID");
-                }
-                return token;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error retrieving token by user ID", ex);
-            }
+            return await _context.DeviceTokens
+                .Where(dt => dt.UserId == userId && dt.IsActive)
+                .OrderByDescending(dt => dt.LastUpdated)
+                .FirstOrDefaultAsync();
         }
 
         /// <summary>

@@ -238,8 +238,12 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
               const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF50623A),
+                  backgroundColor: const Color(0xFF7CB342),
+                  foregroundColor: Colors.white,
                   minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
                 onPressed: () {
                   // Server expects local time for both add and update (since it sends local time back)
@@ -271,7 +275,13 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
 
                   Navigator.pop(context);
                 },
-                child: const Text("Save"),
+                child: const Text(
+                  "Save",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
@@ -415,74 +425,106 @@ class _ViewAllPlantsScreenState extends State<ViewAllPlantsScreen> {
                             ),
                           ),
                         )
-                      : ListView.builder(
-                          controller: scrollController,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: isWide ? size.width * 0.15 : 18,
-                            vertical: 24,
-                          ),
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: _assignedPlants.length + 1,
-                          // +1 for drag handle
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              // 🌿 Drag handle indicator
-                              return Center(
-                                child: Container(
-                                  width: 50,
-                                  height: 5,
-                                  margin: const EdgeInsets.only(bottom: 24),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[400],
-                                    borderRadius: BorderRadius.circular(12),
+                      : _assignedPlants.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.local_florist_outlined,
+                                    size: 64,
+                                    color: const Color(0xFF50623A)
+                                        .withValues(alpha: 0.5),
                                   ),
-                                ),
-                              );
-                            }
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'No Plants Found',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF50623A),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'This greenhouse has no plants yet',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF50623A),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : ListView.builder(
+                              controller: scrollController,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isWide ? size.width * 0.15 : 18,
+                                vertical: 24,
+                              ),
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: _assignedPlants.length + 1,
+                              // +1 for drag handle
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  // 🌿 Drag handle indicator
+                                  return Center(
+                                    child: Container(
+                                      width: 50,
+                                      height: 5,
+                                      margin: const EdgeInsets.only(bottom: 24),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[400],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  );
+                                }
 
-                            final plant =
-                                cubit.greenhousePlantsWithMetrics[index - 1];
-                            final metrics = _assignedPlants[index - 1];
+                                final plant = cubit
+                                    .greenhousePlantsWithMetrics[index - 1];
+                                final metrics = _assignedPlants[index - 1];
 
-                            return PlantCardForManager(
-                              timeStamp: plant.latestMetrics?.timestamp != null
-                                  ? timeStampFormat(
-                                      plant.latestMetrics!.timestamp!)
-                                  : "-",
-                              image: plant.image ?? '',
-                              name: plant.plantName ?? '',
-                              temp: metrics['temp']!,
-                              humidity: metrics['humidity']!,
-                              moisture: metrics['moisture']!,
-                              ph: metrics['ph']!,
-                              n: metrics['n']!,
-                              p: metrics['p']!,
-                              k: metrics['k']!,
-                              status: plant.healthStatus ?? 'Unknown',
-                              onTap: () => _openPlantDetail(
-                                  context,
-                                  plant.latestMetrics?.timestamp != null
-                                      ? timeStampFormat(
-                                          plant.latestMetrics!.timestamp!)
-                                      : "-",
-                                  plant.id,
-                                  plant.plantName,
-                                  plant.image,
-                                  metrics['temp'],
-                                  metrics['humidity'],
-                                  metrics['moisture'],
-                                  metrics['ph'],
-                                  metrics['n'],
-                                  metrics['p'],
-                                  metrics['k'],
-                                  plant.healthStatus ?? 'Unknown'),
-                              onSchedule: () =>
-                                  _openScheduleSheet(plant.id ?? ''),
-                              onAlerts: () =>
-                                  _openAlerts(context, plant.id ?? ''),
-                            );
-                          },
-                        ),
+                                return PlantCardForManager(
+                                  timeStamp:
+                                      plant.latestMetrics?.timestamp != null
+                                          ? formatDate(
+                                              plant.latestMetrics!.timestamp!)
+                                          : "-",
+                                  image: plant.image ?? '',
+                                  name: plant.plantName ?? '',
+                                  temp: metrics['temp']!,
+                                  humidity: metrics['humidity']!,
+                                  moisture: metrics['moisture']!,
+                                  ph: metrics['ph']!,
+                                  n: metrics['n']!,
+                                  p: metrics['p']!,
+                                  k: metrics['k']!,
+                                  status: plant.healthStatus ?? 'Unknown',
+                                  onTap: () => _openPlantDetail(
+                                      context,
+                                      plant.latestMetrics?.timestamp != null
+                                          ? formatDate(
+                                              plant.latestMetrics!.timestamp!)
+                                          : "-",
+                                      plant.id,
+                                      plant.plantName,
+                                      plant.image,
+                                      metrics['temp'],
+                                      metrics['humidity'],
+                                      metrics['moisture'],
+                                      metrics['ph'],
+                                      metrics['n'],
+                                      metrics['p'],
+                                      metrics['k'],
+                                      plant.healthStatus ?? 'Unknown'),
+                                  onSchedule: () =>
+                                      _openScheduleSheet(plant.id ?? ''),
+                                  onAlerts: () =>
+                                      _openAlerts(context, plant.id ?? ''),
+                                );
+                              },
+                            ),
                 ),
               ),
             ],

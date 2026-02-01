@@ -12,15 +12,15 @@ import '../../../shared/cubit/states.dart';
 class ManagePlantsScreen extends StatefulWidget {
   final String greenhouseName;
   final String greenhouseID;
-  const ManagePlantsScreen({super.key, required this.greenhouseName, required this.greenhouseID});
+  const ManagePlantsScreen(
+      {super.key, required this.greenhouseName, required this.greenhouseID});
 
   @override
   State<ManagePlantsScreen> createState() => _ManagePlantsScreenState();
 }
 
 class _ManagePlantsScreenState extends State<ManagePlantsScreen> {
-
-  Future<void> _deletePlant(int index) async{
+  Future<void> _deletePlant(int index) async {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -58,7 +58,6 @@ class _ManagePlantsScreenState extends State<ManagePlantsScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _loadData();
   }
@@ -69,8 +68,7 @@ class _ManagePlantsScreenState extends State<ManagePlantsScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isWide = size.width > size.height;
-    return BlocBuilder<AppCubit, AppStates>(
-        builder: (context, state) {
+    return BlocBuilder<AppCubit, AppStates>(builder: (context, state) {
       var cubit = AppCubit.get(context);
 
       // Convert Cubit model list → widget-friendly map list
@@ -94,8 +92,10 @@ class _ManagePlantsScreenState extends State<ManagePlantsScreen> {
             final updated = await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (_) => AddPlantScreen(greenhouseName: widget.greenhouseName, greenhouseID: widget.greenhouseID,)
-              ),
+                  builder: (_) => AddPlantScreen(
+                        greenhouseName: widget.greenhouseName,
+                        greenhouseID: widget.greenhouseID,
+                      )),
             );
             if (updated == true) {
               _loadData(); // refresh data as if initState ran
@@ -196,7 +196,7 @@ class _ManagePlantsScreenState extends State<ManagePlantsScreen> {
                     decoration: BoxDecoration(
                       color: const Color(0xFFE9F5C6),
                       borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(32)),
+                          const BorderRadius.vertical(top: Radius.circular(32)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.1),
@@ -212,31 +212,61 @@ class _ManagePlantsScreenState extends State<ManagePlantsScreen> {
                       ),
                       child: (state is GetAllPlantsLoadingState)
                           ? const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 40),
-                          child: CircularProgressIndicator(
-                            color: Color(0xFF50623A),
-                          ),
-                        ),
-                      )
-                          : PlantList(
-                        plants: plants,
-                        onEdit: (index) async {
-                          final updated = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => UpdatePlantScreen(
-                                plant: plants[index]
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 40),
+                                child: CircularProgressIndicator(
+                                  color: Color(0xFF50623A),
+                                ),
                               ),
-                            ),
-                          );
-                          if (updated == true) {
-                            _loadData(); // refresh data as if initState ran
-                          }
-                        },
-                        onDelete: _deletePlant,
-                        scrollController: scrollController,
-                      ),
+                            )
+                          : (plants.isEmpty)
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.local_florist_outlined,
+                                        size: 64,
+                                        color: const Color(0xFF50623A)
+                                            .withValues(alpha: 0.5),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      const Text(
+                                        'No Plants Found',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF50623A),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Add a plant to get started',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(0xFF50623A),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : PlantList(
+                                  plants: plants,
+                                  onEdit: (index) async {
+                                    final updated = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => UpdatePlantScreen(
+                                            plant: plants[index]),
+                                      ),
+                                    );
+                                    if (updated == true) {
+                                      _loadData(); // refresh data as if initState ran
+                                    }
+                                  },
+                                  onDelete: _deletePlant,
+                                  scrollController: scrollController,
+                                ),
                     ),
                   );
                 },
@@ -245,7 +275,6 @@ class _ManagePlantsScreenState extends State<ManagePlantsScreen> {
           ),
         ),
       );
-      }
-    );
+    });
   }
 }

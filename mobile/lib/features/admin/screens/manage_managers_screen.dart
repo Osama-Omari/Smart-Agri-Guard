@@ -19,10 +19,10 @@ class ManageManagersScreen extends StatefulWidget {
 }
 
 class _ManageManagersScreenState extends State<ManageManagersScreen> {
-
   void _loadData() {
     AppCubit.get(context).getAllManagers();
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -55,9 +55,10 @@ class _ManageManagersScreenState extends State<ManageManagersScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-            onPressed: () async{
+            onPressed: () async {
               Navigator.pop(ctx, true);
-              await AppCubit.get(context).deleteManager(allManagers[index]['Id']);
+              await AppCubit.get(context)
+                  .deleteManager(allManagers[index]['Id']);
               _loadData();
             },
             child: const Text('Delete', style: TextStyle(color: Colors.white)),
@@ -65,9 +66,7 @@ class _ManageManagersScreenState extends State<ManageManagersScreen> {
         ],
       ),
     );
-
   }
-
 
   List<Map<String, Object>> allManagers = [];
 
@@ -78,9 +77,7 @@ class _ManageManagersScreenState extends State<ManageManagersScreen> {
     const bg = AppColors.primaryBackground;
     const lightGreen = Color(0xFFE9F5C6);
 
-    return BlocBuilder<AppCubit, AppStates>(
-        builder: (context, state)
-    {
+    return BlocBuilder<AppCubit, AppStates>(builder: (context, state) {
       var cubit = AppCubit.get(context);
       allManagers = cubit.allManagers.map((g) {
         return {
@@ -98,9 +95,7 @@ class _ManageManagersScreenState extends State<ManageManagersScreen> {
           onPressed: () async {
             final updated = await Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (_) => AddManagerScreen()
-              ),
+              MaterialPageRoute(builder: (_) => AddManagerScreen()),
             );
             if (updated == true) {
               _loadData(); // refresh data as if initState ran
@@ -123,12 +118,11 @@ class _ManageManagersScreenState extends State<ManageManagersScreen> {
                       showBack: true,
                       subtitle: 'Manage Managers',
                       onBack: () => Navigator.of(context).maybePop(),
-                      onSettings: () =>
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const AdminSettingsScreen()),
-                          ),
+                      onSettings: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const AdminSettingsScreen()),
+                      ),
                     ),
                     const SizedBox(height: 24),
                     const HeaderCard(
@@ -145,83 +139,120 @@ class _ManageManagersScreenState extends State<ManageManagersScreen> {
                 initialChildSize: 0.72,
                 minChildSize: 0.55,
                 maxChildSize: 0.96,
-                builder: (context, scrollController) =>
-                    Container(
-                      decoration: BoxDecoration(
-                        color: lightGreen,
-                        borderRadius:
+                builder: (context, scrollController) => Container(
+                  decoration: BoxDecoration(
+                    color: lightGreen,
+                    borderRadius:
                         const BorderRadius.vertical(top: Radius.circular(32)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 20,
-                            offset: const Offset(0, -5),
-                          ),
-                        ],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, -5),
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isWide ? size.width * 0.15 : 24,
-                          vertical: 24,
-                        ),
-                        child: ListView(
-                          controller: scrollController,
-                          physics: const BouncingScrollPhysics(),
-                          children: [
-                            Center(
-                              child: Container(
-                                width: 50,
-                                height: 5,
-                                margin: const EdgeInsets.only(bottom: 20),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[400],
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            ),
-                            const Text(
-                              'All Managers',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF2C3A1A),
-                                letterSpacing: -0.5,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-
-                            // 🪪 Manager List Widget
-
-                            (state is GetAllManagersLoadingState || state is DeleteManagerLoadingState)
-                                ? const Center(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 40),
-                                child: CircularProgressIndicator(
-                                  color: Color(0xFF50623A),
-                                ),
-                              ),
-                            )
-                                : ManagerCardList(
-                              managers: allManagers,
-                              onTap: (index){
-                                navigateTo(context, ViewManagerScreen(
-                                    name: allManagers[index]['Name'] as String,
-                                    username: allManagers[index]['UserName'] as String,
-                                    assignedGreenhouses: allManagers[index]['Greenhouses'] as List<String>)
-                                );
-                              },
-                              onDelete: _deleteManager,
-                            ),
-                          ],
-                        ),
-                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isWide ? size.width * 0.15 : 24,
+                      vertical: 24,
                     ),
+                    child: ListView(
+                      controller: scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 50,
+                            height: 5,
+                            margin: const EdgeInsets.only(bottom: 20),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[400],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                        const Text(
+                          'All Managers',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2C3A1A),
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // 🪪 Manager List Widget
+
+                        (state is GetAllManagersLoadingState ||
+                                state is DeleteManagerLoadingState)
+                            ? const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 40),
+                                  child: CircularProgressIndicator(
+                                    color: Color(0xFF50623A),
+                                  ),
+                                ),
+                              )
+                            : allManagers.isEmpty
+                                ? Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.people_outline,
+                                          size: 64,
+                                          color: const Color(0xFF50623A)
+                                              .withValues(alpha: 0.5),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        const Text(
+                                          'No Managers Found',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF50623A),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        const Text(
+                                          'Add a manager to assign tasks',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF50623A),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : ManagerCardList(
+                                    managers: allManagers,
+                                    onTap: (index) {
+                                      navigateTo(
+                                          context,
+                                          ViewManagerScreen(
+                                              name: allManagers[index]['Name']
+                                                  as String,
+                                              username: allManagers[index]
+                                                  ['UserName'] as String,
+                                              assignedGreenhouses:
+                                                  allManagers[index]
+                                                          ['Greenhouses']
+                                                      as List<String>));
+                                    },
+                                    onDelete: _deleteManager,
+                                  ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
         ),
       );
-    }
-    );
+    });
   }
 }

@@ -33,7 +33,7 @@ namespace DataAccessLayer.Models
         public List<PlantNotifications> PlantNotifications { get; set; }
 
 
-        public List<FarmerPlant> FarmerPlants { get; set; }
+        public ICollection<FarmerPlant> FarmerPlants { get; set; } = new List<FarmerPlant>();
 
         public List<PlantSchedule> PlantSchedules { get; set; } = new();
     }

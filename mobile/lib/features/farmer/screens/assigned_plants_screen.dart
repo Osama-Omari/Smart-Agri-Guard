@@ -171,71 +171,104 @@ class _AssignedPlantsScreen extends State<AssignedPlantsScreen> {
                             ),
                           ),
                         )
-                      : ListView.builder(
-                          controller: scrollController,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: isWide ? size.width * 0.15 : 18,
-                            vertical: 24,
-                          ),
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: _assignedPlants.length + 1,
-                          // +1 for drag handle
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              // 🌿 Drag handle indicator
-                              return Center(
-                                child: Container(
-                                  width: 50,
-                                  height: 5,
-                                  margin: const EdgeInsets.only(bottom: 24),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[400],
-                                    borderRadius: BorderRadius.circular(12),
+                      : _assignedPlants.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.local_florist_outlined,
+                                    size: 64,
+                                    color: const Color(0xFF50623A)
+                                        .withValues(alpha: 0.5),
                                   ),
-                                ),
-                              );
-                            }
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'No Plants Assigned',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF50623A),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'You have no plants assigned yet',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF50623A),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : ListView.builder(
+                              controller: scrollController,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isWide ? size.width * 0.15 : 18,
+                                vertical: 24,
+                              ),
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: _assignedPlants.length + 1,
+                              // +1 for drag handle
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  // 🌿 Drag handle indicator
+                                  return Center(
+                                    child: Container(
+                                      width: 50,
+                                      height: 5,
+                                      margin: const EdgeInsets.only(bottom: 24),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[400],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  );
+                                }
 
-                            final plant = cubit.plantsWithMetrics[index - 1];
-                            final metrics = _assignedPlants[index - 1];
+                                final plant =
+                                    cubit.plantsWithMetrics[index - 1];
+                                final metrics = _assignedPlants[index - 1];
 
-                            return PlantCard(
-                              timeStamp: plant.latestMetrics?.timestamp != null
-                                  ? timeStampFormat(
-                                      plant.latestMetrics!.timestamp!)
-                                  : "-",
-                              image: plant.image ?? '',
-                              name: plant.plantName ?? '',
-                              temp: metrics['temp']!,
-                              humidity: metrics['humidity']!,
-                              moisture: metrics['moisture']!,
-                              ph: metrics['ph']!,
-                              n: metrics['n']!,
-                              p: metrics['p']!,
-                              k: metrics['k']!,
-                              status: plant.healthStatus ?? 'No Status',
-                              onTap: () => _openPlantDetail(
-                                  context,
-                                  plant.latestMetrics?.timestamp != null
-                                      ? timeStampFormat(
-                                          plant.latestMetrics!.timestamp!)
-                                      : "-",
-                                  plant.id,
-                                  plant.plantName,
-                                  plant.image,
-                                  metrics['temp'],
-                                  metrics['humidity'],
-                                  metrics['moisture'],
-                                  metrics['ph'],
-                                  metrics['n'],
-                                  metrics['p'],
-                                  metrics['k'],
-                                  plant.healthStatus ?? 'No Status'),
-                              onAlerts: () =>
-                                  _openAlerts(context, plant.id ?? ''),
-                            );
-                          },
-                        ),
+                                return PlantCard(
+                                  timeStamp:
+                                      plant.latestMetrics?.timestamp != null
+                                          ? formatDate(
+                                              plant.latestMetrics!.timestamp!)
+                                          : "-",
+                                  image: plant.image ?? '',
+                                  name: plant.plantName ?? '',
+                                  temp: metrics['temp']!,
+                                  humidity: metrics['humidity']!,
+                                  moisture: metrics['moisture']!,
+                                  ph: metrics['ph']!,
+                                  n: metrics['n']!,
+                                  p: metrics['p']!,
+                                  k: metrics['k']!,
+                                  status: plant.healthStatus ?? 'No Status',
+                                  onTap: () => _openPlantDetail(
+                                      context,
+                                      plant.latestMetrics?.timestamp != null
+                                          ? formatDate(
+                                              plant.latestMetrics!.timestamp!)
+                                          : "-",
+                                      plant.id,
+                                      plant.plantName,
+                                      plant.image,
+                                      metrics['temp'],
+                                      metrics['humidity'],
+                                      metrics['moisture'],
+                                      metrics['ph'],
+                                      metrics['n'],
+                                      metrics['p'],
+                                      metrics['k'],
+                                      plant.healthStatus ?? 'No Status'),
+                                  onAlerts: () =>
+                                      _openAlerts(context, plant.id ?? ''),
+                                );
+                              },
+                            ),
                 ),
               ),
             ],

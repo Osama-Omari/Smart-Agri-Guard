@@ -18,8 +18,10 @@ import 'features/shared/screens/update_user_info_screen.dart';
 import 'features/admin/screens/plant_type_list_screen.dart';
 import 'features/manager/screens/manager_home_screen.dart';
 import 'features/shared/screens/change_password_screen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:smart_agri_guard/core/widgets/global_functions.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
@@ -29,8 +31,28 @@ void main() async{
   runApp(const SmartAgriGuardApp());
 }
 
-class SmartAgriGuardApp extends StatelessWidget {
+class SmartAgriGuardApp extends StatefulWidget {
   const SmartAgriGuardApp({super.key});
+
+  @override
+  State<SmartAgriGuardApp> createState() => _SmartAgriGuardAppState();
+}
+
+class _SmartAgriGuardAppState extends State<SmartAgriGuardApp> {
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.onMessage.listen((event) {
+      if (event.notification != null) {
+        print(event.notification!.title);
+        print(event.notification!.body);
+        showToast(
+            message:
+                '${event.notification!.title} \n ${event.notification!.body}',
+            state: ToastStates.WARNING);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +106,15 @@ class SmartAgriGuardApp extends StatelessWidget {
               '/': (context) => SplashScreen(),
               '/manager_home': (context) => ManagerHomeScreen(),
               '/login': (context) => LoginScreen(),
-              '/assigned_plants': (context) => AssignedPlantsScreen(farmerName: ""),
+              '/assigned_plants': (context) =>
+                  AssignedPlantsScreen(farmerName: ""),
               '/admin_home': (context) => AdminHomeScreen(),
               '/manage_greenhouses': (context) => ManageGreenhousesScreen(),
               '/manage_managers': (context) => ManageManagersScreen(),
               '/update_user_info': (context) => UpdateUserInfoScreen(),
               '/manage_plants_Type': (context) => const PlantTypeListScreen(),
+              '/manage_farmers_screen': (context) =>
+                  const ManageManagersScreen(), // Placeholder if needed
               '/change_password': (context) => const ChangePasswordScreen(),
             },
           );

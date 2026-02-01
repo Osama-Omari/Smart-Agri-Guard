@@ -130,16 +130,13 @@ namespace DataAccessLayer.Repositories
         /// </summary>
         public async Task<Plant?> GetPlantWithFarmerPlant(Guid plantId)
         {
-            try
-            {
-                return await _context.Plants
-                    .Include(fp => fp.FarmerPlants)
-                        .ThenInclude(fp => fp.Farmer)
-                    .Include(p => p.Greenhouse)
-                    .FirstOrDefaultAsync(x => x.Id == plantId);
-            }
-            catch (Exception ex) { throw new Exception(ex.Message); }
+            return await _context.Plants
+                .Include(p => p.FarmerPlants)
+                    .ThenInclude(fp => fp.Farmer)
+                .Include(p => p.Greenhouse)
+                .FirstOrDefaultAsync(p => p.Id == plantId);
         }
+
 
         /// <summary>
         /// Filters the global plant list to only those assigned to a specific farmer.

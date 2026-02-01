@@ -16,11 +16,9 @@ class ManageGreenhousesScreen extends StatefulWidget {
   @override
   State<ManageGreenhousesScreen> createState() =>
       _ManageGreenhousesScreenState();
-
-  }
+}
 
 class _ManageGreenhousesScreenState extends State<ManageGreenhousesScreen> {
-
   void _loadData() {
     AppCubit.get(context).getAllGreenhouses();
   }
@@ -37,21 +35,20 @@ class _ManageGreenhousesScreenState extends State<ManageGreenhousesScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isWide = size.width > size.height;
-    return BlocBuilder<AppCubit, AppStates>(
-        builder: (context, state) {
-        var cubit = AppCubit.get(context);
+    return BlocBuilder<AppCubit, AppStates>(builder: (context, state) {
+      var cubit = AppCubit.get(context);
 
-        // Convert Cubit model list → widget-friendly map list
-        greenhouses = cubit.allGreenhouse.map((g) {
-          return {
-            'Id': g.Id ?? '',
-            'name': g.name ?? '',
-            'location': g.location ?? '',
-            'ImagePath': g.ImagePath ?? '', // No image in backend, default
-          };
-        }).toList();
+      // Convert Cubit model list → widget-friendly map list
+      greenhouses = cubit.allGreenhouse.map((g) {
+        return {
+          'Id': g.Id ?? '',
+          'name': g.name ?? '',
+          'location': g.location ?? '',
+          'ImagePath': g.ImagePath ?? '', // No image in backend, default
+        };
+      }).toList();
 
-        return Scaffold(
+      return Scaffold(
         backgroundColor: const Color(0xFF7B8C5F),
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFFE9F5C6),
@@ -59,9 +56,7 @@ class _ManageGreenhousesScreenState extends State<ManageGreenhousesScreen> {
           onPressed: () async {
             final updated = await Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => AddGreenhouseScreen()
-              ),
+              MaterialPageRoute(builder: (_) => AddGreenhouseScreen()),
             );
             if (updated == true) {
               _loadData(); // refresh data as if initState ran
@@ -208,41 +203,77 @@ class _ManageGreenhousesScreenState extends State<ManageGreenhousesScreen> {
                           // 🔥 The new list widget
                           (state is GetAllGreenhousesLoadingState)
                               ? const Center(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 40),
-                              child: CircularProgressIndicator(
-                                color: Color(0xFF50623A),
-                              ),
-                            ),
-                          )
-                              : GreenhouseCardList(
-                            greenhouses: greenhouses,
-                            onTap: (i) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => GreenhouseDetailScreen(
-                                    greenhouseName: greenhouses[i]['name']!,
-                                    greenhouseID: greenhouses[i]['Id']!,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 40),
+                                    child: CircularProgressIndicator(
+                                      color: Color(0xFF50623A),
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            onEdit: (i) async {
-                              final updated = await Navigator.push(
-                                context,
-                                  MaterialPageRoute(
-                                  builder: (_) => UpdateGreenhouseScreen(
-                                  greenhouse: greenhouses[i],
-                                  ),
-                                ),
-                              );
-                              if (updated == true) {
-                                _loadData(); // refresh data as if initState ran
-                              }
-                            },
-                            onDelete: _deleteGreenhouse,
-                          ),
+                                )
+                              : greenhouses.isEmpty
+                                  ? Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.house_outlined,
+                                            size: 64,
+                                            color: const Color(0xFF50623A)
+                                                .withValues(alpha: 0.5),
+                                          ),
+                                          const SizedBox(height: 16),
+                                          const Text(
+                                            'No Greenhouses Found',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF50623A),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          const Text(
+                                            'Add a greenhouse to get started',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(0xFF50623A),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : GreenhouseCardList(
+                                      greenhouses: greenhouses,
+                                      onTap: (i) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                GreenhouseDetailScreen(
+                                              greenhouseName: greenhouses[i]
+                                                  ['name']!,
+                                              greenhouseID: greenhouses[i]
+                                                  ['Id']!,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      onEdit: (i) async {
+                                        final updated = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                UpdateGreenhouseScreen(
+                                              greenhouse: greenhouses[i],
+                                            ),
+                                          ),
+                                        );
+                                        if (updated == true) {
+                                          _loadData(); // refresh data as if initState ran
+                                        }
+                                      },
+                                      onDelete: _deleteGreenhouse,
+                                    ),
 
                           const SizedBox(height: 80),
                         ],
@@ -257,6 +288,7 @@ class _ManageGreenhousesScreenState extends State<ManageGreenhousesScreen> {
       );
     });
   }
+
   Future<void> _deleteGreenhouse(int index) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -294,7 +326,8 @@ class _ManageGreenhousesScreenState extends State<ManageGreenhousesScreen> {
             ),
             onPressed: () async {
               Navigator.of(ctx).pop(true); // ✅ close the dialog first
-              await AppCubit.get(context).deleteGreenhouse(greenhouses[index]['Id']);
+              await AppCubit.get(context)
+                  .deleteGreenhouse(greenhouses[index]['Id']);
               _loadData();
             },
             child: const Text('Delete', style: TextStyle(color: Colors.white)),

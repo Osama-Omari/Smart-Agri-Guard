@@ -76,48 +76,67 @@ namespace InfrastructureLayer.Services
         /// <param name="userIds">A collection of user IDs to receive the alert.</param>
         /// <param name="title">The notification title.</param>
         /// <param name="message">The notification body text.</param>
-        public async Task SendToUsersAsync(IEnumerable<Guid> userIds, string title, string message)
+        public async Task SendToUsersAsync(
+            IEnumerable<Guid> userIds,
+            string title,
+            string message
+            )
         {
-            var allTokens = new List<string>();
-            foreach (var userId in userIds)
+            // 1️⃣ Fetch tokens in parallel (much faster)
+            var tokenTasks = userIds.Select(async userId =>
             {
                 var deviceToken = await _deviceTokenRepository.GetTokenByUserIdAsync(userId);
-                // Only add active tokens
-                if (deviceToken != null && deviceToken.IsActive)
-                {
-                    allTokens.Add(deviceToken.Token);
-                }
-            }
+                return deviceToken?.IsActive == true ? deviceToken.Token : null;
+            });
 
-            if (!allTokens.Any()) return;
+            var tokens = (await Task.WhenAll(tokenTasks))
+                .Where(t => !string.IsNullOrWhiteSpace(t))
+                .Distinct()
+                .ToList();
+
+            // 2️⃣ No tokens → nothing to send
+            if (!tokens.Any())
+                return;
 
             var multicast = new MulticastMessage
             {
-                Tokens = allTokens,
+                Tokens = tokens,
                 Notification = new Notification
                 {
                     Title = title,
                     Body = message
-                },
+                }
             };
 
-            var response = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(multicast);
+            // 3️⃣ Send notification
+            var response = await FirebaseMessaging.DefaultInstance
+                .SendEachForMulticastAsync(multicast);
 
-            // CRITICAL: Handle invalid tokens
+            // 4️⃣ Deactivate invalid tokens safely
             if (response.FailureCount > 0)
             {
-                for (var i = 0; i < response.Responses.Count; i++)
+                var deactivateTasks = new List<Task>();
+
+                for (int i = 0; i < response.Responses.Count; i++)
                 {
-                    if (!response.Responses[i].IsSuccess)
+                    var result = response.Responses[i];
+
+                    if (!result.IsSuccess &&
+                        result.Exception is FirebaseMessagingException ex &&
+                        (ex.MessagingErrorCode == MessagingErrorCode.Unregistered ||
+                         ex.MessagingErrorCode == MessagingErrorCode.InvalidArgument))
                     {
-                        // If the error is 'Unregistered' or 'InvalidRegistration', 
-                        // you should delete/deactivate this token in your DB
-                        var failedToken = allTokens[i];
-                        await _deviceTokenRepository.DeactivateTokenAsync(failedToken);
+                        deactivateTasks.Add(
+                            _deviceTokenRepository.DeactivateTokenAsync(tokens[i])
+                        );
                     }
                 }
+
+                await Task.WhenAll(deactivateTasks);
             }
         }
+
+
 
         /// <summary>
         /// Notifies all farmers assigned to a plant that it requires watering.
@@ -166,8 +185,13 @@ namespace InfrastructureLayer.Services
         public async Task SendPlantAlertAsync(Guid plantId, string message)
         {
             var plant =  await _plantRepository.GetPlantWithFarmerPlant(plantId);
-            if (plant == null) return;
-            var farmerIds = plant.FarmerPlants.Select(fp => fp.FarmerId).Distinct();
+            var farmerIds = plant.FarmerPlants?
+            .Select(fp => fp.FarmerId)
+            .Distinct()
+            .ToList();
+
+            if (farmerIds == null || !farmerIds.Any())
+                return;
             await SendToUsersAsync(farmerIds, $"Alert for Plant: {plant.Name}", message);
 
         }

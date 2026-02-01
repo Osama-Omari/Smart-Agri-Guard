@@ -179,7 +179,6 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen>
                   onChanged: _handleNotificationToggle,
                 ),
                 const SizedBox(height: 8),
-                const LinkTile(icon: Icons.language, label: 'Language'),
                 const LinkTile(
                     icon: Icons.lock_outline, label: 'Change Password'),
 
