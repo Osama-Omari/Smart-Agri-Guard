@@ -980,7 +980,7 @@ class AppCubit extends Cubit<AppStates> {
   bool plantsLoaded = false;
   Future<void> getPlantsWithAssignedFarmers(String greenhouseID) async {
     plantsLoaded = false;
-    plantWithAssignedFarmers = [];
+    plantWithAssignedFarmers.clear();
 
     emit(GetPlantsWithAssignedFarmersLoadingState());
 

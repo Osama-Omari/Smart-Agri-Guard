@@ -36,6 +36,9 @@ class _ManagePlantsAssignmentsScreenState
   @override
   void initState() {
     super.initState();
+    final cubit = AppCubit.get(context);
+    cubit.plantWithAssignedFarmers = []; // Explicitly reset to empty list
+    cubit.plantsLoaded = false; // Explicitly reset loading flag
     _loadData();
   }
 
